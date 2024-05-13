@@ -46,7 +46,7 @@ class StopwatchViewController: UIViewController {
         return label
     }()
     
-    let minutesSeparatorLabel: UILabel = {
+    private let minutesSeparatorLabel: UILabel = {
         let label = UILabel()
         label.text = ":"
         label.textColor = .white
@@ -64,6 +64,30 @@ class StopwatchViewController: UIViewController {
         return label
     }()
     
+    private let lapButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Lap", for: .normal)
+        button.setTitleColor(UIColor(red: 174/255, green: 174/255, blue: 183/255, alpha: 1), for: .normal)
+        button.backgroundColor = .clear
+        button.layer.cornerRadius = 24
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor(red: 174/255, green: 174/255, blue: 183/255, alpha: 1).cgColor // AEAEB7
+        return button
+    }()
+
+    
+    private let startButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Start", for: .normal)
+        button.setTitleColor(UIColor(red: 245/255, green: 132/255, blue: 26/255, alpha: 1), for: .normal)
+        button.backgroundColor = .gray
+        button.backgroundColor = .clear
+        button.layer.cornerRadius = 24
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor(red: 245/255, green: 132/255, blue: 26/255, alpha: 1).cgColor // F5841A
+        return button
+    }()
+    
     // MARK: - viewDidLoad()
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,7 +96,10 @@ class StopwatchViewController: UIViewController {
     
     // MARK: - 레이아웃 설정
     private func setupConstraints() {
-        view.addSubview(stackView)
+        
+        [stackView, lapButton, startButton].forEach {
+            view.addSubview($0)
+        }
         
         let hourView = createNumberContainerView()
         hourView.addSubview(hoursLabel)
@@ -120,6 +147,20 @@ class StopwatchViewController: UIViewController {
         secondsLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.centerY.equalToSuperview()
+        }
+        
+        lapButton.snp.makeConstraints {
+            $0.width.equalTo(120)
+            $0.height.equalTo(46)
+            $0.top.equalTo(stackView.snp.bottom).offset(66)
+            $0.leading.equalToSuperview().inset(32)
+        }
+        
+        startButton.snp.makeConstraints {
+            $0.width.equalTo(120)
+            $0.height.equalTo(46)
+            $0.centerY.equalTo(lapButton.snp.centerY)
+            $0.trailing.equalToSuperview().inset(32)
         }
         
     }
