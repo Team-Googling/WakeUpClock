@@ -6,9 +6,45 @@
 //
 
 import UIKit
+import SnapKit
 
 class TimerTableViewCell: UITableViewCell {
+    
+    static let identifier = "TimerTableViewCell"
+    
+    let timerLabel = UILabel()
+    let nameLabel = UILabel()
 
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier:   reuseIdentifier)
+        
+        contentView.addSubview(timerLabel)
+        contentView.addSubview(nameLabel)
+        
+        timerLabel.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(24)
+            $0.top.bottom.equalToSuperview()
+        }
+        
+        nameLabel.snp.makeConstraints {
+            $0.trailing.equalToSuperview().offset(-24)
+            $0.centerY.equalTo(timerLabel.snp.centerY)
+            $0.width.equalTo(147)
+        }
+        
+        timerLabel.textColor = .white
+        timerLabel.text = "00:00:00"
+        timerLabel.font = .systemFont(ofSize: 18, weight: .regular)
+        nameLabel.textColor = .white
+        nameLabel.text = "일어나시계"
+        nameLabel.font = .systemFont(ofSize: 18, weight: .regular)
+        
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

@@ -172,8 +172,10 @@ class TimerViewController: UIViewController {
         
         recentlyUsedLabel.textColor = .white
         recentlyUsedLabel.text = "Recently Used"
+        recentlyUsedLabel.font = .systemFont(ofSize: 20, weight: .medium)
         
         recentlyUsedTabelView.backgroundColor = .blue
+        recentlyUsedTabelView.register(TimerTableViewCell.self, forCellReuseIdentifier: TimerTableViewCell.identifier)
         
         
     }
@@ -182,7 +184,9 @@ class TimerViewController: UIViewController {
 }
 
 extension TimerViewController: UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        36
+    }
 }
 
 extension TimerViewController: UITableViewDataSource {
@@ -191,7 +195,7 @@ extension TimerViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = recentlyUsedTabelView.dequeueReusableCell(withIdentifier: "", for: indexPath)
+        guard let cell = recentlyUsedTabelView.dequeueReusableCell(withIdentifier: TimerTableViewCell.identifier, for: indexPath) as? TimerTableViewCell else { return TimerTableViewCell() }
         return cell
     }
     
