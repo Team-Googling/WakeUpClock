@@ -18,7 +18,7 @@ class TabBarViewController: UITabBarController {
     
     }
     
-    func configureUI() {
+    private func configureUI() {
         self.view.backgroundColor = UIColor(red: CGFloat(13)/255.0, green: CGFloat(13)/255.0, blue: CGFloat(37)/255.0, alpha: 1.0)
         self.tabBar.backgroundColor = UIColor(red: CGFloat(44)/255.0, green: CGFloat(44)/255.0, blue: CGFloat(69)/255.0, alpha: 1.0)
         self.tabBar.barTintColor = .white
@@ -35,17 +35,11 @@ class TabBarViewController: UITabBarController {
         }
     }
     
-    func configureTabItem() {
-        
-        let clockVC  = ClockViewController()
-        let alarmVC = AlarmViewController()
-        let timerVC = TimerViewController()
-        let stopVC = StopwatchViewController()
-        
-        let clockNav = UINavigationController(rootViewController: clockVC)
-        let alarmNav = UINavigationController(rootViewController: alarmVC)
-        let timerNav = UINavigationController(rootViewController: timerVC)
-        let stopNav = UINavigationController(rootViewController: stopVC)
+    private func configureTabItem() {
+        let clockNav = UINavigationController(rootViewController: ClockViewController())
+        let alarmNav = UINavigationController(rootViewController: AlarmViewController())
+        let timerNav = UINavigationController(rootViewController: TimerViewController())
+        let stopNav = UINavigationController(rootViewController: StopwatchViewController())
         
         clockNav.tabBarItem.title = "Clock"
         alarmNav.tabBarItem.title = "Alarm"
@@ -79,7 +73,7 @@ class TabBarViewController: UITabBarController {
         self.setViewControllers([clockNav, alarmNav, timerNav, stopNav], animated: false)
     }
     
-    func configureNavigationBar(_ navigationController: UINavigationController) {
+    private func configureNavigationBar(_ navigationController: UINavigationController) {
         guard let modeImage = UIImage(named: "modeImage"),
               let moreImage = UIImage(named: "moreImage") else {
             return
@@ -99,6 +93,4 @@ class TabBarViewController: UITabBarController {
         navigationController.topViewController?.navigationItem.rightBarButtonItem = moreItem
         navigationController.navigationBar.backgroundColor = UIColor(red: 44/255, green: 44/255, blue: 69/255, alpha: 1.0)
     }
-
-    
 }
