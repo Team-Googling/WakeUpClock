@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3C5117522BF2447700FB47B0 /* TimerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C5117512BF2447700FB47B0 /* TimerTableViewCell.swift */; };
 		F39FCDF32BF1C48B00F5431C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39FCDF22BF1C48B00F5431C /* AppDelegate.swift */; };
 		F39FCDF52BF1C48B00F5431C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39FCDF42BF1C48B00F5431C /* SceneDelegate.swift */; };
 		F39FCDFA2BF1C48B00F5431C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F39FCDF82BF1C48B00F5431C /* Main.storyboard */; };
@@ -24,6 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3C5117512BF2447700FB47B0 /* TimerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerTableViewCell.swift; sourceTree = "<group>"; };
 		F39FCDEF2BF1C48B00F5431C /* WakeUpClock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WakeUpClock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F39FCDF22BF1C48B00F5431C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F39FCDF42BF1C48B00F5431C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 				F39FCE0E2BF1C5BB00F5431C /* AlarmViewController.swift */,
 				F39FCE102BF1C5CE00F5431C /* NewAlarmViewController.swift */,
 				F39FCE122BF1C5D800F5431C /* TimerViewController.swift */,
+				3C5117512BF2447700FB47B0 /* TimerTableViewCell.swift */,
 				F39FCE142BF1C5ED00F5431C /* StopwatchViewController.swift */,
 			);
 			path = Controllers;
@@ -194,6 +197,7 @@
 				F39FCE092BF1C4CD00F5431C /* AlarmModel.swift in Sources */,
 				F39FCE132BF1C5D800F5431C /* TimerViewController.swift in Sources */,
 				F39FCE152BF1C5ED00F5431C /* StopwatchViewController.swift in Sources */,
+				3C5117522BF2447700FB47B0 /* TimerTableViewCell.swift in Sources */,
 				F39FCE0F2BF1C5BB00F5431C /* AlarmViewController.swift in Sources */,
 				F39FCE072BF1C4A800F5431C /* TabBarController.swift in Sources */,
 				F39FCE0D2BF1C5AE00F5431C /* ClockViewController.swift in Sources */,
