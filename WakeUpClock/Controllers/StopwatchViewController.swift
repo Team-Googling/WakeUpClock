@@ -24,13 +24,12 @@ class StopwatchViewController: UIViewController {
         setupConstraints()
     }
     
-   
     func setupConstraints() {
         view.addSubview(testLabel)
         
         testLabel.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide)
-            $0.leading.equalToSuperview().inset(10)
+            $0.top.equalTo(view.safeAreaLayoutGuide).inset(20)
+            $0.leading.equalToSuperview().inset(24)
         }
     }
     
