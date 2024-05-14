@@ -67,11 +67,11 @@ class StopwatchViewController: UIViewController {
     private let lapButton: UIButton = {
         let button = UIButton()
         button.setTitle("Lap", for: .normal)
-        button.setTitleColor(UIColor(red: 174/255, green: 174/255, blue: 183/255, alpha: 1), for: .normal)
+        button.setTitleColor(UIColor(named: "mainInactiveTextColor"), for: .normal)
         button.backgroundColor = .clear
         button.layer.cornerRadius = 24
         button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor(red: 174/255, green: 174/255, blue: 183/255, alpha: 1).cgColor // AEAEB7
+        button.layer.borderColor = UIColor(named: "mainInactiveTextColor")?.cgColor // AEAEB7
         return button
     }()
     
@@ -79,12 +79,12 @@ class StopwatchViewController: UIViewController {
     private let startButton: UIButton = {
         let button = UIButton()
         button.setTitle("Start", for: .normal)
-        button.setTitleColor(UIColor(red: 245/255, green: 132/255, blue: 26/255, alpha: 1), for: .normal)
+        button.setTitleColor(UIColor(named: "mainActiveColor"), for: .normal)
         button.backgroundColor = .gray
         button.backgroundColor = .clear
         button.layer.cornerRadius = 24
         button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor(red: 245/255, green: 132/255, blue: 26/255, alpha: 1).cgColor // F5841A
+        button.layer.borderColor = UIColor(named: "mainActiveColor")?.cgColor // F5841A
         return button
     }()
     
@@ -98,12 +98,6 @@ class StopwatchViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupConstraints()
-    }
-    
-    private func configureUI() {
-//        tableView.delegate = self
-//        tableView.dataSource = self
-        // tableView.register(StopwatchCell.self, forCellReuseIdentifier: BookTableViewCell.identifier)
     }
     
     // MARK: - 레이아웃 설정
@@ -179,24 +173,8 @@ class StopwatchViewController: UIViewController {
     
     private func createNumberContainerView() -> UIView {
         let containerView = UIView()
-        containerView.backgroundColor = UIColor(red: 153/255, green: 153/255, blue: 200/255, alpha: 0.1)
+        containerView.backgroundColor = UIColor(named: "glassEffectColor")
         containerView.layer.cornerRadius = 8
         return containerView
     }
 }
-//extension StopwatchViewController: UITableViewDataSource, UITableViewDelegate {
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        <#code#>
-//    }
-//    
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        <#code#>
-//    }
-//    
-//    
-//}
-
-
-//#Preview {
-//    StopwatchViewController()
-//}

@@ -19,13 +19,13 @@ class TabBarViewController: UITabBarController {
     }
     
     private func configureUI() {
-        self.view.backgroundColor = UIColor(red: CGFloat(13)/255.0, green: CGFloat(13)/255.0, blue: CGFloat(37)/255.0, alpha: 1.0)
-        self.tabBar.backgroundColor = UIColor(red: CGFloat(44)/255.0, green: CGFloat(44)/255.0, blue: CGFloat(69)/255.0, alpha: 1.0)
-        self.tabBar.barTintColor = .white
-        self.tabBar.tintColor = .orange
+        self.view.backgroundColor = UIColor(named: "backGroudColor")
+        self.tabBar.backgroundColor = UIColor(named: "frameColor")
+        self.tabBar.barTintColor = UIColor(named: "mainTextColor")
+        self.tabBar.tintColor = UIColor(named: "mainActiveColor")
         
         let topView = UIView()
-        topView.backgroundColor = UIColor(red: 44/255, green: 44/255, blue: 69/255, alpha: 1.0)
+        topView.backgroundColor = UIColor(named: "frameColor")
         view.addSubview(topView)
         topView.snp.makeConstraints { make in
             make.top.equalToSuperview()
@@ -49,19 +49,19 @@ class TabBarViewController: UITabBarController {
         let iconSize = CGSize(width: 24, height: 24)
         let iconSize2 = CGSize(width: 32, height: 32)
         
-        if let clockIcon = UIImage(named: "clockIcon")?.resized(to: iconSize) {
+        if let clockIcon = UIImage(named: "dark-clock")?.resized(to: iconSize) {
             clockNav.tabBarItem.image = clockIcon
         }
         
-        if let alarmIcon = UIImage(named: "alarmIcon")?.resized(to: iconSize) {
+        if let alarmIcon = UIImage(named: "dark-alarm-clock")?.resized(to: iconSize) {
             alarmNav.tabBarItem.image = alarmIcon
         }
         
-        if let timerIcon = UIImage(named: "timerIcon")?.resized(to: iconSize) {
+        if let timerIcon = UIImage(named: "dark-hourglass-empty")?.resized(to: iconSize) {
             timerNav.tabBarItem.image = timerIcon
         }
         
-        if let stopwatchIcon = UIImage(named: "stopwatchIcon")?.resized(to: iconSize2) {
+        if let stopwatchIcon = UIImage(named: "dark-timer")?.resized(to: iconSize2) {
             stopNav.tabBarItem.image = stopwatchIcon
         }
         
@@ -74,8 +74,8 @@ class TabBarViewController: UITabBarController {
     }
     
     private func configureNavigationBar(_ navigationController: UINavigationController) {
-        guard let modeImage = UIImage(named: "modeImage"),
-              let moreImage = UIImage(named: "moreImage") else {
+        guard let modeImage = UIImage(named: "dark-sleep-cycle"),
+              let moreImage = UIImage(named: "dark-menu-dots-vertical") else {
             return
         }
         
@@ -91,6 +91,6 @@ class TabBarViewController: UITabBarController {
         
         navigationController.topViewController?.navigationItem.leftBarButtonItem =  modeItem
         navigationController.topViewController?.navigationItem.rightBarButtonItem = moreItem
-        navigationController.navigationBar.backgroundColor = UIColor(red: 44/255, green: 44/255, blue: 69/255, alpha: 1.0)
+        navigationController.navigationBar.backgroundColor = UIColor(named: "frameColor")
     }
 }
