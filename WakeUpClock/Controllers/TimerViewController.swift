@@ -11,10 +11,9 @@ import DurationPicker
 
 class TimerViewController: UIViewController {
 
-    let dumi: [String] = ["1", "2", "3", "4", "5"]
-    
     private var timer = Timer()
     var remainTime = UILabel()
+    
     let scrollView = UIScrollView()
     let contentView = UIView()
     let backgroundCircleView: UIView = {
@@ -49,13 +48,12 @@ class TimerViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        navigationController?.navigationBar.tintColor = UIColor.blue
         recentlyUsedTabelView.dataSource = self
         recentlyUsedTabelView.delegate = self
         setupConstraints()
         configureUI()
     }
-    
+// MARK: Set UI
     func setupConstraints() {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
@@ -200,24 +198,24 @@ class TimerViewController: UIViewController {
         recentlyUsedTabelView.register(TimerTableViewCell.self, forCellReuseIdentifier: TimerTableViewCell.identifier)
         
     }
-    
+    // MARK: Action Function
     @objc func didTapStartButton() {
         print(#function)
         let setTime = Int(timerDurationPicker.duration) // 설정 된 시간
         setTimer(with: setTime)
     }
-    // 타이머 시작
+
     func setTimer(with countDownSeconds: Int) {
         print("countDownSeconds: \(countDownSeconds)")
         timerDurationPicker.isHidden = true
         remainTime.isHidden = false
         
-        let startTime = Date() // 현재시간
+        let startTime = Date()
         timer.invalidate() // 기존에 실행된 타이머 중지
         remainTime.text = String(countDownSeconds) // 설정된 시간으로 시작
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { [weak self] timer in
             let elapsedTimeSeconds = Int(Date().timeIntervalSince(startTime)) // 경과된 시간
-            let remainSeconds = Int(countDownSeconds) - elapsedTimeSeconds // 남은 시간
+            let remainSeconds = Int(countDownSeconds) - elapsedTimeSeconds
             guard remainSeconds >= 0 else {
                 timer.invalidate() // 0초 되면 타이머 중지
                 self?.timerDurationPicker.isHidden = false
@@ -233,8 +231,7 @@ class TimerViewController: UIViewController {
 
 }
 
-
-
+// MARK: - TableView Extenseion
 extension TimerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         36
