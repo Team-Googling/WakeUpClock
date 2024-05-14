@@ -16,7 +16,7 @@ class TimerViewController: UIViewController {
     let contentView = UIView()
     let backgroundCircleView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(named: "grassEffectColor")
+        view.backgroundColor = .glassEffect
         
         let shadowLayer = CALayer()
         shadowLayer.frame = CGRect(x: 0, y: 0, width: 330, height: 330)
@@ -155,7 +155,7 @@ class TimerViewController: UIViewController {
         scrollView.backgroundColor = .clear
         contentView.backgroundColor = .clear
         
-        backgroundCircleView.backgroundColor = .white
+        backgroundCircleView.backgroundColor = .glassEffect
 //        backgroundCircleView.alpha = 0.5
         backgroundCircleView.layer.cornerRadius = 165
         backgroundCircleView.clipsToBounds = true
@@ -164,32 +164,32 @@ class TimerViewController: UIViewController {
         
         cancelButton.layer.cornerRadius = 24
         cancelButton.backgroundColor = .clear
-        cancelButton.layer.borderColor = UIColor.gray.cgColor
+        cancelButton.layer.borderColor = UIColor.mainInactiveText.cgColor
         cancelButton.setTitle("Cancle", for: .normal)
-        cancelButton.setTitleColor(.gray, for: .normal)
+        cancelButton.setTitleColor(.mainInactiveText, for: .normal)
         cancelButton.layer.borderWidth = 1
         
         startButton.layer.cornerRadius = 24
         startButton.backgroundColor = .clear
-        startButton.layer.borderColor = UIColor.orange.cgColor
+        startButton.layer.borderColor = UIColor.mainActive.cgColor
         startButton.setTitle("Start", for: .normal)
-        startButton.setTitleColor(.orange, for: .normal)
+        startButton.setTitleColor(.mainActive, for: .normal)
         startButton.layer.borderWidth = 1
         
-        saveTimerView.backgroundColor = .orange
+        saveTimerView.backgroundColor = .mainActive
         saveTimerView.alpha = 0.05
         saveTimerView.layer.cornerRadius = 8
         nameLabel.text = "Name"
-        nameLabel.textColor = .white
-        nameInputTextButton.backgroundColor = .white
+        nameLabel.textColor = UIColor(named: "textColor")
+//        nameInputTextButton.backgroundColor = .white
         
-        saveTimerButton.backgroundColor = .clear
-        saveTimerButton.setTitle("Save", for: .normal)
-        saveTimerButton.setTitleColor(.white, for: .normal)
+//        saveTimerButton.backgroundColor = .clear
+//        saveTimerButton.setTitle("Save", for: .normal)
+//        saveTimerButton.setTitleColor(.white, for: .normal)
         
-        recentlyUsedView.backgroundColor = .red
+        recentlyUsedView.backgroundColor = .clear
         
-        recentlyUsedLabel.textColor = .white
+        recentlyUsedLabel.textColor = UIColor(named: "textColor")
         recentlyUsedLabel.text = "Recently Used"
         recentlyUsedLabel.font = .systemFont(ofSize: 20, weight: .medium)
         
