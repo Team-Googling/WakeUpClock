@@ -14,7 +14,24 @@ class TimerViewController: UIViewController {
     
     let scrollView = UIScrollView()
     let contentView = UIView()
-    let backgroundView = UIView()
+    let backgroundCircleView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(named: "grassEffectColor")
+        
+        let shadowLayer = CALayer()
+        shadowLayer.frame = CGRect(x: 0, y: 0, width: 330, height: 330)
+        shadowLayer.shadowColor = UIColor(named: "frameColor")?.cgColor
+        shadowLayer.shadowOpacity = 0.1
+        shadowLayer.shadowOffset = CGSize(width: 0, height: 0)
+        shadowLayer.shadowRadius = 5
+        
+//        let shadowPath = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: 360, height: 360), cornerRadius: 180)
+//        shadowLayer.shadowPath = shadowPath.cgPath
+        shadowLayer.position = view.center
+        view.layer.insertSublayer(shadowLayer, at: 0)
+        
+        return view
+    }()
     let timerDatePicker = UIDatePicker()
     let startButton = UIButton()
     let cancelButton = UIButton()
@@ -40,7 +57,7 @@ class TimerViewController: UIViewController {
     func setupConstraints() {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
-        contentView.addSubview(backgroundView)
+        contentView.addSubview(backgroundCircleView)
         contentView.addSubview(timerDatePicker)
         contentView.addSubview(cancelButton)
         contentView.addSubview(startButton)
@@ -61,7 +78,7 @@ class TimerViewController: UIViewController {
             $0.top.leading.trailing.bottom.equalToSuperview()
         }
         
-        backgroundView.snp.makeConstraints {
+        backgroundCircleView.snp.makeConstraints {
             $0.top.equalTo(contentView.snp.top).offset(40)
             $0.leading.equalToSuperview().offset(30)
             $0.trailing.equalToSuperview().offset(-30)
@@ -70,20 +87,20 @@ class TimerViewController: UIViewController {
         }
         
         timerDatePicker.snp.makeConstraints {
-            $0.centerX.equalTo(backgroundView.snp.centerX)
-            $0.centerY.equalTo(backgroundView.snp.centerY)
+            $0.centerX.equalTo(backgroundCircleView.snp.centerX)
+            $0.centerY.equalTo(backgroundCircleView.snp.centerY)
 //            $0.edges.equalToSuperview()
         }
         
         cancelButton.snp.makeConstraints {
-            $0.top.equalTo(backgroundView.snp.bottom).offset(40)
+            $0.top.equalTo(backgroundCircleView.snp.bottom).offset(40)
             $0.leading.equalToSuperview().offset(32)
             $0.width.equalTo(120)
             $0.height.equalTo(44)
         }
         
         startButton.snp.makeConstraints {
-            $0.top.equalTo(backgroundView.snp.bottom).offset(40)
+            $0.top.equalTo(backgroundCircleView.snp.bottom).offset(40)
             $0.trailing.equalToSuperview().offset(-32)
             $0.width.equalTo(120)
             $0.height.equalTo(44)
@@ -138,10 +155,10 @@ class TimerViewController: UIViewController {
         scrollView.backgroundColor = .clear
         contentView.backgroundColor = .clear
         
-        backgroundView.backgroundColor = .white
-        backgroundView.alpha = 0.5
-        backgroundView.layer.cornerRadius = 165
-        backgroundView.clipsToBounds = true
+        backgroundCircleView.backgroundColor = .white
+//        backgroundCircleView.alpha = 0.5
+        backgroundCircleView.layer.cornerRadius = 165
+        backgroundCircleView.clipsToBounds = true
         
         timerDatePicker.datePickerMode = .countDownTimer
         
