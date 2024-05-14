@@ -12,6 +12,8 @@ class TimerViewController: UIViewController {
 
     let dumi: [String] = ["1", "2", "3", "4", "5"]
     
+    private var timer = Timer()
+    var remainTime = UILabel()
     let scrollView = UIScrollView()
     let contentView = UIView()
     let backgroundCircleView: UIView = {
@@ -25,8 +27,8 @@ class TimerViewController: UIViewController {
         shadowLayer.shadowOffset = CGSize(width: 0, height: 0)
         shadowLayer.shadowRadius = 5
         
-//        let shadowPath = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: 360, height: 360), cornerRadius: 180)
-//        shadowLayer.shadowPath = shadowPath.cgPath
+        let shadowPath = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: 360, height: 360), cornerRadius: 180)
+        shadowLayer.shadowPath = shadowPath.cgPath
         shadowLayer.position = view.center
         view.layer.insertSublayer(shadowLayer, at: 0)
         
@@ -38,8 +40,7 @@ class TimerViewController: UIViewController {
     
     let saveTimerView = UIView()
     let nameLabel = UILabel()
-    let nameInputTextButton = UIButton()
-    let saveTimerButton = UIButton()
+    let nameInputTextField = UITextField()
     
     let recentlyUsedView = UIView()
     let recentlyUsedLabel = UILabel()
@@ -59,12 +60,12 @@ class TimerViewController: UIViewController {
         scrollView.addSubview(contentView)
         contentView.addSubview(backgroundCircleView)
         contentView.addSubview(timerDatePicker)
+        contentView.addSubview(remainTime)
         contentView.addSubview(cancelButton)
         contentView.addSubview(startButton)
         contentView.addSubview(saveTimerView)
         contentView.addSubview(nameLabel)
-        contentView.addSubview(nameInputTextButton)
-        contentView.addSubview(saveTimerButton)
+        contentView.addSubview(nameInputTextField)
         contentView.addSubview(recentlyUsedView)
         contentView.addSubview(recentlyUsedLabel)
         contentView.addSubview(recentlyUsedLabel)
@@ -82,14 +83,17 @@ class TimerViewController: UIViewController {
             $0.top.equalTo(contentView.snp.top).offset(40)
             $0.leading.equalToSuperview().offset(30)
             $0.trailing.equalToSuperview().offset(-30)
-//            $0.centerX.equalTo(contentView.snp.centerX)
             $0.width.height.equalTo(330)
         }
         
         timerDatePicker.snp.makeConstraints {
             $0.centerX.equalTo(backgroundCircleView.snp.centerX)
             $0.centerY.equalTo(backgroundCircleView.snp.centerY)
-//            $0.edges.equalToSuperview()
+        }
+        
+        remainTime.snp.makeConstraints {
+            $0.centerX.equalTo(backgroundCircleView.snp.centerX)
+            $0.centerY.equalTo(backgroundCircleView.snp.centerY)
         }
         
         cancelButton.snp.makeConstraints {
@@ -118,16 +122,10 @@ class TimerViewController: UIViewController {
             $0.leading.equalTo(saveTimerView.snp.leading).offset(24)
         }
         
-        nameInputTextButton.snp.makeConstraints {
+        nameInputTextField.snp.makeConstraints {
             $0.top.equalTo(nameLabel.snp.bottom).offset(12)
-            $0.leading.equalTo(saveTimerView.snp.leading).offset(28)
-            $0.bottom.equalTo(saveTimerView.snp.bottom).inset(12)
-        }
-        
-        saveTimerButton.snp.makeConstraints {
-            $0.top.equalTo(nameLabel.snp.bottom).offset(12)
-            $0.leading.equalTo(nameInputTextButton.snp.trailing).offset(-5)
-            $0.trailing.equalTo(saveTimerView.snp.trailing).offset(-28)
+            $0.leading.equalTo(saveTimerView.snp.leading).inset(12)
+            $0.trailing.equalTo(saveTimerView.snp.trailing).inset(12)
             $0.bottom.equalTo(saveTimerView.snp.bottom).inset(12)
         }
         
@@ -161,11 +159,15 @@ class TimerViewController: UIViewController {
         backgroundCircleView.clipsToBounds = true
         
         timerDatePicker.datePickerMode = .countDownTimer
+        remainTime.isHidden = true
+        remainTime.font = .systemFont(ofSize: 30, weight: .medium)
+        remainTime.text = "00"
+        remainTime.textColor = .white
         
         cancelButton.layer.cornerRadius = 24
         cancelButton.backgroundColor = .clear
         cancelButton.layer.borderColor = UIColor.mainInactiveText.cgColor
-        cancelButton.setTitle("Cancle", for: .normal)
+        cancelButton.setTitle("Cancel", for: .normal)
         cancelButton.setTitleColor(.mainInactiveText, for: .normal)
         cancelButton.layer.borderWidth = 1
         
@@ -175,20 +177,20 @@ class TimerViewController: UIViewController {
         startButton.setTitle("Start", for: .normal)
         startButton.setTitleColor(.mainActive, for: .normal)
         startButton.layer.borderWidth = 1
+        startButton.addTarget(self, action: #selector(didTapStartButton), for: .touchUpInside)
         
+        // 타이머 이름 입력
         saveTimerView.backgroundColor = .mainActive
         saveTimerView.alpha = 0.05
         saveTimerView.layer.cornerRadius = 8
         nameLabel.text = "Name"
         nameLabel.textColor = UIColor(named: "textColor")
-//        nameInputTextButton.backgroundColor = .white
+        nameInputTextField.backgroundColor = .mainActive
+        nameInputTextField.alpha = 0.1
+        nameInputTextField.layer.cornerRadius = 5
         
-//        saveTimerButton.backgroundColor = .clear
-//        saveTimerButton.setTitle("Save", for: .normal)
-//        saveTimerButton.setTitleColor(.white, for: .normal)
-        
+        // 최근 타이머 목록
         recentlyUsedView.backgroundColor = .clear
-        
         recentlyUsedLabel.textColor = UIColor(named: "textColor")
         recentlyUsedLabel.text = "Recently Used"
         recentlyUsedLabel.font = .systemFont(ofSize: 20, weight: .medium)
@@ -196,11 +198,43 @@ class TimerViewController: UIViewController {
         recentlyUsedTabelView.backgroundColor = .blue
         recentlyUsedTabelView.register(TimerTableViewCell.self, forCellReuseIdentifier: TimerTableViewCell.identifier)
         
-        
     }
     
+    @objc func didTapStartButton() {
+        print(#function)
+        let setTime = Double(timerDatePicker.countDownDuration) // 설정 된 시간
+        setTimer(with: setTime)
+    }
+    // 타이머 시작
+    func setTimer(with countDownSeconds: Double) {
+        print("countDownSeconds: \(countDownSeconds)")
+        timerDatePicker.isHidden = true
+        remainTime.isHidden = false
+        
+        let startTime = Date() // 현재시간
+        timer.invalidate() // 기존에 실행된 타이머 중지
+        
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { [weak self] timer in
+            let elapsedTimeSeconds = Int(Date().timeIntervalSince(startTime)) // 경과된 시간
+            let remainSeconds = Int(countDownSeconds) - elapsedTimeSeconds // 남은 시간
+            guard remainSeconds >= 0 else {
+                timer.invalidate() // 0초 되면 타이머 중지
+                self?.timerDatePicker.isHidden = false
+                self?.remainTime.isHidden = true
+                
+                return
+            }
+            print("remainSeconds: \(remainSeconds)")
+            
+            self?.remainTime.text = "\(remainSeconds)"
+            
+        })
+        
+    }
 
 }
+
+
 
 extension TimerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
