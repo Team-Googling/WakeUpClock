@@ -76,7 +76,7 @@ class StopwatchViewController: UIViewController {
         button.backgroundColor = .clear
         button.layer.cornerRadius = 24
         button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor(named: "mainInactiveTextColor")?.cgColor // AEAEB7
+        button.layer.borderColor = UIColor(named: "mainInactiveTextColor")?.cgColor
         return button
     }()
     
@@ -89,7 +89,7 @@ class StopwatchViewController: UIViewController {
         button.backgroundColor = .clear
         button.layer.cornerRadius = 24
         button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor(named: "mainActiveColor")?.cgColor // F5841A
+        button.layer.borderColor = UIColor(named: "mainActiveColor")?.cgColor
         return button
     }()
     
@@ -196,7 +196,56 @@ class StopwatchViewController: UIViewController {
         containerView.layer.cornerRadius = 8
         return containerView
     }
+    
+    // MARK: - 버튼 이벤트 처리
+    
+    private func setupButtons() {
+        lapButton.addTarget(self, action: #selector(lapButtonPressed), for: .touchUpInside)
+    }
+    
+    @objc private func lapButtonPressed() {
+       
+        // 시간이 멈춰있을 때 -> 버튼 누르면 lap으로 바뀌어야 함
+        if !isPlay {
+            resetMainTimer()
+            changeButton(lapButton, title: "Lap", titleColor: UIColor(named: "mainInactiveTextColor") ?? UIColor(red: 174/255, green: 174/255, blue: 183/255, alpha: 1.0))
+            lapButton.isEnabled = false
+        }
+        
+        // 시간이 가고 있을 때 -> 테이블 뷰 셀의 데이터를 추가
+        else {
+            let timerLabelText = "\(hoursLabel.text ?? "00"):\(minutesLabel.text ?? "00"):\(secondsLabel.text ?? "00")"
+            lapTableViewData.append(timerLabelText)
+        }
+        
+        tableView.reloadData()
+    }
 }
+// MARK: - Action Functions
+extension StopwatchViewController {
+    func changeButton(_ button: UIButton, title: String, titleColor: UIColor) {
+        button.setTitle(title, for: UIControl.State())
+        button.setTitleColor(titleColor, for: .normal)
+    }
+    
+    func resetTimer(_ stopwatch: Stopwatch, labels: [UILabel]) {
+        stopwatch.timer.invalidate()
+        stopwatch.counter = 0.0
+        for label in labels {
+            label.text = "00"
+        }
+    }
+    
+    func resetMainTimer() {
+        resetTimer(mainStopwatch, labels: [hoursLabel, minutesLabel, secondsLabel])
+        lapTableViewData.removeAll()
+        tableView.reloadData()
+    }
+}
+
+
+
+// MARK: - TableView Extenseion
 extension StopwatchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 3
@@ -210,6 +259,6 @@ extension StopwatchViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
 }
-#Preview{
-    StopwatchViewController()
-}
+//#Preview{
+//    StopwatchViewController()
+//}
