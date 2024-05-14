@@ -74,7 +74,7 @@ class StopwatchViewController: UIViewController {
         button.layer.borderColor = UIColor(red: 174/255, green: 174/255, blue: 183/255, alpha: 1).cgColor // AEAEB7
         return button
     }()
-
+    
     
     private let startButton: UIButton = {
         let button = UIButton()
@@ -88,10 +88,22 @@ class StopwatchViewController: UIViewController {
         return button
     }()
     
+    private let tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        return tableView
+    }()
+    
     // MARK: - viewDidLoad()
     override func viewDidLoad() {
         super.viewDidLoad()
         setupConstraints()
+    }
+    
+    private func configureUI() {
+//        tableView.delegate = self
+//        tableView.dataSource = self
+        // tableView.register(StopwatchCell.self, forCellReuseIdentifier: BookTableViewCell.identifier)
     }
     
     // MARK: - 레이아웃 설정
@@ -172,7 +184,19 @@ class StopwatchViewController: UIViewController {
         return containerView
     }
 }
+//extension StopwatchViewController: UITableViewDataSource, UITableViewDelegate {
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        <#code#>
+//    }
+//    
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        <#code#>
+//    }
+//    
+//    
+//}
 
-#Preview {
-    StopwatchViewController()
-}
+
+//#Preview {
+//    StopwatchViewController()
+//}

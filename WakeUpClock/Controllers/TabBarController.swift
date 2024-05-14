@@ -85,7 +85,7 @@ class TabBarViewController: UITabBarController {
         let modeItem = UIBarButtonItem(customView: modeImageView)
         
         // More 버튼 설정
-        let resizedMoreImage = moreImage.resized(to: CGSize(width: 26, height: 26))
+        let resizedMoreImage = moreImage.resized(to: CGSize(width: 20, height: 20))
         let moreImageView = UIImageView(image: resizedMoreImage)
         let moreItem = UIBarButtonItem(customView: moreImageView)
         
