@@ -205,3 +205,8 @@ extension TimerViewController: UITableViewDataSource {
     
     
 }
+
+//#Preview {
+//    TimerViewController()  // 해당 컨트롤러
+//  // 화면 업데이트: command+option+p
+//}
