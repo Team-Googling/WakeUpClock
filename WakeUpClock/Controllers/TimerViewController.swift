@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import DurationPicker
 
 class TimerViewController: UIViewController {
 
@@ -34,7 +35,7 @@ class TimerViewController: UIViewController {
         
         return view
     }()
-    let timerDatePicker = UIDatePicker()
+    let timerDurationPicker = DurationPicker()
     let startButton = UIButton()
     let cancelButton = UIButton()
     
@@ -59,7 +60,7 @@ class TimerViewController: UIViewController {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         contentView.addSubview(backgroundCircleView)
-        contentView.addSubview(timerDatePicker)
+        contentView.addSubview(timerDurationPicker)
         contentView.addSubview(remainTime)
         contentView.addSubview(cancelButton)
         contentView.addSubview(startButton)
@@ -86,7 +87,7 @@ class TimerViewController: UIViewController {
             $0.width.height.equalTo(330)
         }
         
-        timerDatePicker.snp.makeConstraints {
+        timerDurationPicker.snp.makeConstraints {
             $0.centerX.equalTo(backgroundCircleView.snp.centerX)
             $0.centerY.equalTo(backgroundCircleView.snp.centerY)
         }
@@ -158,7 +159,7 @@ class TimerViewController: UIViewController {
         backgroundCircleView.layer.cornerRadius = 165
         backgroundCircleView.clipsToBounds = true
         
-        timerDatePicker.datePickerMode = .countDownTimer
+        timerDurationPicker.pickerMode = .hourMinuteSecond
         remainTime.isHidden = true
         remainTime.font = .systemFont(ofSize: 30, weight: .medium)
         remainTime.text = "00"
@@ -202,34 +203,32 @@ class TimerViewController: UIViewController {
     
     @objc func didTapStartButton() {
         print(#function)
-        let setTime = Double(timerDatePicker.countDownDuration) // 설정 된 시간
+        let setTime = Int(timerDurationPicker.duration) // 설정 된 시간
         setTimer(with: setTime)
     }
     // 타이머 시작
-    func setTimer(with countDownSeconds: Double) {
+    func setTimer(with countDownSeconds: Int) {
         print("countDownSeconds: \(countDownSeconds)")
-        timerDatePicker.isHidden = true
+        timerDurationPicker.isHidden = true
         remainTime.isHidden = false
         
         let startTime = Date() // 현재시간
         timer.invalidate() // 기존에 실행된 타이머 중지
-        
+        remainTime.text = String(countDownSeconds) // 설정된 시간으로 시작
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { [weak self] timer in
             let elapsedTimeSeconds = Int(Date().timeIntervalSince(startTime)) // 경과된 시간
             let remainSeconds = Int(countDownSeconds) - elapsedTimeSeconds // 남은 시간
             guard remainSeconds >= 0 else {
                 timer.invalidate() // 0초 되면 타이머 중지
-                self?.timerDatePicker.isHidden = false
+                self?.timerDurationPicker.isHidden = false
                 self?.remainTime.isHidden = true
                 
                 return
             }
             print("remainSeconds: \(remainSeconds)")
-            
             self?.remainTime.text = "\(remainSeconds)"
             
         })
-        
     }
 
 }
