@@ -22,6 +22,8 @@
 		F39FCE152BF1C5ED00F5431C /* StopwatchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39FCE142BF1C5ED00F5431C /* StopwatchViewController.swift */; };
 		F39FCE182BF1C69600F5431C /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = F39FCE172BF1C69600F5431C /* SnapKit */; };
 		F39FCE1A2BF1D9F900F5431C /* UIImage+.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39FCE192BF1D9F900F5431C /* UIImage+.swift */; };
+		F39FCE212BF330D300F5431C /* Stopwatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39FCE202BF330D300F5431C /* Stopwatch.swift */; };
+		F39FCE232BF332B500F5431C /* StopwatchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39FCE222BF332B500F5431C /* StopwatchCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +43,8 @@
 		F39FCE122BF1C5D800F5431C /* TimerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerViewController.swift; sourceTree = "<group>"; };
 		F39FCE142BF1C5ED00F5431C /* StopwatchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopwatchViewController.swift; sourceTree = "<group>"; };
 		F39FCE192BF1D9F900F5431C /* UIImage+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+.swift"; sourceTree = "<group>"; };
+		F39FCE202BF330D300F5431C /* Stopwatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stopwatch.swift; sourceTree = "<group>"; };
+		F39FCE222BF332B500F5431C /* StopwatchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopwatchCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +83,7 @@
 				F39FCE1B2BF1DA3000F5431C /* Extension */,
 				F39FCE0A2BF1C4D200F5431C /* Models */,
 				F39FCE0B2BF1C50D00F5431C /* Controllers */,
+				F39FCE242BF332BF00F5431C /* Cells */,
 				F39FCDF82BF1C48B00F5431C /* Main.storyboard */,
 				F39FCDFB2BF1C48D00F5431C /* Assets.xcassets */,
 				F39FCDFD2BF1C48D00F5431C /* LaunchScreen.storyboard */,
@@ -91,6 +96,7 @@
 			isa = PBXGroup;
 			children = (
 				F39FCE082BF1C4CD00F5431C /* AlarmModel.swift */,
+				F39FCE202BF330D300F5431C /* Stopwatch.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -115,6 +121,14 @@
 				F39FCE192BF1D9F900F5431C /* UIImage+.swift */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		F39FCE242BF332BF00F5431C /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				F39FCE222BF332B500F5431C /* StopwatchCell.swift */,
+			);
+			path = Cells;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -199,12 +213,14 @@
 				F39FCE152BF1C5ED00F5431C /* StopwatchViewController.swift in Sources */,
 				3C5117522BF2447700FB47B0 /* TimerTableViewCell.swift in Sources */,
 				F39FCE0F2BF1C5BB00F5431C /* AlarmViewController.swift in Sources */,
+				F39FCE212BF330D300F5431C /* Stopwatch.swift in Sources */,
 				F39FCE072BF1C4A800F5431C /* TabBarController.swift in Sources */,
 				F39FCE0D2BF1C5AE00F5431C /* ClockViewController.swift in Sources */,
 				F39FCE112BF1C5CE00F5431C /* NewAlarmViewController.swift in Sources */,
 				F39FCE1A2BF1D9F900F5431C /* UIImage+.swift in Sources */,
 				F39FCDF32BF1C48B00F5431C /* AppDelegate.swift in Sources */,
 				F39FCDF52BF1C48B00F5431C /* SceneDelegate.swift in Sources */,
+				F39FCE232BF332B500F5431C /* StopwatchCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
