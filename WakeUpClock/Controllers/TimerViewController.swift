@@ -10,6 +10,8 @@ import SnapKit
 
 class TimerViewController: UIViewController {
 
+    let dumi: [String] = ["1", "2", "3", "4", "5"]
+    
     let scrollView = UIScrollView()
     let contentView = UIView()
     let backgroundView = UIView()
@@ -191,11 +193,13 @@ extension TimerViewController: UITableViewDelegate {
 
 extension TimerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        5
+        dumi.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = recentlyUsedTabelView.dequeueReusableCell(withIdentifier: TimerTableViewCell.identifier, for: indexPath) as? TimerTableViewCell else { return TimerTableViewCell() }
+        cell.timerLabel.text = "00:10:00"
+        cell.nameLabel.text = "10분만 걷자"
         return cell
     }
     
