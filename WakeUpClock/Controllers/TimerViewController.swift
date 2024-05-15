@@ -9,6 +9,13 @@ import UIKit
 import SnapKit
 import DurationPicker
 
+enum TimerState {
+    case pause
+    case resumed
+    case canceled
+    case finished
+}
+
 class TimerViewController: UIViewController {
 
     private var timer = Timer()
@@ -159,9 +166,9 @@ class TimerViewController: UIViewController {
         
         timerDurationPicker.pickerMode = .hourMinuteSecond
         remainTime.isHidden = true
-        remainTime.font = .systemFont(ofSize: 30, weight: .medium)
+        remainTime.font = .systemFont(ofSize: 70, weight: .medium)
         remainTime.text = "00"
-        remainTime.textColor = .white
+        remainTime.textColor = .text
         
         cancelButton.layer.cornerRadius = 24
         cancelButton.backgroundColor = .clear
@@ -212,7 +219,7 @@ class TimerViewController: UIViewController {
         
         let startTime = Date()
         timer.invalidate() // 기존에 실행된 타이머 중지
-        remainTime.text = String(countDownSeconds) // 설정된 시간으로 시작
+        remainTime.text = self.convertSecondsToTime(timeInSeconds: countDownSeconds)
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { [weak self] timer in
             let elapsedTimeSeconds = Int(Date().timeIntervalSince(startTime)) // 경과된 시간
             let remainSeconds = Int(countDownSeconds) - elapsedTimeSeconds
@@ -223,10 +230,18 @@ class TimerViewController: UIViewController {
                 
                 return
             }
-            print("remainSeconds: \(remainSeconds)")
-            self?.remainTime.text = "\(remainSeconds)"
+//            print("remainSeconds: \(remainSeconds)")
+            self?.remainTime.text = self?.convertSecondsToTime(timeInSeconds: remainSeconds)
             
         })
+    }
+    
+    // 시:분:초 형식으로 변환
+    func convertSecondsToTime(timeInSeconds: Int) -> String {
+        let hours = timeInSeconds / 3600
+        let minutes = (timeInSeconds - hours * 3600) / 60
+        let seconds = timeInSeconds %  60
+        return String(format: "%02i:%02i:%02i", hours, minutes, seconds)
     }
 
 }
@@ -240,7 +255,7 @@ extension TimerViewController: UITableViewDelegate {
 
 extension TimerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        dumi.count
+        5
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -253,7 +268,7 @@ extension TimerViewController: UITableViewDataSource {
     
 }
 
-//#Preview {
-//    TimerViewController()  // 해당 컨트롤러
-//  // 화면 업데이트: command+option+p
-//}
+#Preview {
+    TimerViewController()  // 해당 컨트롤러
+  // 화면 업데이트: command+option+p
+}
