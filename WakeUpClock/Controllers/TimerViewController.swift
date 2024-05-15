@@ -10,6 +10,7 @@ import SnapKit
 import DurationPicker
 
 enum TimerState {
+    case start
     case pause
     case resumed
     case canceled
@@ -18,12 +19,15 @@ enum TimerState {
 
 class TimerViewController: UIViewController {
 
+    // MARK: - Properties
     private var timer = Timer()
-    var remainTime = UILabel()
+    private var remainTime = UILabel()
+    private var isTimerRunning: Bool = false
+    private var timerState: TimerState = .finished
     
-    let scrollView = UIScrollView()
-    let contentView = UIView()
-    let backgroundCircleView: UIView = {
+    private let scrollView = UIScrollView()
+    private let contentView = UIView()
+    private let backgroundCircleView: UIView = {
         let view = UIView()
         view.backgroundColor = .glassEffect
         
@@ -41,26 +45,27 @@ class TimerViewController: UIViewController {
         
         return view
     }()
-    let timerDurationPicker = DurationPicker()
-    let startButton = UIButton()
-    let cancelButton = UIButton()
+    private let timerDurationPicker = DurationPicker()
+    private let startButton = UIButton()
+    private let cancelButton = UIButton()
+    private let saveTimerView = UIView()
+    private let nameLabel = UILabel()
+    private let nameInputTextField = UITextField()
+    private let recentlyUsedView = UIView()
+    private let recentlyUsedLabel = UILabel()
+    private let recentlyUsedTabelView = UITableView()
     
-    let saveTimerView = UIView()
-    let nameLabel = UILabel()
-    let nameInputTextField = UITextField()
-    
-    let recentlyUsedView = UIView()
-    let recentlyUsedLabel = UILabel()
-    let recentlyUsedTabelView = UITableView()
-    
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         recentlyUsedTabelView.dataSource = self
         recentlyUsedTabelView.delegate = self
         setupConstraints()
         configureUI()
+        setupButtons()
     }
-// MARK: Set UI
+    
+    // MARK: - Setup
     func setupConstraints() {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
@@ -176,6 +181,8 @@ class TimerViewController: UIViewController {
         cancelButton.setTitle("Cancel", for: .normal)
         cancelButton.setTitleColor(.mainInactiveText, for: .normal)
         cancelButton.layer.borderWidth = 1
+        cancelButton.isEnabled = false
+        cancelButton.alpha = 0.2
         
         startButton.layer.cornerRadius = 24
         startButton.backgroundColor = .clear
@@ -183,7 +190,7 @@ class TimerViewController: UIViewController {
         startButton.setTitle("Start", for: .normal)
         startButton.setTitleColor(.mainActive, for: .normal)
         startButton.layer.borderWidth = 1
-        startButton.addTarget(self, action: #selector(didTapStartButton), for: .touchUpInside)
+        
         
         // 타이머 이름 입력
         saveTimerView.backgroundColor = .mainActive
@@ -205,17 +212,32 @@ class TimerViewController: UIViewController {
         recentlyUsedTabelView.register(TimerTableViewCell.self, forCellReuseIdentifier: TimerTableViewCell.identifier)
         
     }
-    // MARK: Action Function
+    
+    // MARK: 버튼 이벤트 처리
+    private func setupButtons() {
+        startButton.addTarget(self, action: #selector(didTapStartButton), for: .touchUpInside)
+        cancelButton.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
+    }
+    
     @objc func didTapStartButton() {
         print(#function)
         let setTime = Int(timerDurationPicker.duration) // 설정 된 시간
         setTimer(with: setTime)
     }
-
+    
+    @objc func didTapCancelButton() {
+        print(#function)
+        timer.invalidate()
+        timerState = .canceled
+        updateTimerState()
+        
+    }
+    
+    // MARK: - Action Functions
     func setTimer(with countDownSeconds: Int) {
         print("countDownSeconds: \(countDownSeconds)")
-        timerDurationPicker.isHidden = true
-        remainTime.isHidden = false
+        timerState = .start
+        updateTimerState()
         
         let startTime = Date()
         timer.invalidate() // 기존에 실행된 타이머 중지
@@ -225,11 +247,13 @@ class TimerViewController: UIViewController {
             let remainSeconds = Int(countDownSeconds) - elapsedTimeSeconds
             guard remainSeconds >= 0 else {
                 timer.invalidate() // 0초 되면 타이머 중지
-                self?.timerDurationPicker.isHidden = false
-                self?.remainTime.isHidden = true
+                self?.timerState = .finished
+                self?.updateTimerState()
                 
                 return
             }
+            
+
 //            print("remainSeconds: \(remainSeconds)")
             self?.remainTime.text = self?.convertSecondsToTime(timeInSeconds: remainSeconds)
             
@@ -242,6 +266,50 @@ class TimerViewController: UIViewController {
         let minutes = (timeInSeconds - hours * 3600) / 60
         let seconds = timeInSeconds %  60
         return String(format: "%02i:%02i:%02i", hours, minutes, seconds)
+    }
+    
+    private func updateTimerState() {
+        switch timerState {
+        case .start:
+            timerDurationPicker.isHidden = true
+            remainTime.isHidden = false
+            cancelButton.isEnabled = true
+            cancelButton.alpha = 1
+            startButton.layer.borderColor = UIColor.green.cgColor
+            startButton.setTitle("Pause", for: .normal)
+            startButton.setTitleColor(.green, for: .normal)
+        case .pause:
+            // 타이머 일시정지 상태에 대한 UI 업데이트
+            cancelButton.alpha = 1
+            startButton.layer.borderColor = UIColor.mainActive.cgColor
+            startButton.setTitle("Resumed", for: .normal)
+            startButton.setTitleColor(.mainActive, for: .normal)
+            
+        case .resumed:
+            // 타이머 재개 상태에 대한 UI 업데이트
+            startButton.layer.borderColor = UIColor.green.cgColor
+            startButton.setTitle("Pause", for: .normal)
+            startButton.setTitleColor(.green, for: .normal)
+        case .canceled:
+            // 타이머 취소 상태에 대한 UI 업데이트
+            timerDurationPicker.isHidden = false
+            remainTime.isHidden = true
+            cancelButton.isEnabled = true
+            cancelButton.alpha = 0.2
+            startButton.layer.borderColor = UIColor.mainActive.cgColor
+            startButton.setTitle("Start", for: .normal)
+            startButton.setTitleColor(.mainActive, for: .normal)
+            
+        case .finished:
+            // 타이머 완료 상태에 대한 UI 업데이트
+            timerDurationPicker.isHidden = false
+            remainTime.isHidden = true
+            cancelButton.isEnabled = false
+            cancelButton.alpha = 0.2
+            startButton.layer.borderColor = UIColor.mainActive.cgColor
+            startButton.setTitle("Start", for: .normal)
+            startButton.setTitleColor(.mainActive, for: .normal)
+        }
     }
 
 }
@@ -268,7 +336,7 @@ extension TimerViewController: UITableViewDataSource {
     
 }
 
-#Preview {
-    TimerViewController()  // 해당 컨트롤러
-  // 화면 업데이트: command+option+p
-}
+//#Preview {
+//    TimerViewController()  // 해당 컨트롤러
+//  // 화면 업데이트: command+option+p
+//}
