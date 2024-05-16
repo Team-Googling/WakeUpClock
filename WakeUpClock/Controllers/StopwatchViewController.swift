@@ -12,9 +12,10 @@ class StopwatchViewController: UIViewController {
     
     // MARK: - 프로퍼티
     private let mainStopwatch: Stopwatch = Stopwatch()
-    private let lapStopwatch: Stopwatch = Stopwatch()
+    private let lapStopwatch: Stopwatch = Stopwatch() // 랩타임 계산
     private var isPlay: Bool = false
     private var lapTableViewData: [String] = []
+    private var diffTableViewData: [String] = [] // 앞 기록과의 차이
     
     // MARK: - 컴포넌트
     private let stackView: UIStackView = {
@@ -70,7 +71,7 @@ class StopwatchViewController: UIViewController {
         return label
     }()
     
-    private let lapButton: UIButton = {
+    private let lapResetButton: UIButton = {
         let button = UIButton()
         button.setTitle("Lap", for: .normal)
         button.setTitleColor(UIColor.gray, for: .normal)
@@ -82,7 +83,7 @@ class StopwatchViewController: UIViewController {
     }()
     
     
-    private let startButton: UIButton = {
+    private let startPauseButton: UIButton = {
         let button = UIButton()
         button.setTitle("Start", for: .normal)
         button.setTitleColor(UIColor(named: "mainActiveColor"), for: .normal)
@@ -108,7 +109,7 @@ class StopwatchViewController: UIViewController {
     }
     
     private func configureUI() {
-        lapButton.isEnabled = false
+        lapResetButton.isEnabled = false
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(StopwatchCell.self, forCellReuseIdentifier: StopwatchCell.identifier)
@@ -118,7 +119,7 @@ class StopwatchViewController: UIViewController {
     // MARK: - 레이아웃 설정
     private func setupConstraints() {
         
-        [stackView, lapButton, startButton, tableView].forEach {
+        [stackView, lapResetButton, startPauseButton, tableView].forEach {
             view.addSubview($0)
         }
         
@@ -170,22 +171,22 @@ class StopwatchViewController: UIViewController {
             $0.centerY.equalToSuperview()
         }
         
-        lapButton.snp.makeConstraints {
+        lapResetButton.snp.makeConstraints {
             $0.width.equalTo(120)
             $0.height.equalTo(46)
             $0.top.equalTo(stackView.snp.bottom).offset(66)
             $0.leading.equalToSuperview().inset(32)
         }
         
-        startButton.snp.makeConstraints {
+        startPauseButton.snp.makeConstraints {
             $0.width.equalTo(120)
             $0.height.equalTo(46)
-            $0.centerY.equalTo(lapButton.snp.centerY)
+            $0.centerY.equalTo(lapResetButton.snp.centerY)
             $0.trailing.equalToSuperview().inset(32)
         }
         
         tableView.snp.makeConstraints {
-            $0.top.equalTo(startButton.snp.bottom).offset(40)
+            $0.top.equalTo(startPauseButton.snp.bottom).offset(40)
             $0.trailing.leading.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
@@ -200,20 +201,21 @@ class StopwatchViewController: UIViewController {
     
     // MARK: - 버튼 이벤트 처리
     private func setupButtons() {
-        lapButton.addTarget(self, action: #selector(lapButtonPressed), for: .touchUpInside)
-        startButton.addTarget(self, action: #selector(startButtonPressed), for: .touchUpInside)
+        lapResetButton.addTarget(self, action: #selector(lapResetButtonPressed), for: .touchUpInside)
+        startPauseButton.addTarget(self, action: #selector(startPauseButtonPressed), for: .touchUpInside)
     }
     
-    @objc private func lapButtonPressed() {
+    @objc private func lapResetButtonPressed() {
         
         // 시간이 멈춰있을 때 -> 버튼 누르면 reset 되어야 함
         if !isPlay {
             resetMainTimer()
-            lapButton.isEnabled = false
-            changeButton(lapButton, title: "Lap", titleColor: UIColor.gray)
+            lapResetButton.isEnabled = false
+            changeButton(lapResetButton, title: "Lap", titleColor: UIColor.gray)
         }
         
         // 시간이 가고 있을 때 -> 테이블 뷰 셀의 데이터를 추가
+        // lapStopwatch는 Lap이라는 버튼을 눌렀을 때 다시 reset이 되어야 함
         else {
             let timerLabelText = "\(minutesLabel.text ?? "00"):\(secondsLabel.text ?? "00"):\(milliSecondsLabel.text ?? "00")"
             lapTableViewData.append(timerLabelText)
@@ -222,10 +224,10 @@ class StopwatchViewController: UIViewController {
         tableView.reloadData()
     }
     
-    @objc private func startButtonPressed() {
-        lapButton.isEnabled = true
+    @objc private func startPauseButtonPressed() {
+        lapResetButton.isEnabled = true
         
-        changeButton(lapButton, title: "Lap", titleColor: UIColor.mainText)
+        changeButton(lapResetButton, title: "Lap", titleColor: UIColor.mainText)
         
         // 시간이 멈춰있을 때 -> 버튼 누르면 시간이 흘러야 함
         if !isPlay {
@@ -233,7 +235,7 @@ class StopwatchViewController: UIViewController {
             mainStopwatch.timer = Timer.scheduledTimer(timeInterval: 0.01, target: weakSelf, selector: Selector.updateMainTimer, userInfo: nil, repeats: true)
             
             isPlay = true
-            changeButton(startButton, title: "Stop", titleColor: UIColor.red)
+            changeButton(startPauseButton, title: "Stop", titleColor: UIColor.red)
         }
         
         // 시간이 흐를 때 -> 버튼 누르면 멈춰야 함
@@ -242,8 +244,8 @@ class StopwatchViewController: UIViewController {
             lapStopwatch.timer.invalidate()
             
             isPlay = false
-            changeButton(startButton, title: "Start", titleColor: UIColor.mainActive)
-            changeButton(lapButton, title: "Reset", titleColor: UIColor.mainText)
+            changeButton(startPauseButton, title: "Start", titleColor: UIColor.mainActive)
+            changeButton(lapResetButton, title: "Reset", titleColor: UIColor.mainText)
         }
     }
 }
@@ -271,6 +273,7 @@ extension StopwatchViewController {
         tableView.reloadData()
     }
     
+    
     @objc func updateMainTimer() {
         updateTimer(mainStopwatch, labels: [minutesLabel, secondsLabel, milliSecondsLabel])
     }
@@ -295,17 +298,22 @@ fileprivate extension Selector {
 // MARK: - TableView Extenseion
 extension StopwatchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return lapTableViewData.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: StopwatchCell.identifier, for: indexPath) as? StopwatchCell else { return UITableViewCell() }
-        cell.lapLabel.text = "lap"
-        cell.recordLabel.text = "record"
+        
+        // 최신 랩타임이 맨 위에 표시되도록 랩 번호 계산
+        let lapCount = lapTableViewData.count - indexPath.row
+        
+        cell.lapLabel.text = "Lap \(lapCount)"
+
+        // 실제 기록
+        cell.recordLabel.text = "\(lapTableViewData[lapCount-1])"
+        // 앞 기록과의 차이
         cell.diffLabel.text = "diff"
+        
         return cell
     }
 }
-//#Preview{
-//    StopwatchViewController()
-//}
