@@ -209,9 +209,8 @@ class StopwatchViewController: UIViewController {
         // 시간이 멈춰있을 때 -> 버튼 누르면 reset 되어야 함
         if !isPlay {
             resetMainTimer()
-            changeButton(lapButton, title: "Lap", titleColor: UIColor.gray)
-            lapButton.layer.borderColor = UIColor.gray.cgColor
             lapButton.isEnabled = false
+            changeButton(lapButton, title: "Lap", titleColor: UIColor.gray)
         }
         
         // 시간이 가고 있을 때 -> 테이블 뷰 셀의 데이터를 추가
@@ -226,9 +225,7 @@ class StopwatchViewController: UIViewController {
     @objc private func startButtonPressed() {
         lapButton.isEnabled = true
         
-        lapButton.setTitle("Lap", for: .normal)
-        lapButton.setTitleColor(UIColor(named: "mainTextColor"), for: .normal)
-        lapButton.layer.borderColor = UIColor(named: "mainTextColor")?.cgColor
+        changeButton(lapButton, title: "Lap", titleColor: UIColor.mainText)
         
         // 시간이 멈춰있을 때 -> 버튼 누르면 시간이 흘러야 함
         if !isPlay {
@@ -237,7 +234,6 @@ class StopwatchViewController: UIViewController {
             
             isPlay = true
             changeButton(startButton, title: "Stop", titleColor: UIColor.red)
-            startButton.layer.borderColor = UIColor.red.cgColor
         }
         
         // 시간이 흐를 때 -> 버튼 누르면 멈춰야 함
@@ -246,28 +242,22 @@ class StopwatchViewController: UIViewController {
             lapStopwatch.timer.invalidate()
             
             isPlay = false
-            
-            startButton.setTitle("Start", for: .normal)
-            startButton.setTitleColor(UIColor(named: "mainActiveColor"), for: .normal)
-            startButton.layer.borderColor = UIColor(named: "mainActiveColor")?.cgColor
- 
-            lapButton.setTitle("Reset", for: .normal)
-            lapButton.setTitleColor(UIColor(named: "mainTextColor"), for: .normal)
-            lapButton.layer.borderColor = UIColor(named: "mainTextColor")?.cgColor
+            changeButton(startButton, title: "Start", titleColor: UIColor.mainActive)
+            changeButton(lapButton, title: "Reset", titleColor: UIColor.mainText)
         }
-        
     }
 }
 
 // MARK: - Action Functions
 extension StopwatchViewController {
     
-    func changeButton(_ button: UIButton, title: String, titleColor: UIColor) {
+    private func changeButton(_ button: UIButton, title: String, titleColor: UIColor) {
         button.setTitle(title, for: UIControl.State())
         button.setTitleColor(titleColor, for: .normal)
-    } // --> 수정해야함!
+        button.layer.borderColor = titleColor.cgColor
+    }
     
-    func resetTimer(_ stopwatch: Stopwatch, labels: [UILabel]) {
+    private func resetTimer(_ stopwatch: Stopwatch, labels: [UILabel]) {
         stopwatch.timer.invalidate()
         stopwatch.counter = 0.0
         for label in labels {
@@ -275,7 +265,7 @@ extension StopwatchViewController {
         }
     }
     
-    func resetMainTimer() {
+    private func resetMainTimer() {
         resetTimer(mainStopwatch, labels: [minutesLabel, secondsLabel, milliSecondsLabel])
         lapTableViewData.removeAll()
         tableView.reloadData()
@@ -285,7 +275,7 @@ extension StopwatchViewController {
         updateTimer(mainStopwatch, labels: [minutesLabel, secondsLabel, milliSecondsLabel])
     }
     
-    func updateTimer(_ stopwatch: Stopwatch, labels: [UILabel]) {
+    private func updateTimer(_ stopwatch: Stopwatch, labels: [UILabel]) {
         stopwatch.counter += 0.01
         
         let minutes = Int(stopwatch.counter / 60)
