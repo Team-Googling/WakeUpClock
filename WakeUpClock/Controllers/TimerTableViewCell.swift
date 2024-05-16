@@ -22,20 +22,20 @@ class TimerTableViewCell: UITableViewCell {
         contentView.addSubview(nameLabel)
         
         timerLabel.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(24)
+            $0.leading.equalTo(contentView.snp.leading).offset(24)
             $0.top.bottom.equalToSuperview()
         }
         
         nameLabel.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-24)
+            $0.trailing.equalTo(contentView.snp.trailing).offset(-24)
             $0.centerY.equalTo(timerLabel.snp.centerY)
-            $0.width.equalTo(147)
+//            $0.width.equalTo(147)
         }
         
-        timerLabel.textColor = .white
+        timerLabel.textColor = .text
         timerLabel.text = "00:00:00"
         timerLabel.font = .systemFont(ofSize: 18, weight: .regular)
-        nameLabel.textColor = .white
+        nameLabel.textColor = .text
         nameLabel.text = "일어나시계"
         nameLabel.font = .systemFont(ofSize: 18, weight: .regular)
         

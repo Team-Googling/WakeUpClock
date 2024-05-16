@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		3C5117522BF2447700FB47B0 /* TimerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C5117512BF2447700FB47B0 /* TimerTableViewCell.swift */; };
+		3C5117582BF3A15500FB47B0 /* DurationPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 3C5117572BF3A15500FB47B0 /* DurationPicker */; };
+		9CE566762BF6071A00E5568A /* WakeUpClock.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9CE566742BF6071A00E5568A /* WakeUpClock.xcdatamodeld */; };
 		F39FCDF32BF1C48B00F5431C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39FCDF22BF1C48B00F5431C /* AppDelegate.swift */; };
 		F39FCDF52BF1C48B00F5431C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39FCDF42BF1C48B00F5431C /* SceneDelegate.swift */; };
 		F39FCDFA2BF1C48B00F5431C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F39FCDF82BF1C48B00F5431C /* Main.storyboard */; };
@@ -20,14 +22,15 @@
 		F39FCE112BF1C5CE00F5431C /* NewAlarmViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39FCE102BF1C5CE00F5431C /* NewAlarmViewController.swift */; };
 		F39FCE132BF1C5D800F5431C /* TimerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39FCE122BF1C5D800F5431C /* TimerViewController.swift */; };
 		F39FCE152BF1C5ED00F5431C /* StopwatchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39FCE142BF1C5ED00F5431C /* StopwatchViewController.swift */; };
-		F39FCE182BF1C69600F5431C /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = F39FCE172BF1C69600F5431C /* SnapKit */; };
 		F39FCE1A2BF1D9F900F5431C /* UIImage+.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39FCE192BF1D9F900F5431C /* UIImage+.swift */; };
 		F39FCE212BF330D300F5431C /* Stopwatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39FCE202BF330D300F5431C /* Stopwatch.swift */; };
 		F39FCE232BF332B500F5431C /* StopwatchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39FCE222BF332B500F5431C /* StopwatchCell.swift */; };
+		F39FCE272BF38F4B00F5431C /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = F39FCE262BF38F4B00F5431C /* SnapKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		3C5117512BF2447700FB47B0 /* TimerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerTableViewCell.swift; sourceTree = "<group>"; };
+		9CE566752BF6071A00E5568A /* WakeUpClock.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = WakeUpClock.xcdatamodel; sourceTree = "<group>"; };
 		F39FCDEF2BF1C48B00F5431C /* WakeUpClock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WakeUpClock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F39FCDF22BF1C48B00F5431C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F39FCDF42BF1C48B00F5431C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -52,6 +55,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C5117582BF3A15500FB47B0 /* DurationPicker in Frameworks */,
 				F39FCE182BF1C69600F5431C /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -84,6 +88,7 @@
 				F39FCE0A2BF1C4D200F5431C /* Models */,
 				F39FCE0B2BF1C50D00F5431C /* Controllers */,
 				F39FCE242BF332BF00F5431C /* Cells */,
+				9CE566742BF6071A00E5568A /* WakeUpClock.xcdatamodeld */,
 				F39FCDF82BF1C48B00F5431C /* Main.storyboard */,
 				F39FCDFB2BF1C48D00F5431C /* Assets.xcassets */,
 				F39FCDFD2BF1C48D00F5431C /* LaunchScreen.storyboard */,
@@ -149,6 +154,7 @@
 			name = WakeUpClock;
 			packageProductDependencies = (
 				F39FCE172BF1C69600F5431C /* SnapKit */,
+				3C5117572BF3A15500FB47B0 /* DurationPicker */,
 			);
 			productName = WakeUpClock;
 			productReference = F39FCDEF2BF1C48B00F5431C /* WakeUpClock.app */;
@@ -180,6 +186,7 @@
 			mainGroup = F39FCDE62BF1C48B00F5431C;
 			packageReferences = (
 				F39FCE162BF1C69600F5431C /* XCRemoteSwiftPackageReference "SnapKit" */,
+				3C5117562BF3A15500FB47B0 /* XCRemoteSwiftPackageReference "DurationPicker" */,
 			);
 			productRefGroup = F39FCDF02BF1C48B00F5431C /* Products */;
 			projectDirPath = "";
@@ -209,6 +216,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F39FCE092BF1C4CD00F5431C /* AlarmModel.swift in Sources */,
+				9CE566762BF6071A00E5568A /* WakeUpClock.xcdatamodeld in Sources */,
 				F39FCE132BF1C5D800F5431C /* TimerViewController.swift in Sources */,
 				F39FCE152BF1C5ED00F5431C /* StopwatchViewController.swift in Sources */,
 				3C5117522BF2447700FB47B0 /* TimerTableViewCell.swift in Sources */,
@@ -445,6 +453,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		3C5117562BF3A15500FB47B0 /* XCRemoteSwiftPackageReference "DurationPicker" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mac-gallagher/DurationPicker";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.2;
+			};
+		};
 		F39FCE162BF1C69600F5431C /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit";
@@ -456,12 +472,30 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		3C5117572BF3A15500FB47B0 /* DurationPicker */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3C5117562BF3A15500FB47B0 /* XCRemoteSwiftPackageReference "DurationPicker" */;
+			productName = DurationPicker;
+		};
 		F39FCE172BF1C69600F5431C /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = F39FCE162BF1C69600F5431C /* XCRemoteSwiftPackageReference "SnapKit" */;
+			package = F39FCE252BF38F4B00F5431C /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		9CE566742BF6071A00E5568A /* WakeUpClock.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				9CE566752BF6071A00E5568A /* WakeUpClock.xcdatamodel */,
+			);
+			currentVersion = 9CE566752BF6071A00E5568A /* WakeUpClock.xcdatamodel */;
+			path = WakeUpClock.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = F39FCDE72BF1C48B00F5431C /* Project object */;
 }
