@@ -10,7 +10,7 @@ import SnapKit
 import DurationPicker
 
 enum TimerState {
-    case start
+    case started
     case pause
     case resumed
     case canceled
@@ -22,8 +22,11 @@ class TimerViewController: UIViewController {
     // MARK: - Properties
     private var timer = Timer()
     private var remainTime = UILabel()
-    private var isTimerRunning: Bool = false
+//    private var isTimerRunning: Bool = false
     private var timerState: TimerState = .finished
+    
+    private var timerLists: [String] = []
+    private var setTime: Int = 0
     
     private let scrollView = UIScrollView()
     private let contentView = UIView()
@@ -221,12 +224,27 @@ class TimerViewController: UIViewController {
     
     @objc func didTapStartButton() {
         print(#function)
-        let setTime = Int(timerDurationPicker.duration) // 설정 된 시간
-        setTimer(with: setTime)
+
+        switch timerState {
+        case .started, .resumed :
+            // 시작을 누르면 버튼을 pause 로 바꿔야함
+            timer.invalidate()
+            timerState = .pause
+            updateTimerState()
+        case .pause:
+            // 일시정지를 누르면 resume 으로 버튼 변경, 시간 멈춤
+            print("재실행")
+            setTimer(with: setTime)
+        case .canceled, .finished:
+            self.setTime = Int(timerDurationPicker.duration) // 설정 된 시간
+            timerLists.append(String(setTime))
+            setTimer(with: setTime)
+        }
     }
     
     @objc func didTapCancelButton() {
         print(#function)
+//        self.isTimerRunning = false
         timer.invalidate()
         timerState = .canceled
         updateTimerState()
@@ -236,7 +254,8 @@ class TimerViewController: UIViewController {
     // MARK: - Action Functions
     func setTimer(with countDownSeconds: Int) {
         print("countDownSeconds: \(countDownSeconds)")
-        timerState = .start
+//        isTimerRunning = true
+        timerState = .started
         updateTimerState()
         
         let startTime = Date()
@@ -252,11 +271,9 @@ class TimerViewController: UIViewController {
                 
                 return
             }
-            
-
-//            print("remainSeconds: \(remainSeconds)")
+            print("remainSeconds: \(remainSeconds)")
+            self?.setTime = remainSeconds
             self?.remainTime.text = self?.convertSecondsToTime(timeInSeconds: remainSeconds)
-            
         })
     }
     
@@ -270,7 +287,7 @@ class TimerViewController: UIViewController {
     
     private func updateTimerState() {
         switch timerState {
-        case .start:
+        case .started:
             timerDurationPicker.isHidden = true
             remainTime.isHidden = false
             cancelButton.isEnabled = true
@@ -282,7 +299,7 @@ class TimerViewController: UIViewController {
             // 타이머 일시정지 상태에 대한 UI 업데이트
             cancelButton.alpha = 1
             startButton.layer.borderColor = UIColor.mainActive.cgColor
-            startButton.setTitle("Resumed", for: .normal)
+            startButton.setTitle("Resume", for: .normal)
             startButton.setTitleColor(.mainActive, for: .normal)
             
         case .resumed:
@@ -323,12 +340,12 @@ extension TimerViewController: UITableViewDelegate {
 
 extension TimerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        5
+        return timerLists.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = recentlyUsedTabelView.dequeueReusableCell(withIdentifier: TimerTableViewCell.identifier, for: indexPath) as? TimerTableViewCell else { return TimerTableViewCell() }
-        cell.timerLabel.text = "00:10:00"
+        cell.timerLabel.text = timerLists[indexPath.row]
         cell.nameLabel.text = "10분만 걷자"
         return cell
     }
