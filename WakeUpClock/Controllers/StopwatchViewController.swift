@@ -14,7 +14,7 @@ class StopwatchViewController: UIViewController {
     private let mainStopwatch: Stopwatch = Stopwatch()
     private let lapStopwatch: Stopwatch = Stopwatch() // 랩타임 계산
     private var isPlay: Bool = false
-    private var diffTime = ""
+    private var diffTime = "" // diff 타임 담아줄 변수
     private var lapTableViewData: [String] = []
     private var diffTableViewData: [String] = [] // 앞 기록과의 차이
     
@@ -324,14 +324,14 @@ extension StopwatchViewController {
         diffTime = String(format: "%02d", minutes) + ":" + String(format: "%02d", seconds) +  ":" + String(format: "%02d", milliseconds)
     }
 }
-
+// MARK: - Selector
 fileprivate extension Selector {
     static let updateMainTimer = #selector(StopwatchViewController.updateMainTimer)
     static let updateLapTimer = #selector(StopwatchViewController.updateLapTimer)
 }
 
-// MARK: - TableView Extenseion
-extension StopwatchViewController: UITableViewDelegate, UITableViewDataSource {
+// MARK: - TableView DataSource
+extension StopwatchViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return lapTableViewData.count
     }
@@ -351,8 +351,34 @@ extension StopwatchViewController: UITableViewDelegate, UITableViewDataSource {
         
         return cell
     }
-    
+}
+
+// MARK: - TableView Delegate
+extension StopwatchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 50
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let copyMenuInteraction = UIEditMenuInteraction(delegate: self)
+        tableView.addInteraction(copyMenuInteraction)
+        
+        let configuration = UIEditMenuConfiguration(identifier: nil, sourcePoint: tableView.accessibilityActivationPoint)
+        copyMenuInteraction.presentEditMenu(with: configuration)
+    }
+}
+
+// MARK: - UIEditMenuInteraction Delegate
+extension StopwatchViewController: UIEditMenuInteractionDelegate {
+    func editMenuInteraction(_ interaction: UIEditMenuInteraction, menuFor configuration: UIEditMenuConfiguration, suggestedActions: [UIMenuElement]) -> UIMenu? {
+        let copyAction = UIAction(title: "랩타임 기록 전체 복사하기") {_ in
+            var copyBoard: [String] = []
+            
+            for indexNum in 0...self.lapTableViewData.count-1 {
+                copyBoard.append("\(indexNum+1)     \(self.lapTableViewData[indexNum])     \(self.diffTableViewData[indexNum])\n")
+            }
+            UIPasteboard.general.strings = copyBoard
+        }
+        return UIMenu(children: [copyAction])
     }
 }
