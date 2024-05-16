@@ -238,6 +238,7 @@ class TimerViewController: UIViewController {
         case .canceled, .finished:
             self.setTime = Int(timerDurationPicker.duration) // 설정 된 시간
             timerLists.append(String(setTime))
+            print("timerLists : \(timerLists)")
             setTimer(with: setTime)
         }
     }
@@ -271,7 +272,7 @@ class TimerViewController: UIViewController {
                 
                 return
             }
-            print("remainSeconds: \(remainSeconds)")
+//            print("remainSeconds: \(remainSeconds)")
             self?.setTime = remainSeconds
             self?.remainTime.text = self?.convertSecondsToTime(timeInSeconds: remainSeconds)
         })
@@ -340,13 +341,17 @@ extension TimerViewController: UITableViewDelegate {
 
 extension TimerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return timerLists.count
+//        return timerLists.count
+        return 5
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = recentlyUsedTabelView.dequeueReusableCell(withIdentifier: TimerTableViewCell.identifier, for: indexPath) as? TimerTableViewCell else { return TimerTableViewCell() }
-        cell.timerLabel.text = timerLists[indexPath.row]
-        cell.nameLabel.text = "10분만 걷자"
+        
+//        cell.timerLabel.text = timerLists[indexPath.row]
+        cell.nameLabel.text = "일어나야지"
+        cell.timerLabel.text = "03:00"
+        
         return cell
     }
     
