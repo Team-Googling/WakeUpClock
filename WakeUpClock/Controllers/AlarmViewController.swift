@@ -10,9 +10,34 @@ import UIKit
 class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     var tableView: UITableView!
     var loadingView: UIView!
+    
+    let formatter = DateFormatter()
+    var originalAlarms = [Alarm]()
+    var temporaryAlarms = [Alarm]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        formatter.dateFormat = "HH:mm"
+        
+        originalAlarms = [
+            Alarm(id: UUID(), time: formatter.date(from: "09:00") ?? Date(), repeatDays: ["M", "T", "W", "Th", "F", "St", "S"], title: "약 먹기", isEnabled: false, sound: ""),
+            Alarm(id: UUID(), time: formatter.date(from: "10:00") ?? Date(), repeatDays: ["M", "T", "W", "Th", "F"], title: "밥 먹기", isEnabled: true, sound: ""),
+            Alarm(id: UUID(), time: formatter.date(from: "11:00") ?? Date(), repeatDays: ["M", "T", "W", "Th"], title: "밥 먹기", isEnabled: false, sound: ""),
+            Alarm(id: UUID(), time: formatter.date(from: "12:00") ?? Date(), repeatDays: ["M", "T", "W", "Th", "F", "St", "S"], title: "밥 먹기", isEnabled: false, sound: ""),
+            Alarm(id: UUID(), time: formatter.date(from: "13:00") ?? Date(), repeatDays: ["M", "T", "W", "Th", "F", "St", "S"], title: "밥 먹기", isEnabled: true, sound: ""),
+            Alarm(id: UUID(), time: formatter.date(from: "14:00") ?? Date(), repeatDays: ["M", "T", "W", "Th", "F", "St", "S"], title: "밥 먹기", isEnabled: true, sound: ""),
+            Alarm(id: UUID(), time: formatter.date(from: "15:00") ?? Date(), repeatDays: ["M", "T", "W", "Th", "F", "St", "S"],  title: "밥 먹기", isEnabled: false, sound: ""),
+            Alarm(id: UUID(), time: formatter.date(from: "16:00") ?? Date(), repeatDays: ["M", "T", "W", "Th", "F", "St", "S"], title: "밥 먹기", isEnabled: true, sound: ""),
+            Alarm(id: UUID(), time: formatter.date(from: "17:00") ?? Date(), repeatDays: ["M", "T", "W", "Th", "F", "St", "S"], title: "밥 먹기", isEnabled: true, sound: ""),
+            Alarm(id: UUID(), time: formatter.date(from: "18:00") ?? Date(), repeatDays: ["M", "T", "W", "Th", "F", "St", "S"], title: "밥 먹기", isEnabled: false, sound: ""),
+            Alarm(id: UUID(), time: formatter.date(from: "19:00") ?? Date(), repeatDays: ["M", "T", "W", "Th", "F", "St", "S"], title: "밥 먹기", isEnabled: true, sound: ""),
+            Alarm(id: UUID(), time: formatter.date(from: "20:00") ?? Date(), repeatDays: ["M", "T", "W", "Th", "F", "St", "S"], title: "밥 먹기", isEnabled: true, sound: ""),
+        ]
+        
+        print("dddd \(originalAlarms)")
+        
+        temporaryAlarms = originalAlarms
         
         setupTableView()
         setupLoadingView()
@@ -76,15 +101,20 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return originalAlarms.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "AlarmCell", for: indexPath) as! AlarmCell
-        cell.backgroundColor = UIColor(named: "backGroudColor")
-        
-        return cell
-    }
+         let cell = tableView.dequeueReusableCell(withIdentifier: "AlarmCell", for: indexPath) as! AlarmCell
+         cell.backgroundColor = UIColor(named: "backGroudColor")
+         
+         let alarm = originalAlarms[indexPath.row]
+         cell.titleLabel.text = alarm.title
+         cell.updateTimeLabelText(alarm.time)
+         cell.alarm = alarm
+
+         return cell
+     }
 
     // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -93,6 +123,12 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
 }
 
 class AlarmCell: UITableViewCell {
+    let titleLabel = UILabel()
+    let timeLabel = UILabel()
+    let checkBox = UISwitch()
+
+    var dayLabels = [UILabel]()
+    
     let alarmUIView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor(named: "glassEffectColor")?.withAlphaComponent(0.3)
@@ -105,7 +141,7 @@ class AlarmCell: UITableViewCell {
         let layer = CALayer()
         layer.backgroundColor = UIColor.clear.cgColor
         layer.shadowOpacity = 1.0
-        layer.shadowOffset = CGSize(width: 0, height: 5)
+        layer.shadowOffset = CGSize(width: 0, height: 1)
         layer.shadowRadius = 5
         return layer
     }()
@@ -125,6 +161,15 @@ class AlarmCell: UITableViewCell {
         stackView.spacing = 8
         return stackView
     }()
+    
+    let daysStackView = UIStackView()
+
+    var alarm: Alarm? {
+        didSet {
+            guard let alarm = alarm else { return }
+            updateUI(with: alarm)
+        }
+    }
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -139,6 +184,58 @@ class AlarmCell: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    private func updateUI(with alarm: Alarm) {
+        titleLabel.text = alarm.title
+        updateTimeLabelText(alarm.time)
+        clearDayLabels()
+        setupDayLabels(for: alarm.repeatDays)
+    }
+    
+    internal func updateTimeLabelText(_ date: Date) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        timeLabel.text = formatter.string(from: date)
+    }
+
+    private func clearDayLabels() {
+        for dayLabel in dayLabels {
+            dayLabel.removeFromSuperview()
+        }
+        dayLabels.removeAll()
+    }
+
+    private func setupDayLabels(for repeatDays: [String]) {
+        for day in repeatDays {
+            let dayLabel = UILabel()
+            dayLabel.text = day
+            dayLabel.textAlignment = .center
+            dayLabel.textColor = UIColor(named: "textColor")
+            dayLabel.font = UIFont.systemFont(ofSize: 14)
+            dayLabel.backgroundColor = .red
+            
+            // Calculate the x position based on the index and spacing
+            let labelWidth: CGFloat = 20
+            let labelHeight: CGFloat = 20 // Adjust as needed
+            
+            // Calculate the x position based on the index and spacing
+            let index = repeatDays.firstIndex(of: day)!
+            let xPosition = CGFloat(index) * (labelWidth + 4) // 4 is the spacing
+            
+            // Set the frame for dayLabel
+            dayLabel.frame = CGRect(x: xPosition, y: 0, width: labelWidth, height: labelHeight)
+            
+            // Set compression resistance and content hugging priorities
+            dayLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+            dayLabel.setContentHuggingPriority(.required, for: .horizontal)
+            
+            daysStackView.addSubview(dayLabel)
+            dayLabels.append(dayLabel)
+        }
+    }
+
+
+
 
     // MARK: - Layout Handling
     override func layoutSubviews() {
@@ -157,7 +254,6 @@ class AlarmCell: UITableViewCell {
             updateAppearance()
         }
     }
-
     // MARK: - View Setup
     private func setupViews() {
         contentView.addSubview(alarmUIView)
@@ -165,14 +261,10 @@ class AlarmCell: UITableViewCell {
         contentView.addSubview(alarmTextStackUIView)
         contentView.addSubview(alarmSetItemStackUIView)
         
-        let titleLabel = UILabel()
-        titleLabel.text = "Title"
         titleLabel.textColor = UIColor(named: "textColor")
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 20)
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 16)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        let timeLabel = UILabel()
-        timeLabel.text = "00:00"
         timeLabel.textColor = UIColor(named: "textColor")
         timeLabel.font = UIFont.boldSystemFont(ofSize: 32)
         timeLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -180,7 +272,6 @@ class AlarmCell: UITableViewCell {
         alarmTextStackUIView.addArrangedSubview(titleLabel)
         alarmTextStackUIView.addArrangedSubview(timeLabel)
         
-        let checkBox = UISwitch()
         checkBox.translatesAutoresizingMaskIntoConstraints = false
         checkBox.widthAnchor.constraint(equalToConstant: 50).isActive = true
         checkBox.heightAnchor.constraint(equalToConstant: 32).isActive = true
@@ -196,25 +287,12 @@ class AlarmCell: UITableViewCell {
         customView.widthAnchor.constraint(equalToConstant: 164).isActive = true
         customView.heightAnchor.constraint(equalToConstant: 22).isActive = true
 
-        let daysStackView = UIStackView()
         daysStackView.axis = .horizontal
         daysStackView.spacing = 4
         daysStackView.alignment = .fill
         daysStackView.distribution = .fillEqually
-
-        let dayLabels = ["M", "T", "W", "Th", "F", "St", "S"]
-
-        for day in dayLabels {
-            let label = UILabel()
-            label.text = day
-            label.textAlignment = .center
-            label.textColor = UIColor(named: "textColor")
-            label.font = UIFont.systemFont(ofSize: 14)
-            daysStackView.addArrangedSubview(label)
-        }
-
+        
         customView.addSubview(daysStackView)
-
         daysStackView.translatesAutoresizingMaskIntoConstraints = false
         daysStackView.topAnchor.constraint(equalTo: customView.topAnchor).isActive = true
         daysStackView.leadingAnchor.constraint(equalTo: customView.leadingAnchor).isActive = true
@@ -249,4 +327,3 @@ class AlarmCell: UITableViewCell {
         setNeedsLayout()
     }
 }
-

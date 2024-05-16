@@ -10,7 +10,7 @@ import Foundation
 struct Alarm {
     var id: UUID
     var time: Date
-    var repeatDays: [Bool]
+    var repeatDays: [String]
     var title: String
     var isEnabled: Bool
     var sound: String
