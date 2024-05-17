@@ -36,7 +36,7 @@ class TimerTableViewCell: UITableViewCell {
         timerLabel.text = "00:00:00"
         timerLabel.font = .systemFont(ofSize: 18, weight: .regular)
         nameLabel.textColor = .text
-        nameLabel.text = "일어나시계"
+        nameLabel.text = " "
         nameLabel.font = .systemFont(ofSize: 18, weight: .regular)
         
     }
