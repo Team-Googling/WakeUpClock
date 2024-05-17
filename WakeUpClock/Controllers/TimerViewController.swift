@@ -81,7 +81,7 @@ class TimerViewController: UIViewController {
         contentView.addSubview(nameLabel)
         contentView.addSubview(nameInputTextField)
         contentView.addSubview(recentlyUsedView)
-        contentView.addSubview(recentlyUsedLabel)
+        contentView.addSubview(recentlyUsedView)
         contentView.addSubview(recentlyUsedLabel)
         contentView.addSubview(recentlyUsedTabelView)
         
@@ -143,23 +143,21 @@ class TimerViewController: UIViewController {
             $0.bottom.equalTo(saveTimerView.snp.bottom).inset(12)
         }
         
-        recentlyUsedView.snp.makeConstraints {
-            $0.top.equalTo(saveTimerView.snp.bottom).offset(50)
-            $0.leading.trailing.bottom.equalToSuperview()
-        }
+//        recentlyUsedView.snp.makeConstraints {
+//            $0.top.equalTo(saveTimerView.snp.bottom).offset(30)
+//            $0.leading.trailing.bottom.equalToSuperview()
+//        }
         
         recentlyUsedLabel.snp.makeConstraints {
-            $0.top.equalTo(recentlyUsedView.snp.top).offset(12)
-            $0.leading.equalTo(recentlyUsedView.snp.leading).offset(12)
-            $0.trailing.equalTo(recentlyUsedView.snp.trailing).offset(-12)
+            $0.top.equalTo(nameInputTextField.snp.bottom).offset(50)
+            $0.leading.equalTo(contentView.snp.leading).offset(12)
+            $0.trailing.equalTo(contentView.snp.trailing).offset(-12)
         }
         
         recentlyUsedTabelView.snp.makeConstraints {
             $0.top.equalTo(recentlyUsedLabel.snp.bottom).offset(20)
-            $0.leading.equalTo(recentlyUsedView.snp.leading).offset(12)
-            $0.bottom.equalTo(recentlyUsedView.snp.bottom).offset(-12)
-            $0.trailing.equalTo(recentlyUsedView.snp.trailing).offset(-12)
-            
+            $0.leading.bottom.trailing.equalToSuperview()
+            $0.height.equalTo(10)
         }
     }
     
@@ -210,10 +208,11 @@ class TimerViewController: UIViewController {
         recentlyUsedLabel.textColor = UIColor(named: "textColor")
         recentlyUsedLabel.text = "Recently Used"
         recentlyUsedLabel.font = .systemFont(ofSize: 20, weight: .medium)
+        recentlyUsedLabel.isHidden = true
         
-        recentlyUsedTabelView.backgroundColor = .blue
+        recentlyUsedTabelView.backgroundColor = .clear
         recentlyUsedTabelView.register(TimerTableViewCell.self, forCellReuseIdentifier: TimerTableViewCell.identifier)
-        
+        recentlyUsedTabelView.isHidden = true
     }
     
     // MARK: 버튼 이벤트 처리
@@ -239,6 +238,7 @@ class TimerViewController: UIViewController {
             self.setTime = Int(timerDurationPicker.duration) // 설정 된 시간
             timerLists.append(String(setTime))
             print("timerLists : \(timerLists)")
+            reloadTableView()
             setTimer(with: setTime)
         }
     }
@@ -284,6 +284,24 @@ class TimerViewController: UIViewController {
         let minutes = (timeInSeconds - hours * 3600) / 60
         let seconds = timeInSeconds %  60
         return String(format: "%02i:%02i:%02i", hours, minutes, seconds)
+    }
+    
+    func reloadTableView() {
+        if timerLists.count <= 0 {
+            recentlyUsedLabel.isHidden = true
+            recentlyUsedTabelView.isHidden = true
+        }
+        else {
+            let rowHeight = 36
+            recentlyUsedTabelView.isHidden = false
+            recentlyUsedLabel.isHidden = false
+            recentlyUsedTabelView.snp.remakeConstraints {
+                $0.top.equalTo(recentlyUsedLabel.snp.bottom).offset(20)
+                $0.leading.bottom.trailing.equalToSuperview()
+                $0.height.equalTo(timerLists.count * rowHeight)
+            }
+            recentlyUsedTabelView.reloadData()
+        }
     }
     
     private func updateTimerState() {
@@ -337,25 +355,37 @@ extension TimerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         36
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let time = timerLists[indexPath.row]
+        setTimer(with: Int(time) ?? 0)
+    }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        .delete
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            timerLists.remove(at: indexPath.row)
+            recentlyUsedTabelView.deleteRows(at: [indexPath], with: .fade)
+            reloadTableView()
+            print("timerLists\(timerLists)")
+        }
+    }
 }
 
 extension TimerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return timerLists.count
-        return 5
+        return timerLists.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = recentlyUsedTabelView.dequeueReusableCell(withIdentifier: TimerTableViewCell.identifier, for: indexPath) as? TimerTableViewCell else { return TimerTableViewCell() }
-        
-//        cell.timerLabel.text = timerLists[indexPath.row]
-        cell.nameLabel.text = "일어나야지"
-        cell.timerLabel.text = "03:00"
-        
+        guard let cell = recentlyUsedTabelView.dequeueReusableCell(withIdentifier: TimerTableViewCell.identifier, for: indexPath) as? TimerTableViewCell else { return UITableViewCell() }
+        let time = timerLists[indexPath.row]
+        cell.timerLabel.text = self.convertSecondsToTime(timeInSeconds: Int(time) ?? 0)
         return cell
     }
-    
-    
 }
 
 //#Preview {
