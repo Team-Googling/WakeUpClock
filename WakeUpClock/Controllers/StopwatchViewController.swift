@@ -35,7 +35,6 @@ class StopwatchViewController: UIViewController {
         setupConstraints()
         configureUI()
         setupButtons()
-        
         loadSavedTimes()
     }
     
@@ -145,6 +144,7 @@ class StopwatchViewController: UIViewController {
             lapResetButton.isEnabled = false
             changeButton(lapResetButton, title: "Lap", titleColor: UIColor.gray)
             StopwatchCoreDataManager.shared.deleteAllTimes()
+            StopwatchCoreDataManager.shared.deleteAllLaps()
         }
         
         // 시간이 가고 있을 때 -> 테이블 뷰 셀의 데이터를 추가
@@ -157,6 +157,13 @@ class StopwatchViewController: UIViewController {
             diffTableViewData.append(diffTime)
             resetLapTimer()
             
+            // 랩 저장하기
+            let lapNumber = Int64(lapTableViewData.count)
+            let recordTime = timerLabelText
+            let diffTime = self.diffTime
+            StopwatchCoreDataManager.shared.saveLap(lapNumber: lapNumber, recordTime: recordTime, diffTime: diffTime)
+            
+            // 랩 타이머 재시작
             unowned let weakSelf = self
             lapStopwatch.timer = Timer.scheduledTimer(timeInterval: 0.01, target: weakSelf, selector: Selector.updateLapTimer, userInfo: nil, repeats: true)
             // --> 타이머 생성 및 설정 0.01초마다 updateLapTimer 메서드를 호출
@@ -220,6 +227,14 @@ class StopwatchViewController: UIViewController {
         } else {
             mainStopwatch.counter = 0.0
         }
+        
+        // 랩타임 불러오기
+        if let laps = StopwatchCoreDataManager.shared.fetchAllLaps() {
+            lapTableViewData = laps.map { $0.recordTime ?? "00:00:00" }
+            diffTableViewData = laps.map { $0.diffTime ?? "00:00:00" }
+        }
+        
+        tableView.reloadData()
     }
 }
 

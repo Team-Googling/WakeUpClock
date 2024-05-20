@@ -13,6 +13,7 @@ class StopwatchCoreDataManager {
     static let shared = StopwatchCoreDataManager()
     
     static let timerEntity = "StopwatchTimer"
+    static let lapEntity = "StopwatchLap"
     
     private let context: NSManagedObjectContext? = {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
@@ -42,6 +43,25 @@ class StopwatchCoreDataManager {
         }
     }
     
+    func saveLap(lapNumber: Int64, recordTime: String, diffTime: String) {
+        guard let context = context else { return }
+        
+        guard let entityDescription = NSEntityDescription.entity(forEntityName: StopwatchCoreDataManager.lapEntity, in: context) else { return }
+        
+        let newLap = StopwatchLap(entity: entityDescription, insertInto: context)
+        
+        newLap.lapNumber = lapNumber
+        newLap.recordTime = recordTime
+        newLap.diffTime = diffTime
+        
+        do {
+            print("save lap successfully")
+            try context.save()
+        } catch {
+            print("Failed to save lap: \(error)")
+        }
+    }
+    
     // MARK: - Read
     func fetchAllTimes() -> [StopwatchTimer]? {
         guard let context = context else { return nil }
@@ -52,6 +72,19 @@ class StopwatchCoreDataManager {
             return times
         } catch {
             print("Failed to fetch times: \(error)")
+            return nil
+        }
+    }
+
+    func fetchAllLaps() -> [StopwatchLap]? {
+        guard let context = context else { return nil }
+        let fetchRequest = NSFetchRequest<StopwatchLap>(entityName: StopwatchCoreDataManager.lapEntity)
+        
+        do {
+            let laps = try context.fetch(fetchRequest)
+            return laps
+        } catch {
+            print("Failed to fetch laps: \(error)")
             return nil
         }
     }
@@ -73,7 +106,23 @@ class StopwatchCoreDataManager {
             print("Failed to delete all times: \(error)")
         }
     }
-
+    
+    func deleteAllLaps() {
+        guard let context = context else { return }
+        
+        let fetchRequest: NSFetchRequest<StopwatchLap> = StopwatchLap.fetchRequest()
+        
+        do {
+            let laps = try context.fetch(fetchRequest)
+            for lap in laps {
+                context.delete(lap)
+            }
+            try context.save()
+            print("deleted all laps successfully.")
+        } catch {
+            print("Failed to delete all laps: \(error)")
+        }
+    }
 }
 
 

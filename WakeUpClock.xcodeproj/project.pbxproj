@@ -15,6 +15,8 @@
 		F344D8AE2BF73752007408AB /* StopwatchTimer+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F344D8AC2BF73752007408AB /* StopwatchTimer+CoreDataClass.swift */; };
 		F344D8AF2BF73752007408AB /* StopwatchTimer+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F344D8AD2BF73752007408AB /* StopwatchTimer+CoreDataProperties.swift */; };
 		F344D8B12BFB3559007408AB /* UIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = F344D8B02BFB3559007408AB /* UIFactory.swift */; };
+		F344D8B42BFB3982007408AB /* StopwatchLap+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F344D8B22BFB3982007408AB /* StopwatchLap+CoreDataClass.swift */; };
+		F344D8B52BFB3982007408AB /* StopwatchLap+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F344D8B32BFB3982007408AB /* StopwatchLap+CoreDataProperties.swift */; };
 		F39FCDF32BF1C48B00F5431C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39FCDF22BF1C48B00F5431C /* AppDelegate.swift */; };
 		F39FCDF52BF1C48B00F5431C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39FCDF42BF1C48B00F5431C /* SceneDelegate.swift */; };
 		F39FCDFA2BF1C48B00F5431C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F39FCDF82BF1C48B00F5431C /* Main.storyboard */; };
@@ -39,6 +41,8 @@
 		F344D8AC2BF73752007408AB /* StopwatchTimer+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StopwatchTimer+CoreDataClass.swift"; sourceTree = "<group>"; };
 		F344D8AD2BF73752007408AB /* StopwatchTimer+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StopwatchTimer+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		F344D8B02BFB3559007408AB /* UIFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFactory.swift; sourceTree = "<group>"; };
+		F344D8B22BFB3982007408AB /* StopwatchLap+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StopwatchLap+CoreDataClass.swift"; sourceTree = "<group>"; };
+		F344D8B32BFB3982007408AB /* StopwatchLap+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StopwatchLap+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		F39FCDEF2BF1C48B00F5431C /* WakeUpClock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WakeUpClock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F39FCDF22BF1C48B00F5431C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F39FCDF42BF1C48B00F5431C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -76,6 +80,8 @@
 			children = (
 				F344D8AC2BF73752007408AB /* StopwatchTimer+CoreDataClass.swift */,
 				F344D8AD2BF73752007408AB /* StopwatchTimer+CoreDataProperties.swift */,
+				F344D8B22BFB3982007408AB /* StopwatchLap+CoreDataClass.swift */,
+				F344D8B32BFB3982007408AB /* StopwatchLap+CoreDataProperties.swift */,
 				F344D8AA2BF7366D007408AB /* StopwatchCoreDataManager.swift */,
 			);
 			name = CoreDataModel;
@@ -239,6 +245,7 @@
 				F344D8AF2BF73752007408AB /* StopwatchTimer+CoreDataProperties.swift in Sources */,
 				F39FCE092BF1C4CD00F5431C /* AlarmModel.swift in Sources */,
 				9CE566762BF6071A00E5568A /* WakeUpClock.xcdatamodeld in Sources */,
+				F344D8B42BFB3982007408AB /* StopwatchLap+CoreDataClass.swift in Sources */,
 				F39FCE132BF1C5D800F5431C /* TimerViewController.swift in Sources */,
 				F39FCE152BF1C5ED00F5431C /* StopwatchViewController.swift in Sources */,
 				3C5117522BF2447700FB47B0 /* TimerTableViewCell.swift in Sources */,
@@ -252,6 +259,7 @@
 				F39FCE1A2BF1D9F900F5431C /* UIImage+.swift in Sources */,
 				F344D8B12BFB3559007408AB /* UIFactory.swift in Sources */,
 				F39FCDF32BF1C48B00F5431C /* AppDelegate.swift in Sources */,
+				F344D8B52BFB3982007408AB /* StopwatchLap+CoreDataProperties.swift in Sources */,
 				F39FCDF52BF1C48B00F5431C /* SceneDelegate.swift in Sources */,
 				F39FCE232BF332B500F5431C /* StopwatchCell.swift in Sources */,
 			);
