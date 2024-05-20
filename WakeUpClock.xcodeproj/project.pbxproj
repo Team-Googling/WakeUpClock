@@ -7,14 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3C4627742BF64BCE009C8C96 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = F39FCE172BF1C69600F5431C /* SnapKit */; };
 		3C5117522BF2447700FB47B0 /* TimerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C5117512BF2447700FB47B0 /* TimerTableViewCell.swift */; };
 		3C5117582BF3A15500FB47B0 /* DurationPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 3C5117572BF3A15500FB47B0 /* DurationPicker */; };
 		9C761FC12BF6D83C00DBDB54 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = F39FCE172BF1C69600F5431C /* SnapKit */; };
 		9C761FC82BF6E5D300DBDB54 /* MyAlarm+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C761FC62BF6E5D300DBDB54 /* MyAlarm+CoreDataClass.swift */; };
 		9C761FC92BF6E5D300DBDB54 /* MyAlarm+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C761FC72BF6E5D300DBDB54 /* MyAlarm+CoreDataProperties.swift */; };
 		9CE566762BF6071A00E5568A /* WakeUpClock.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9CE566742BF6071A00E5568A /* WakeUpClock.xcdatamodeld */; };
-		F344D8A02BF6E4FD007408AB /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = F39FCE172BF1C69600F5431C /* SnapKit */; };
 		F344D8AB2BF7366D007408AB /* StopwatchCoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F344D8AA2BF7366D007408AB /* StopwatchCoreDataManager.swift */; };
 		F344D8AE2BF73752007408AB /* StopwatchTimer+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F344D8AC2BF73752007408AB /* StopwatchTimer+CoreDataClass.swift */; };
 		F344D8AF2BF73752007408AB /* StopwatchTimer+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F344D8AD2BF73752007408AB /* StopwatchTimer+CoreDataProperties.swift */; };
@@ -84,6 +82,8 @@
 		F344D8A92BF73617007408AB /* CoreDataModel */ = {
 			isa = PBXGroup;
 			children = (
+				9C761FC62BF6E5D300DBDB54 /* MyAlarm+CoreDataClass.swift */,
+				9C761FC72BF6E5D300DBDB54 /* MyAlarm+CoreDataProperties.swift */,
 				F344D8AC2BF73752007408AB /* StopwatchTimer+CoreDataClass.swift */,
 				F344D8AD2BF73752007408AB /* StopwatchTimer+CoreDataProperties.swift */,
 				F344D8B22BFB3982007408AB /* StopwatchLap+CoreDataClass.swift */,
@@ -121,8 +121,6 @@
 				F39FCE0B2BF1C50D00F5431C /* Controllers */,
 				F39FCE242BF332BF00F5431C /* Cells */,
 				9CE566742BF6071A00E5568A /* WakeUpClock.xcdatamodeld */,
-				9C761FC62BF6E5D300DBDB54 /* MyAlarm+CoreDataClass.swift */,
-				9C761FC72BF6E5D300DBDB54 /* MyAlarm+CoreDataProperties.swift */,
 				F39FCDF82BF1C48B00F5431C /* Main.storyboard */,
 				F39FCDFB2BF1C48D00F5431C /* Assets.xcassets */,
 				F39FCDFD2BF1C48D00F5431C /* LaunchScreen.storyboard */,
@@ -148,7 +146,6 @@
 				F39FCE0E2BF1C5BB00F5431C /* AlarmViewController.swift */,
 				F39FCE102BF1C5CE00F5431C /* NewAlarmViewController.swift */,
 				F39FCE122BF1C5D800F5431C /* TimerViewController.swift */,
-				3C5117512BF2447700FB47B0 /* TimerTableViewCell.swift */,
 				F39FCE142BF1C5ED00F5431C /* StopwatchViewController.swift */,
 			);
 			path = Controllers;
@@ -166,6 +163,7 @@
 		F39FCE242BF332BF00F5431C /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				3C5117512BF2447700FB47B0 /* TimerTableViewCell.swift */,
 				F39FCE222BF332B500F5431C /* StopwatchCell.swift */,
 			);
 			path = Cells;
