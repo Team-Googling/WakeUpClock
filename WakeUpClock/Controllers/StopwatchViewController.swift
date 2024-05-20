@@ -19,87 +19,15 @@ class StopwatchViewController: UIViewController {
     private var diffTableViewData: [String] = [] // 앞 기록과의 차이
     
     // MARK: - 컴포넌트
-    private let stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.alignment = .center
-        stackView.distribution = .fill
-        stackView.spacing = 20
-        return stackView
-    }()
-    
-    private let minutesLabel: UILabel = {
-        let label = UILabel()
-        label.text = "00"
-        label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: 32, weight: .semibold)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let minutesSeparatorLabel: UILabel = {
-        let label = UILabel()
-        label.text = ":"
-        label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: 32, weight: .semibold)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let secondsLabel: UILabel = {
-        let label = UILabel()
-        label.text = "00"
-        label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: 32, weight: .semibold)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let secondsSeparatorLabel: UILabel = {
-        let label = UILabel()
-        label.text = ":"
-        label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: 32, weight: .semibold)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let milliSecondsLabel: UILabel = {
-        let label = UILabel()
-        label.text = "00"
-        label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: 32, weight: .semibold)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let lapResetButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("Lap", for: .normal)
-        button.setTitleColor(UIColor.gray, for: .normal)
-        button.backgroundColor = .clear
-        button.layer.cornerRadius = 24
-        button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.gray.cgColor
-        return button
-    }()
-    
-    
-    private let startPauseButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("Start", for: .normal)
-        button.setTitleColor(UIColor(named: "mainActiveColor"), for: .normal)
-        button.backgroundColor = .clear
-        button.layer.cornerRadius = 24
-        button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor(named: "mainActiveColor")?.cgColor
-        return button
-    }()
-    
-    private let tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        return tableView
-    }()
+    private let stackView: UIStackView = UIFactory.makeStackView()
+    private let minutesLabel: UILabel = UIFactory.makeLabel(text: "00")
+    private let minutesSeparatorLabel: UILabel = UIFactory.makeLabel(text: ":")
+    private let secondsLabel: UILabel = UIFactory.makeLabel(text: "00")
+    private let secondsSeparatorLabel: UILabel = UIFactory.makeLabel(text: ":")
+    private let milliSecondsLabel: UILabel = UIFactory.makeLabel(text: "00")
+    private let lapResetButton: UIButton = UIFactory.makeButton(title: "Lap", backgroundColor: .clear, tintColor: UIColor.gray, borderColor: UIColor.gray.cgColor)
+    private let startPauseButton: UIButton = UIFactory.makeButton(title: "Start", backgroundColor: .clear, tintColor: UIColor.mainActive, borderColor: UIColor.mainActive.cgColor)
+    private let tableView: UITableView = UIFactory.makeTableView()
     
     // MARK: - View Life Cycle
     override func viewDidLoad() {
@@ -233,7 +161,6 @@ class StopwatchViewController: UIViewController {
             lapStopwatch.timer = Timer.scheduledTimer(timeInterval: 0.01, target: weakSelf, selector: Selector.updateLapTimer, userInfo: nil, repeats: true)
             // --> 타이머 생성 및 설정 0.01초마다 updateLapTimer 메서드를 호출
             RunLoop.current.add(lapStopwatch.timer, forMode: RunLoop.Mode.common)
-            // --> 타이머를 현재 실행 루프에 추가(주기적으로 메서드가 호출), 없어도 실행은 됨
         }
         
         tableView.reloadData()
@@ -271,7 +198,7 @@ class StopwatchViewController: UIViewController {
         }
     }
     // MARK: - CoreData
-    private func saveCurrentTime() {
+    func saveCurrentTime() {
         StopwatchCoreDataManager.shared.saveTime(minutes: minutesLabel.text ?? "00", seconds: secondsLabel.text ?? "00", milliSeconds: milliSecondsLabel.text ?? "00")
     }
     

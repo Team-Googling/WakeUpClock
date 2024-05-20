@@ -14,6 +14,7 @@
 		F344D8AB2BF7366D007408AB /* StopwatchCoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F344D8AA2BF7366D007408AB /* StopwatchCoreDataManager.swift */; };
 		F344D8AE2BF73752007408AB /* StopwatchTimer+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F344D8AC2BF73752007408AB /* StopwatchTimer+CoreDataClass.swift */; };
 		F344D8AF2BF73752007408AB /* StopwatchTimer+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F344D8AD2BF73752007408AB /* StopwatchTimer+CoreDataProperties.swift */; };
+		F344D8B12BFB3559007408AB /* UIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = F344D8B02BFB3559007408AB /* UIFactory.swift */; };
 		F39FCDF32BF1C48B00F5431C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39FCDF22BF1C48B00F5431C /* AppDelegate.swift */; };
 		F39FCDF52BF1C48B00F5431C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39FCDF42BF1C48B00F5431C /* SceneDelegate.swift */; };
 		F39FCDFA2BF1C48B00F5431C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F39FCDF82BF1C48B00F5431C /* Main.storyboard */; };
@@ -37,6 +38,7 @@
 		F344D8AA2BF7366D007408AB /* StopwatchCoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopwatchCoreDataManager.swift; sourceTree = "<group>"; };
 		F344D8AC2BF73752007408AB /* StopwatchTimer+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StopwatchTimer+CoreDataClass.swift"; sourceTree = "<group>"; };
 		F344D8AD2BF73752007408AB /* StopwatchTimer+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StopwatchTimer+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		F344D8B02BFB3559007408AB /* UIFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFactory.swift; sourceTree = "<group>"; };
 		F39FCDEF2BF1C48B00F5431C /* WakeUpClock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WakeUpClock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F39FCDF22BF1C48B00F5431C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F39FCDF42BF1C48B00F5431C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -101,7 +103,7 @@
 			children = (
 				F39FCDF22BF1C48B00F5431C /* AppDelegate.swift */,
 				F39FCDF42BF1C48B00F5431C /* SceneDelegate.swift */,
-				F39FCE1B2BF1DA3000F5431C /* Extension */,
+				F39FCE1B2BF1DA3000F5431C /* Helpers */,
 				F39FCE0A2BF1C4D200F5431C /* Models */,
 				F39FCE0B2BF1C50D00F5431C /* Controllers */,
 				F39FCE242BF332BF00F5431C /* Cells */,
@@ -138,12 +140,13 @@
 			path = Controllers;
 			sourceTree = "<group>";
 		};
-		F39FCE1B2BF1DA3000F5431C /* Extension */ = {
+		F39FCE1B2BF1DA3000F5431C /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
 				F39FCE192BF1D9F900F5431C /* UIImage+.swift */,
+				F344D8B02BFB3559007408AB /* UIFactory.swift */,
 			);
-			path = Extension;
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 		F39FCE242BF332BF00F5431C /* Cells */ = {
@@ -247,6 +250,7 @@
 				F39FCE112BF1C5CE00F5431C /* NewAlarmViewController.swift in Sources */,
 				F344D8AE2BF73752007408AB /* StopwatchTimer+CoreDataClass.swift in Sources */,
 				F39FCE1A2BF1D9F900F5431C /* UIImage+.swift in Sources */,
+				F344D8B12BFB3559007408AB /* UIFactory.swift in Sources */,
 				F39FCDF32BF1C48B00F5431C /* AppDelegate.swift in Sources */,
 				F39FCDF52BF1C48B00F5431C /* SceneDelegate.swift in Sources */,
 				F39FCE232BF332B500F5431C /* StopwatchCell.swift in Sources */,
