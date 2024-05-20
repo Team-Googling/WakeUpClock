@@ -9,20 +9,46 @@ import UIKit
 import SnapKit
 
 class TabBarViewController: UITabBarController {
-
+    let setInterfaceStyle = "interfaceStyle"
+    var interfaceStyle = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         configureUI()
         configureTabItem()
+        
+        // UserDefaults에 저장된 다크모드/라이트 값을 가져와 어플리케이션의 인터페이스 설정
+        interfaceStyle = UserDefaults.standard.string(forKey: setInterfaceStyle) ?? "light"
+        overrideUserInterfaceStyle = interfaceStyle == "dark" ? .dark : .light
+        print(interfaceStyle)
+        
+        if let viewControllers = viewControllers as? [UINavigationController] {
+            for navigationController in viewControllers {
+                configureNavigationBar(navigationController)
+            }
+        }
+    }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            let animation = CATransition()
+            animation.duration = 0.3
+            animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+            animation.type = .fade
+            tabBar.layer.add(animation, forKey: nil)
+            self.configureTabItem()
+        }
     }
     
     private func configureUI() {
         self.view.backgroundColor = UIColor(named: "backGroudColor")
         self.tabBar.backgroundColor = UIColor(named: "frameColor")
-        self.tabBar.barTintColor = UIColor(named: "mainTextColor")
+        self.tabBar.barTintColor = UIColor(named: "backGroudColor")
         self.tabBar.tintColor = UIColor(named: "mainActiveColor")
+        self.tabBar.unselectedItemTintColor = UIColor(named: "textColor")
         
         let topView = UIView()
         topView.backgroundColor = UIColor(named: "frameColor")
@@ -51,18 +77,22 @@ class TabBarViewController: UITabBarController {
         
         if let clockIcon = UIImage(named: "dark-clock")?.resized(to: iconSize) {
             clockNav.tabBarItem.image = clockIcon
+            clockNav.tabBarItem.selectedImage = UIImage(named: "dark-clock-1")
         }
         
         if let alarmIcon = UIImage(named: "dark-alarm-clock")?.resized(to: iconSize) {
             alarmNav.tabBarItem.image = alarmIcon
+            alarmNav.tabBarItem.selectedImage = UIImage(named: "dark-alarm-clock-full")
         }
         
         if let timerIcon = UIImage(named: "dark-hourglass-empty")?.resized(to: iconSize) {
             timerNav.tabBarItem.image = timerIcon
+            timerNav.tabBarItem.selectedImage = UIImage(named: "dark-hourglass-full")
         }
         
         if let stopwatchIcon = UIImage(named: "dark-timer")?.resized(to: iconSize2) {
             stopNav.tabBarItem.image = stopwatchIcon
+            stopNav.tabBarItem.selectedImage = UIImage(named: "timer-full")
         }
         
         configureNavigationBar(clockNav)
@@ -74,23 +104,58 @@ class TabBarViewController: UITabBarController {
     }
     
     private func configureNavigationBar(_ navigationController: UINavigationController) {
-        guard let modeImage = UIImage(named: "dark-sleep-cycle"),
-              let moreImage = UIImage(named: "dark-menu-dots-vertical") else {
+        guard let modeImage = interfaceStyle == "dark" ? UIImage(named: "dark-sleep-cycle") : UIImage(named: "sleep-cycle"),
+              let moreImage = interfaceStyle == "dark" ? UIImage(named: "dark-plus") : UIImage(named: "plus") else {
             return
         }
         
         // Mode 버튼 설정
         let resizedModeImage = modeImage.resized(to: CGSize(width: 30, height: 20))
         let modeImageView = UIImageView(image: resizedModeImage)
-        let modeItem = UIBarButtonItem(customView: modeImageView)
         
-        // More 버튼 설정
-        let resizedMoreImage = moreImage.resized(to: CGSize(width: 20, height: 20))
-        let moreImageView = UIImageView(image: resizedMoreImage)
-        let moreItem = UIBarButtonItem(customView: moreImageView)
+        let modeButton = UIButton(type: .custom)
+        modeButton.setImage(resizedModeImage, for: .normal)
+        modeButton.addTarget(self, action: #selector(didTapModeButton), for: .touchUpInside)
+        let modeItem = UIBarButtonItem(customView: modeButton)
         
-        navigationController.topViewController?.navigationItem.leftBarButtonItem =  modeItem
+        let moreButton = UIButton(type: .custom)
+        moreButton.setImage(moreImage, for: .normal)
+        moreButton.addTarget(self, action: #selector(didTapMoreButton), for: .touchUpInside)
+        let moreItem = UIBarButtonItem(customView: moreButton)
+        
+        navigationController.topViewController?.navigationItem.leftBarButtonItem = modeItem
         navigationController.topViewController?.navigationItem.rightBarButtonItem = moreItem
-        navigationController.navigationBar.backgroundColor = UIColor(named: "frameColor")
+        
+        let navBar = navigationController.navigationBar
+        navBar.barTintColor = UIColor(named: "frameColor")
+        navBar.isTranslucent = false
+        navBar.backgroundColor = UIColor(named: "frameColor")
+        navBar.setBackgroundImage(UIImage(), for: .default)
+        navBar.shadowImage = UIImage()
+    }
+    
+    @objc private func didTapModeButton() {
+        if #available(iOS 13.0, *) {
+            let userInterfaceStyle: UIUserInterfaceStyle = traitCollection.userInterfaceStyle == .dark ? .light : .dark
+            overrideUserInterfaceStyle = userInterfaceStyle
+            
+            interfaceStyle = userInterfaceStyle == .dark ? "dark" : "light"
+            
+            // UserDefaults에 수동 설정한 다크모드/라이트 값 저장
+            UserDefaults.standard.set(interfaceStyle, forKey: setInterfaceStyle)
+            
+            if let viewControllers = viewControllers as? [UINavigationController] {
+                for navigationController in viewControllers {
+                    configureNavigationBar(navigationController)
+                }
+            }
+        }
+    }
+    
+    @objc private func didTapMoreButton() {
+        print("More button tapped")
+        
+        let newAlarmVC = NewAlarmViewController()
+        present(newAlarmVC, animated: true, completion: nil)
     }
 }
