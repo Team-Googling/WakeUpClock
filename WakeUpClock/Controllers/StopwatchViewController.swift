@@ -107,6 +107,8 @@ class StopwatchViewController: UIViewController {
         setupConstraints()
         configureUI()
         setupButtons()
+        
+        loadSavedTimes()
     }
     
     private func configureUI() {
@@ -214,6 +216,7 @@ class StopwatchViewController: UIViewController {
             resetLapTimer()
             lapResetButton.isEnabled = false
             changeButton(lapResetButton, title: "Lap", titleColor: UIColor.gray)
+            StopwatchCoreDataManager.shared.deleteAllTimes()
         }
         
         // 시간이 가고 있을 때 -> 테이블 뷰 셀의 데이터를 추가
@@ -238,7 +241,6 @@ class StopwatchViewController: UIViewController {
     
     @objc private func startPauseButtonPressed() {
         lapResetButton.isEnabled = true
-        
         changeButton(lapResetButton, title: "Lap", titleColor: UIColor.mainText)
         
         // 시간이 멈춰있을 때 -> 버튼 누르면 시간이 흘러야 함
@@ -252,6 +254,7 @@ class StopwatchViewController: UIViewController {
             
             isPlay = true
             changeButton(startPauseButton, title: "Stop", titleColor: UIColor.red)
+            
         }
         
         // 시간이 흐를 때 -> 버튼 누르면 멈춰야 함
@@ -262,6 +265,33 @@ class StopwatchViewController: UIViewController {
             isPlay = false
             changeButton(startPauseButton, title: "Start", titleColor: UIColor.mainActive)
             changeButton(lapResetButton, title: "Reset", titleColor: UIColor.mainText)
+            
+            // TODO: saveMainTimer()
+            saveCurrentTime()
+        }
+    }
+    // MARK: - CoreData
+    private func saveCurrentTime() {
+        StopwatchCoreDataManager.shared.saveTime(minutes: minutesLabel.text ?? "00", seconds: secondsLabel.text ?? "00", milliSeconds: milliSecondsLabel.text ?? "00")
+    }
+    
+    private func loadSavedTimes() {
+        if let times = StopwatchCoreDataManager.shared.fetchAllTimes(), let lastTime = times.last {
+            if let minutesString = lastTime.minutes, let secondsString = lastTime.seconds, let millisecondsString = lastTime.milliSeconds {
+                let minutes = Int(minutesString) ?? 0
+                let seconds = Int(secondsString) ?? 0
+                let milliseconds = Int(millisecondsString) ?? 0
+                
+                // 타이머가 마지막으로 저장된 시간부터 시작하도록 설정
+                let totalTimeInSeconds = Double(minutes * 60 + seconds) + Double(milliseconds) / 100.0
+                mainStopwatch.counter = totalTimeInSeconds
+                updateMainTimer() 
+            } else {
+                print("Error: Missing time components in the saved time data.")
+                mainStopwatch.counter = 0.0
+            }
+        } else {
+            mainStopwatch.counter = 0.0
         }
     }
 }
