@@ -12,94 +12,22 @@ class StopwatchViewController: UIViewController {
     
     // MARK: - 프로퍼티
     private let mainStopwatch: Stopwatch = Stopwatch()
-    private let lapStopwatch: Stopwatch = Stopwatch() // 랩타임 계산
+    private let lapStopwatch: Stopwatch = Stopwatch()
     private var isPlay: Bool = false
-    private var diffTime = "" // diff 타임 담아줄 변수
+    private var diffTime = ""
     private var lapTableViewData: [String] = []
-    private var diffTableViewData: [String] = [] // 앞 기록과의 차이
+    private var diffTableViewData: [String] = []
     
     // MARK: - 컴포넌트
-    private let stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.alignment = .center
-        stackView.distribution = .fill
-        stackView.spacing = 20
-        return stackView
-    }()
-    
-    private let minutesLabel: UILabel = {
-        let label = UILabel()
-        label.text = "00"
-        label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: 32, weight: .semibold)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let minutesSeparatorLabel: UILabel = {
-        let label = UILabel()
-        label.text = ":"
-        label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: 32, weight: .semibold)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let secondsLabel: UILabel = {
-        let label = UILabel()
-        label.text = "00"
-        label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: 32, weight: .semibold)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let secondsSeparatorLabel: UILabel = {
-        let label = UILabel()
-        label.text = ":"
-        label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: 32, weight: .semibold)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let milliSecondsLabel: UILabel = {
-        let label = UILabel()
-        label.text = "00"
-        label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: 32, weight: .semibold)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let lapResetButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("Lap", for: .normal)
-        button.setTitleColor(UIColor.gray, for: .normal)
-        button.backgroundColor = .clear
-        button.layer.cornerRadius = 24
-        button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.gray.cgColor
-        return button
-    }()
-    
-    
-    private let startPauseButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("Start", for: .normal)
-        button.setTitleColor(UIColor(named: "mainActiveColor"), for: .normal)
-        button.backgroundColor = .clear
-        button.layer.cornerRadius = 24
-        button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor(named: "mainActiveColor")?.cgColor
-        return button
-    }()
-    
-    private let tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        return tableView
-    }()
+    private let stackView: UIStackView = UIFactory.makeStackView()
+    private let minutesLabel: UILabel = UIFactory.makeLabel(text: "00")
+    private let minutesSeparatorLabel: UILabel = UIFactory.makeLabel(text: ":")
+    private let secondsLabel: UILabel = UIFactory.makeLabel(text: "00")
+    private let secondsSeparatorLabel: UILabel = UIFactory.makeLabel(text: ":")
+    private let milliSecondsLabel: UILabel = UIFactory.makeLabel(text: "00")
+    private let lapResetButton: UIButton = UIFactory.makeButton(title: "Lap", backgroundColor: .clear, tintColor: UIColor.gray, borderColor: UIColor.gray.cgColor)
+    private let startPauseButton: UIButton = UIFactory.makeButton(title: "Start", backgroundColor: .clear, tintColor: UIColor.mainActive, borderColor: UIColor.mainActive.cgColor)
+    private let tableView: UITableView = UIFactory.makeTableView()
     
     // MARK: - View Life Cycle
     override func viewDidLoad() {
@@ -107,6 +35,7 @@ class StopwatchViewController: UIViewController {
         setupConstraints()
         configureUI()
         setupButtons()
+        loadSavedTimes()
     }
     
     private func configureUI() {
@@ -214,6 +143,8 @@ class StopwatchViewController: UIViewController {
             resetLapTimer()
             lapResetButton.isEnabled = false
             changeButton(lapResetButton, title: "Lap", titleColor: UIColor.gray)
+            StopwatchCoreDataManager.shared.deleteAllTimes()
+            StopwatchCoreDataManager.shared.deleteAllLaps()
         }
         
         // 시간이 가고 있을 때 -> 테이블 뷰 셀의 데이터를 추가
@@ -222,15 +153,19 @@ class StopwatchViewController: UIViewController {
             let timerLabelText = "\(minutesLabel.text ?? "00"):\(secondsLabel.text ?? "00"):\(milliSecondsLabel.text ?? "00")"
             lapTableViewData.append(timerLabelText)
             
-            // diff 타임 배열에 추가해야함!
             diffTableViewData.append(diffTime)
             resetLapTimer()
             
+            // 랩 저장하기
+            let lapNumber = Int64(lapTableViewData.count)
+            let recordTime = timerLabelText
+            let diffTime = self.diffTime
+            StopwatchCoreDataManager.shared.saveLap(lapNumber: lapNumber, recordTime: recordTime, diffTime: diffTime)
+            
+            // 랩 타이머 재시작
             unowned let weakSelf = self
             lapStopwatch.timer = Timer.scheduledTimer(timeInterval: 0.01, target: weakSelf, selector: Selector.updateLapTimer, userInfo: nil, repeats: true)
-            // --> 타이머 생성 및 설정 0.01초마다 updateLapTimer 메서드를 호출
             RunLoop.current.add(lapStopwatch.timer, forMode: RunLoop.Mode.common)
-            // --> 타이머를 현재 실행 루프에 추가(주기적으로 메서드가 호출), 없어도 실행은 됨
         }
         
         tableView.reloadData()
@@ -238,7 +173,6 @@ class StopwatchViewController: UIViewController {
     
     @objc private func startPauseButtonPressed() {
         lapResetButton.isEnabled = true
-        
         changeButton(lapResetButton, title: "Lap", titleColor: UIColor.mainText)
         
         // 시간이 멈춰있을 때 -> 버튼 누르면 시간이 흘러야 함
@@ -252,6 +186,7 @@ class StopwatchViewController: UIViewController {
             
             isPlay = true
             changeButton(startPauseButton, title: "Stop", titleColor: UIColor.red)
+            
         }
         
         // 시간이 흐를 때 -> 버튼 누르면 멈춰야 함
@@ -262,7 +197,42 @@ class StopwatchViewController: UIViewController {
             isPlay = false
             changeButton(startPauseButton, title: "Start", titleColor: UIColor.mainActive)
             changeButton(lapResetButton, title: "Reset", titleColor: UIColor.mainText)
+            
+            // TODO: saveMainTimer()
+            saveCurrentTime()
         }
+    }
+    // MARK: - CoreData
+    func saveCurrentTime() {
+        StopwatchCoreDataManager.shared.saveTime(minutes: minutesLabel.text ?? "00", seconds: secondsLabel.text ?? "00", milliSeconds: milliSecondsLabel.text ?? "00")
+    }
+    
+    private func loadSavedTimes() {
+        if let times = StopwatchCoreDataManager.shared.fetchAllTimes(), let lastTime = times.last {
+            if let minutesString = lastTime.minutes, let secondsString = lastTime.seconds, let millisecondsString = lastTime.milliSeconds {
+                let minutes = Int(minutesString) ?? 0
+                let seconds = Int(secondsString) ?? 0
+                let milliseconds = Int(millisecondsString) ?? 0
+                
+                // 타이머가 마지막으로 저장된 시간부터 시작하도록 설정
+                let totalTimeInSeconds = Double(minutes * 60 + seconds) + Double(milliseconds) / 100.0
+                mainStopwatch.counter = totalTimeInSeconds
+                updateMainTimer() 
+            } else {
+                print("Error: Missing time components in the saved time data.")
+                mainStopwatch.counter = 0.0
+            }
+        } else {
+            mainStopwatch.counter = 0.0
+        }
+        
+        // 랩타임 불러오기
+        if let laps = StopwatchCoreDataManager.shared.fetchAllLaps() {
+            lapTableViewData = laps.map { $0.recordTime ?? "00:00:00" }
+            diffTableViewData = laps.map { $0.diffTime ?? "00:00:00" }
+        }
+        
+        tableView.reloadData()
     }
 }
 
@@ -270,7 +240,7 @@ class StopwatchViewController: UIViewController {
 extension StopwatchViewController {
     
     private func changeButton(_ button: UIButton, title: String, titleColor: UIColor) {
-        button.setTitle(title, for: UIControl.State())
+        button.setTitle(title, for: .normal)
         button.setTitleColor(titleColor, for: .normal)
         button.layer.borderColor = titleColor.cgColor
     }
@@ -309,10 +279,10 @@ extension StopwatchViewController {
         let seconds = Int(stopwatch.counter.truncatingRemainder(dividingBy: 60))
         let milliseconds = Int((stopwatch.counter * 100).truncatingRemainder(dividingBy: 100))
         
-        labels[0].text = String(format: "%02d", minutes) // 분
-        labels[1].text = String(format: "%02d", seconds) // 초
-        labels[2].text = String(format: "%02d", milliseconds) // 밀리초
-    } // --> 밀리초로 계산하고 분과 초로 변환하는 방식
+        labels[0].text = String(format: "%02d", minutes)
+        labels[1].text = String(format: "%02d", seconds)
+        labels[2].text = String(format: "%02d", milliseconds)
+    }
     
     private func updateLapTimer(_ stopwatch: Stopwatch) {
         stopwatch.counter = stopwatch.counter + 0.01
@@ -339,14 +309,10 @@ extension StopwatchViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: StopwatchCell.identifier, for: indexPath) as? StopwatchCell else { return UITableViewCell() }
         
-        // 최신 랩타임이 맨 위에 표시되도록 랩 번호 계산
         let lapCount = lapTableViewData.count - indexPath.row
         
         cell.lapLabel.text = "Lap \(lapCount)"
-
-        // 실제 기록
         cell.recordLabel.text = "\(lapTableViewData[lapCount-1])"
-        // 앞 기록과의 차이
         cell.diffLabel.text = "\(diffTableViewData[lapCount-1])"
         
         return cell

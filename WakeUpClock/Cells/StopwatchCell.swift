@@ -11,28 +11,11 @@ import SnapKit
 class StopwatchCell: UITableViewCell {
 
     static let identifier = "StopwatchCell"
-    
-    let lapLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 17)
-        label.textColor = UIColor(named: "textColor")
-        return label
-    }()
-    
-    let recordLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16)
-        label.textColor = UIColor(named: "textColor")
-        return label
-    }()
-    
-    let diffLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16)
-        label.textColor = UIColor(named: "textColor")
-        return label
-    }()
-    
+                                                                
+    let lapLabel: UILabel = UIFactory.makeLabel(color: UIColor(named: "textColor") ?? .black, fontSize: 17, weight: .bold)
+    let recordLabel: UILabel = UIFactory.makeLabel(color: UIColor(named: "textColor") ?? .black, fontSize: 16, weight: .regular)
+    let diffLabel: UILabel = UIFactory.makeLabel(color: UIColor(named: "textColor") ?? .black, fontSize: 16, weight: .regular)
+      
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureUI()
