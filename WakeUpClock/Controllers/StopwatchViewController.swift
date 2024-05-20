@@ -12,11 +12,11 @@ class StopwatchViewController: UIViewController {
     
     // MARK: - 프로퍼티
     private let mainStopwatch: Stopwatch = Stopwatch()
-    private let lapStopwatch: Stopwatch = Stopwatch() // 랩타임 계산
+    private let lapStopwatch: Stopwatch = Stopwatch()
     private var isPlay: Bool = false
-    private var diffTime = "" // diff 타임 담아줄 변수
+    private var diffTime = ""
     private var lapTableViewData: [String] = []
-    private var diffTableViewData: [String] = [] // 앞 기록과의 차이
+    private var diffTableViewData: [String] = []
     
     // MARK: - 컴포넌트
     private let stackView: UIStackView = UIFactory.makeStackView()
@@ -153,7 +153,6 @@ class StopwatchViewController: UIViewController {
             let timerLabelText = "\(minutesLabel.text ?? "00"):\(secondsLabel.text ?? "00"):\(milliSecondsLabel.text ?? "00")"
             lapTableViewData.append(timerLabelText)
             
-            // diff 타임 배열에 추가해야함!
             diffTableViewData.append(diffTime)
             resetLapTimer()
             
@@ -166,7 +165,6 @@ class StopwatchViewController: UIViewController {
             // 랩 타이머 재시작
             unowned let weakSelf = self
             lapStopwatch.timer = Timer.scheduledTimer(timeInterval: 0.01, target: weakSelf, selector: Selector.updateLapTimer, userInfo: nil, repeats: true)
-            // --> 타이머 생성 및 설정 0.01초마다 updateLapTimer 메서드를 호출
             RunLoop.current.add(lapStopwatch.timer, forMode: RunLoop.Mode.common)
         }
         
@@ -242,7 +240,7 @@ class StopwatchViewController: UIViewController {
 extension StopwatchViewController {
     
     private func changeButton(_ button: UIButton, title: String, titleColor: UIColor) {
-        button.setTitle(title, for: UIControl.State())
+        button.setTitle(title, for: .normal)
         button.setTitleColor(titleColor, for: .normal)
         button.layer.borderColor = titleColor.cgColor
     }
@@ -281,10 +279,10 @@ extension StopwatchViewController {
         let seconds = Int(stopwatch.counter.truncatingRemainder(dividingBy: 60))
         let milliseconds = Int((stopwatch.counter * 100).truncatingRemainder(dividingBy: 100))
         
-        labels[0].text = String(format: "%02d", minutes) // 분
-        labels[1].text = String(format: "%02d", seconds) // 초
-        labels[2].text = String(format: "%02d", milliseconds) // 밀리초
-    } // --> 밀리초로 계산하고 분과 초로 변환하는 방식
+        labels[0].text = String(format: "%02d", minutes)
+        labels[1].text = String(format: "%02d", seconds)
+        labels[2].text = String(format: "%02d", milliseconds)
+    }
     
     private func updateLapTimer(_ stopwatch: Stopwatch) {
         stopwatch.counter = stopwatch.counter + 0.01
@@ -311,14 +309,10 @@ extension StopwatchViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: StopwatchCell.identifier, for: indexPath) as? StopwatchCell else { return UITableViewCell() }
         
-        // 최신 랩타임이 맨 위에 표시되도록 랩 번호 계산
         let lapCount = lapTableViewData.count - indexPath.row
         
         cell.lapLabel.text = "Lap \(lapCount)"
-
-        // 실제 기록
         cell.recordLabel.text = "\(lapTableViewData[lapCount-1])"
-        // 앞 기록과의 차이
         cell.diffLabel.text = "\(diffTableViewData[lapCount-1])"
         
         return cell
