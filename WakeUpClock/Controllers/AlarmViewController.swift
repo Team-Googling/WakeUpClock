@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import SnapKit
 
 class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     // MARK: - Properties
@@ -49,20 +48,31 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
     }
     
     // MARK: - Setup Methods
-    func setupTableView() {
+    private func setupTableView() {
         // MARK: - Table View Setup
         tableView = UITableView(frame: view.bounds, style: .plain)
-        tableView.dataSource = self
-        tableView.delegate = self
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
         tableView.backgroundColor = UIColor(named: "backGroudColor")
         tableView.register(AlarmCell.self, forCellReuseIdentifier: "AlarmCell")
+        
         view.addSubview(tableView)
+        
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+        
+        tableView.dataSource = self
+        tableView.delegate = self
     }
     
+    // MARK: - Loading View Setup
     func setupLoadingView() {
-        // MARK: - Loading View Setup
         loadingView = UIView(frame: view.bounds)
         loadingView.backgroundColor = UIColor(white: 0, alpha: 0.5)
         loadingView.isHidden = true
@@ -144,8 +154,6 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
         return 120
     }
 }
-
-
 
 // MARK: - AlarmCell
 class AlarmCell: UITableViewCell {
@@ -321,7 +329,6 @@ class AlarmCell: UITableViewCell {
         updateSwitchTintColor()
     }
     
-    
     // MARK: - setupViews
     private func setupViews() {
         contentView.addSubview(alarmUIView)
@@ -347,23 +354,29 @@ class AlarmCell: UITableViewCell {
         alarmSetItemStackUIView.addArrangedSubview(checkBox)
         alarmSetItemStackUIView.addArrangedSubview(customView)
         
-        alarmUIView.snp.makeConstraints {
-            $0.edges.equalToSuperview().inset(UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10))
-        }
+        alarmUIView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            alarmUIView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            alarmUIView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            alarmUIView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            alarmUIView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
+        ])
         
-        alarmTextStackUIView.snp.makeConstraints {
-            $0.leading.equalTo(alarmUIView.snp.leading).offset(20)
-            $0.centerY.equalTo(alarmUIView).offset(2)
-            $0.width.equalTo(100)
-            $0.height.equalTo(60)
-        }
+        alarmTextStackUIView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            alarmTextStackUIView.leadingAnchor.constraint(equalTo: alarmUIView.leadingAnchor, constant: 20),
+            alarmTextStackUIView.centerYAnchor.constraint(equalTo: alarmUIView.centerYAnchor, constant: 2),
+            alarmTextStackUIView.widthAnchor.constraint(equalToConstant: 100),
+            alarmTextStackUIView.heightAnchor.constraint(equalToConstant: 60)
+        ])
         
-        alarmSetItemStackUIView.snp.makeConstraints {
-            $0.trailing.equalTo(alarmUIView.snp.trailing).offset(-20)
-            $0.centerY.equalTo(alarmUIView).offset(2)
-            $0.width.equalTo(164)
-            $0.height.equalTo(60)
-        }
+        alarmSetItemStackUIView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            alarmSetItemStackUIView.trailingAnchor.constraint(equalTo: alarmUIView.trailingAnchor, constant: -20),
+            alarmSetItemStackUIView.centerYAnchor.constraint(equalTo: alarmUIView.centerYAnchor, constant: 2),
+            alarmSetItemStackUIView.widthAnchor.constraint(equalToConstant: 164),
+            alarmSetItemStackUIView.heightAnchor.constraint(equalToConstant: 60)
+        ])
     }
     
     private func updateAppearance() {
