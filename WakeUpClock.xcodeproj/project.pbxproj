@@ -10,6 +10,9 @@
 		3C4627742BF64BCE009C8C96 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = F39FCE172BF1C69600F5431C /* SnapKit */; };
 		3C5117522BF2447700FB47B0 /* TimerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C5117512BF2447700FB47B0 /* TimerTableViewCell.swift */; };
 		3C5117582BF3A15500FB47B0 /* DurationPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 3C5117572BF3A15500FB47B0 /* DurationPicker */; };
+		9C761FC12BF6D83C00DBDB54 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = F39FCE172BF1C69600F5431C /* SnapKit */; };
+		9C761FC82BF6E5D300DBDB54 /* MyAlarm+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C761FC62BF6E5D300DBDB54 /* MyAlarm+CoreDataClass.swift */; };
+		9C761FC92BF6E5D300DBDB54 /* MyAlarm+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C761FC72BF6E5D300DBDB54 /* MyAlarm+CoreDataProperties.swift */; };
 		9CE566762BF6071A00E5568A /* WakeUpClock.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9CE566742BF6071A00E5568A /* WakeUpClock.xcdatamodeld */; };
 		F39FCDF32BF1C48B00F5431C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39FCDF22BF1C48B00F5431C /* AppDelegate.swift */; };
 		F39FCDF52BF1C48B00F5431C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39FCDF42BF1C48B00F5431C /* SceneDelegate.swift */; };
@@ -30,6 +33,8 @@
 
 /* Begin PBXFileReference section */
 		3C5117512BF2447700FB47B0 /* TimerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerTableViewCell.swift; sourceTree = "<group>"; };
+		9C761FC62BF6E5D300DBDB54 /* MyAlarm+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MyAlarm+CoreDataClass.swift"; sourceTree = "<group>"; };
+		9C761FC72BF6E5D300DBDB54 /* MyAlarm+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MyAlarm+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		9CE566752BF6071A00E5568A /* WakeUpClock.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = WakeUpClock.xcdatamodel; sourceTree = "<group>"; };
 		F39FCDEF2BF1C48B00F5431C /* WakeUpClock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WakeUpClock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F39FCDF22BF1C48B00F5431C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -55,7 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3C4627742BF64BCE009C8C96 /* SnapKit in Frameworks */,
+				9C761FC12BF6D83C00DBDB54 /* SnapKit in Frameworks */,
 				3C5117582BF3A15500FB47B0 /* DurationPicker in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -89,6 +94,8 @@
 				F39FCE0B2BF1C50D00F5431C /* Controllers */,
 				F39FCE242BF332BF00F5431C /* Cells */,
 				9CE566742BF6071A00E5568A /* WakeUpClock.xcdatamodeld */,
+				9C761FC62BF6E5D300DBDB54 /* MyAlarm+CoreDataClass.swift */,
+				9C761FC72BF6E5D300DBDB54 /* MyAlarm+CoreDataProperties.swift */,
 				F39FCDF82BF1C48B00F5431C /* Main.storyboard */,
 				F39FCDFB2BF1C48D00F5431C /* Assets.xcassets */,
 				F39FCDFD2BF1C48D00F5431C /* LaunchScreen.storyboard */,
@@ -228,6 +235,8 @@
 				F39FCE1A2BF1D9F900F5431C /* UIImage+.swift in Sources */,
 				F39FCDF32BF1C48B00F5431C /* AppDelegate.swift in Sources */,
 				F39FCDF52BF1C48B00F5431C /* SceneDelegate.swift in Sources */,
+				9C761FC82BF6E5D300DBDB54 /* MyAlarm+CoreDataClass.swift in Sources */,
+				9C761FC92BF6E5D300DBDB54 /* MyAlarm+CoreDataProperties.swift in Sources */,
 				F39FCE232BF332B500F5431C /* StopwatchCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -386,8 +395,9 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -395,9 +405,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.clock.WakeUpClock;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -414,8 +428,9 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -423,9 +438,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.clock.WakeUpClock;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

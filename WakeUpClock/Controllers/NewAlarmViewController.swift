@@ -11,14 +11,14 @@ import CoreData
 
 class NewAlarmViewController: UIViewController {
     private let daysArray: [String] = [" M", " T", " W", " Th", " F", " St", " S"]
-    private var hourArray: [Int] = []
-    private var minuteArray: [Int] = []
+    private var hourArray: [Int] = Array(0...23)
+    private var minuteArray: [Int] = Array(0...59)
     private var soundsArray: [String] = ["TestSound1", "TestSound2", "TestSound3"]
     private var selectedHour: Int = 0
     private var selectedMinute: Int = 0
     private var selectedSoundIndex: Int = 0
     private var selectedDays: [Bool] = [false, false, false, false, false, false, false]
-        
+    
     // MARK: - 스크롤 뷰
     private var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -29,8 +29,7 @@ class NewAlarmViewController: UIViewController {
     // MARK: - 시간 관련 뷰
     private var timeSelectView: UIView = {
         let view = UIView()
-        //view.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-        view.layer.borderColor = UIColor(named: "textColor")?.cgColor
+        view.backgroundColor = UIColor(named: "glassEffectColor")
         view.layer.borderWidth = 1
         view.layer.cornerRadius = 10
         view.clipsToBounds = true
@@ -47,12 +46,13 @@ class NewAlarmViewController: UIViewController {
     
     private var hourView: UIView = {
         let view = UIView()
-        view.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        view.layer.borderColor = UIColor(named: "textColor")?.cgColor
         view.layer.borderWidth = 1
         view.layer.cornerRadius = 10
         view.clipsToBounds = true
         return view
     }()
+    
     // MARK: - :
     private var colonLabel: UILabel = {
         let label = UILabel()
@@ -62,7 +62,7 @@ class NewAlarmViewController: UIViewController {
     }()
     private var minuteView: UIView = {
         let view = UIView()
-        view.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        view.layer.borderColor = UIColor(named: "textColor")?.cgColor
         view.layer.borderWidth = 1
         view.layer.cornerRadius = 10
         view.clipsToBounds = true
@@ -93,7 +93,7 @@ class NewAlarmViewController: UIViewController {
     // MARK: - 날짜 관련 뷰
     private var daysView: UIView = {
         let view = UIView()
-        view.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        view.backgroundColor = UIColor(named: "glassEffectColor")
         view.layer.borderWidth = 1
         view.layer.cornerRadius = 10
         view.clipsToBounds = true
@@ -121,7 +121,7 @@ class NewAlarmViewController: UIViewController {
     // MARK: - 알람 이름 관련 뷰
     private var alarmNameView: UIView = {
         let view = UIView()
-        view.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        view.backgroundColor = UIColor(named: "glassEffectColor")
         view.layer.borderWidth = 1
         view.layer.cornerRadius = 10
         view.clipsToBounds = true
@@ -141,7 +141,8 @@ class NewAlarmViewController: UIViewController {
     private var alarmNameTextField: UITextField = {
         let textField = UITextField()
         textField.backgroundColor = UIColor(named: "backgroundColor")
-        textField.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        //textField.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        textField.layer.borderColor = UIColor(named: "textColor")?.cgColor
         textField.layer.borderWidth = 1
         return textField
     }()
@@ -149,7 +150,7 @@ class NewAlarmViewController: UIViewController {
     // MARK: - 옵션 설정 관련 뷰
     private var preferencesView: UIView = {
         let view = UIView()
-        view.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        view.backgroundColor = UIColor(named: "glassEffectColor")
         view.layer.borderWidth = 1
         view.layer.cornerRadius = 10
         view.clipsToBounds = true
@@ -252,7 +253,7 @@ class NewAlarmViewController: UIViewController {
         button.setTitle("Cancel", for: .normal)
         button.setTitleColor(UIColor(named: "textColor"), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
-        button.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        button.layer.borderColor = UIColor(named: "textColor")?.cgColor
         button.layer.borderWidth = 1
         button.layer.cornerRadius = 10
         button.clipsToBounds = true
@@ -264,18 +265,20 @@ class NewAlarmViewController: UIViewController {
     private lazy var doneButton: UIButton = {
         let button = UIButton()
         button.setTitle("Done", for: .normal)
-        button.setTitleColor(UIColor(named: "secondaryColor"), for: .normal)
+        button.setTitleColor(UIColor(named: "mainActiveColor"), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
-        button.layer.borderColor = UIColor(named: "secondaryColor")?.cgColor
+        button.layer.borderColor = UIColor(named: "mainActiveColor")?.cgColor
         button.layer.borderWidth = 1
         button.layer.cornerRadius = 10
         button.clipsToBounds = true
         button.addTarget(self, action: #selector(doneButtonTapped(_:)), for: .touchUpInside)
         return button
     }()
-        
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = UIColor(named: "backGroudColor")
+        
         hourPickerView.dataSource = self
         hourPickerView.delegate = self
         minutePickerView.dataSource = self
@@ -283,40 +286,95 @@ class NewAlarmViewController: UIViewController {
         preferenceSoundPickerView.dataSource = self
         preferenceSoundPickerView.delegate = self
         
-        for i in 0...23 {
-            hourArray.append(i)
-        }
-        for i in 0...59 {
-            minuteArray.append(i)
-        }
-        
         setupAddView()
         setupAutoLayout()
+    }
+        
+    // MARK: - 다크모드 변경 확인
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            updateDayButtonImages()
+        }
+    }
+    
+    private func updateDayButtonImages() {
+        for view in daysStackView.arrangedSubviews {
+            if let button = view as? UIButton {
+                updateDayButtonImage(button: button)
+            }
+        }
+    }
+    
+    private func updateDayButtonImage(button: UIButton) {
+        let imageName: String
+        if button.tag == 0 {
+            imageName = traitCollection.userInterfaceStyle == .dark ? "dark-box" : "box"
+        } else {
+            imageName = traitCollection.userInterfaceStyle == .dark ? "dark-checkbox" : "checkbox"
+        }
+        button.setImage(UIImage(named: imageName), for: .normal)
+    }
+    
+    // MARK: - String -> Date 변환
+    func convertStringToDate(_ hour: Int, _ minute: Int) -> Date? {
+        let dateString: String = "\(hour):\(minute)"  // 넣을 데이터
+        
+        let myFormatter = DateFormatter()
+        myFormatter.dateFormat = "HH:mm"
+        myFormatter.timeZone = NSTimeZone(name: "UTC") as TimeZone?
+        
+        let stirngDate = myFormatter.date(from: dateString)
+        return stirngDate
     }
     
     // MARK: - 코어데이터 입력하기
     private func insertMyAlarmEntities() {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         let context = appDelegate.persistentContainer.viewContext
-
+        
         guard let entity = NSEntityDescription.entity(forEntityName: "MyAlarm", in: context) else { return }
         let alarm = NSManagedObject(entity: entity, insertInto: context)
         alarm.setValue(UUID(), forKey: "id")
-        //alarm.setValue(time, forKey: "time")
-//        alarm.setValue(repeatDays, forKey: "repeatDays")
+        alarm.setValue(convertStringToDate(selectedHour, selectedMinute), forKey: "time")
+        alarm.setValue(selectedDays, forKey: "repeatDays")
         alarm.setValue(alarmNameTextField.text, forKey: "title")
         alarm.setValue(preferenceVibrationSwitch.isOn, forKey: "isVibration")
         alarm.setValue(preferenceSnoozeSwitch.isOn, forKey: "isSnooze")
         alarm.setValue(soundsArray[selectedSoundIndex], forKey: "sound")
         alarm.setValue(true, forKey: "isEnabled")
         try? context.save()
-        
     }
     
     // MARK: - 취소 버튼 선택
     @objc private func cancelButtonTapped(_ sender: UIButton) {
         print("취소버튼 선택")
-        //dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: nil)
+//        do {
+//            // 코어 데이터에서 MyAlarm 엔티티의 모든 데이터를 가져오기
+//            let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+//            let request = NSFetchRequest<MyAlarm>(entityName: "MyAlarm")
+//            let result = try context.fetch(request)
+//            print("result: \(result)")
+//            for date in result {
+//                if let id = date.id {
+//                    print(id)
+//                }
+//                if let time = date.time {
+//                    print(time)
+//                }
+//                if let days = date.repeatDays {
+//                    print(date.repeatDays)
+//                }
+//                print(date.title)
+//                print(date.isVibration)
+//                print(date.isSnooze)
+//                print(date.sound)
+//                print(date.isEnabled)
+//            }
+//        } catch {
+//            print("코어 데이터에서 데이터를 가져오는데 실패했습니다: \(error.localizedDescription)")
+//        }
     }
     
     // MARK: - 완료 버튼 선택
@@ -324,9 +382,20 @@ class NewAlarmViewController: UIViewController {
         print("**********완료버튼 선택**********")
         print("선택 시간: \(selectedHour), 선택 분: \(selectedMinute)")
         print("선택 요일: \(selectedDays)")
-        print("알람 이름: \(alarmNameTextField.text)")
+        print("알람 이름: \(alarmNameTextField.text ?? "")")
         print("진동유무: \(preferenceVibrationSwitch.isOn), 스누즈유무: \(preferenceSnoozeSwitch.isOn), 선택Sound: \(soundsArray[selectedSoundIndex])")
         
+        let dateString: String = "\(selectedHour):\(selectedMinute)"
+        let myFormatter = DateFormatter()
+        myFormatter.dateFormat = "HH:mm"
+        myFormatter.timeZone =  NSTimeZone(name: "UTC") as TimeZone?
+        if let stirngDate = myFormatter.date(from: dateString) {
+            print("선택 시간: \(stirngDate)")
+        }
+        
+        insertMyAlarmEntities() //코어데이터 입력완료
+        print("코어데이터 입력 완료")
+        dismiss(animated: true, completion: nil)
     }
     
     // MARK: - 날짜 버튼 선택
@@ -345,10 +414,18 @@ class NewAlarmViewController: UIViewController {
         //날짜 선택에 따른 체크박스 버튼 이미지 변경
         if sender.tag == 0 {
             sender.tag = 1
-            sender.setImage(UIImage(named: "checkbox"), for: .normal)
+            if traitCollection.userInterfaceStyle == .dark {
+                sender.setImage(UIImage(named: "dark-checkbox"), for: .normal)
+            } else {
+                sender.setImage(UIImage(named: "checkbox"), for: .normal)
+            }
         } else {
             sender.tag = 0
-            sender.setImage(UIImage(named: "box"), for: .normal)
+            if traitCollection.userInterfaceStyle == .dark {
+                sender.setImage(UIImage(named: "dark-box"), for: .normal)
+            } else {
+                sender.setImage(UIImage(named: "box"), for: .normal)
+            }
         }
     }
     
@@ -372,7 +449,11 @@ class NewAlarmViewController: UIViewController {
         daysView.addSubview(daysStackView)
         for day in daysArray {
             let button = UIButton()
-            button.setImage(UIImage(named: "box"), for: .normal)
+            if traitCollection.userInterfaceStyle == .dark {
+                button.setImage(UIImage(named: "dark-box"), for: .normal)
+            } else {
+                button.setImage(UIImage(named: "box"), for: .normal)
+            }
             button.setTitle(day, for: .normal)
             button.titleLabel?.font = UIFont.systemFont(ofSize: 13)
             button.setTitleColor(UIColor(named: "textColor"), for: .normal)
