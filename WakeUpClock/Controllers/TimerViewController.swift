@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import DurationPicker
+import CoreData
 
 enum TimerState {
     case started
@@ -25,6 +26,9 @@ class TimerViewController: UIViewController {
     private var timerState: TimerState = .finished
     private var timerLists: [(time: Int, name: String?)] = []
     private var setTime: Int = 0
+    var persistentContainer: NSPersistentContainer? {
+       (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer
+   }
     
     private let scrollView = UIScrollView()
     private let contentView = UIView()
@@ -65,6 +69,7 @@ class TimerViewController: UIViewController {
         configureUI()
         setupButtons()
         setUpKeyboard()
+        fetchTimers()
     }
     
     // MARK: - Setup
@@ -242,6 +247,7 @@ class TimerViewController: UIViewController {
         
     }
     
+    
     // MARK: - Action Functions
     func setTimer(with countDownSeconds: Int) {
         print("countDownSeconds: \(countDownSeconds)")
@@ -300,18 +306,22 @@ class TimerViewController: UIViewController {
             remainTime.isHidden = false
             cancelButton.isEnabled = true
             cancelButton.alpha = 1
-            startButton.layer.borderColor = UIColor.green.cgColor
+            cancelButton.setTitleColor(.mainInactiveText, for: .normal)
+            startButton.layer.borderColor = UIColor.systemGreen.cgColor
             startButton.setTitle("Pause", for: .normal)
-            startButton.setTitleColor(.green, for: .normal)
+            startButton.setTitleColor(.systemGreen, for: .normal)
         case .pause:
             // 타이머 일시정지 상태에 대한 UI 업데이트
             cancelButton.alpha = 1
+            cancelButton.setTitleColor(.mainInactiveText, for: .normal)
             startButton.layer.borderColor = UIColor.mainActive.cgColor
             startButton.setTitle("Resume", for: .normal)
             startButton.setTitleColor(.mainActive, for: .normal)
             
         case .resumed:
             // 타이머 재개 상태에 대한 UI 업데이트
+            cancelButton.alpha = 1
+            cancelButton.setTitleColor(.mainInactiveText, for: .normal)
             startButton.layer.borderColor = UIColor.green.cgColor
             startButton.setTitle("Pause", for: .normal)
             startButton.setTitleColor(.green, for: .normal)
@@ -345,19 +355,82 @@ class TimerViewController: UIViewController {
     }
     
     func addRecentTimer() {
-        let timerName = nameInputTextField.text
+//        let timerName = nameInputTextField.text
+//        
+//        if let timerName = timerName {
+//            timerLists.insert((time: setTime, name: timerName), at: 0)
+//        }
+//        else {
+//            timerLists.insert((time: setTime, name: nil), at: 0)
+//        }
+//        nameInputTextField.text = ""
+        let timerName = nameInputTextField.text ?? ""
+        let timerTime = setTime
+
+        // Core Data에 저장
+        saveTimer(name: timerName, time: timerTime)
+
+        // 메모리 내 목록과 UI 업데이트
+        timerLists.insert((time: timerTime, name: timerName), at: 0)
         
-        if let timerName = timerName {
-            timerLists.append((time: setTime, name: timerName))
-        }
-        else {
-            timerLists.append((time: setTime, name: nil))
-        }
         nameInputTextField.text = ""
+        reloadTableView()
     }
+
+// MARK: - CORE DATA
+    //core data 에 저장
+    func saveTimer(name: String, time: Int) {
+        guard let context = persistentContainer?.viewContext else { return }
+        let myTimer = MyTimer(context: context)
+        myTimer.name = name
+        myTimer.time = Int32(time)
+
+        do {
+            try context.save()
+            print("타이머가 성공적으로 저장되었습니다.")
+        } catch {
+            print("타이머 저장에 실패했습니다: \(error)")
+        }
+    }
+    // core data 불러오기
+    func fetchTimers() {
+        guard let context = persistentContainer?.viewContext else { return }
+        let fetchRequest = MyTimer.fetchRequest()
+
+        do {
+            let timers = try context.fetch(fetchRequest)
+            timerLists = timers.map { timer in
+                let time = Int(timer.time)
+                let name = timer.name
+                return (time: time, name: name)
+            }
+            reloadTableView()
+        } catch {
+            print("타이머를 가져오는데 실패했습니다: \(error)")
+        }
+    }
+    
+    // core data 삭제
+    func deleteTimer(timer: (time: Int, name: String?)) {
+        guard let context = persistentContainer?.viewContext else { return }
+        let fetchRequest = MyTimer.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "name == %@ AND time == %d", timer.name ?? "", timer.time)
+
+        do {
+            let fetchedTimers = try context.fetch(fetchRequest)
+            for fetchedTimer in fetchedTimers {
+                context.delete(fetchedTimer)
+            }
+            try context.save()
+            print("타이머가 성공적으로 삭제되었습니다.")
+        } catch {
+            print("타이머 삭제에 실패했습니다: \(error)")
+        }
+    }
+
 }
 
-
+// MARK: - TextFieldDelegate
 extension TimerViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         print("return")
@@ -383,6 +456,8 @@ extension TimerViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
+            let timerToDelete = timerLists[indexPath.row]
+            deleteTimer(timer: timerToDelete)
             timerLists.remove(at: indexPath.row)
             recentlyUsedTabelView.deleteRows(at: [indexPath], with: .fade)
             reloadTableView()

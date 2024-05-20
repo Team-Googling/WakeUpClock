@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Timer {
+struct TimerModel {
     var time: Int
     var name: String
 }
