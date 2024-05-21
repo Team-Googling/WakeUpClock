@@ -43,8 +43,8 @@ class ClockViewController: UIViewController {
         view.addSubview(collectionView)
         
         collectionView.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(24)
-            $0.trailing.leading.equalToSuperview().inset(16)
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(20)
+            $0.trailing.leading.equalToSuperview().inset(10)
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     

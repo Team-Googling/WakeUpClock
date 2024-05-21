@@ -14,7 +14,7 @@ extension TimeZone {
     // 현재 시간을 타임존 시간으로 포맷
     var currentTime: String? {
         formatter.timeZone = self
-        formatter.dateFormat = "h:mm"
+        formatter.dateFormat = "hh:mm"
         
         return formatter.string(from: .now)
     }

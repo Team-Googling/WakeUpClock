@@ -43,19 +43,22 @@ class ClockCell: UICollectionViewCell {
         }
         
         timeOffsetLabel.snp.makeConstraints {
-            $0.top.equalTo(timeZoneLabel.snp.bottom).offset(4)
+            $0.top.equalTo(timeZoneLabel.snp.bottom).offset(8)
             $0.trailing.equalToSuperview().inset(20)
         }
         
         timePeriodLabel.snp.makeConstraints {
             $0.bottom.equalTo(timeLabel.snp.bottom).inset(8)
-            $0.trailing.equalTo(timeLabel.snp.leading ).inset(-6)
+            $0.trailing.equalTo(timeLabel.snp.leading).inset(-4)
         }
         
         timeLabel.snp.makeConstraints {
-            $0.top.equalTo(timeOffsetLabel.snp.bottom).offset(14)
-            $0.trailing.equalToSuperview().inset(16)
+            $0.top.equalTo(timeOffsetLabel.snp.bottom).offset(4)
+            $0.trailing.equalToSuperview().inset(18)
         }
         
     }
+}
+#Preview{
+    ClockViewController()
 }
