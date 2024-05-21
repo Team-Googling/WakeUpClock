@@ -404,6 +404,7 @@ class TimerViewController: UIViewController {
                 let name = timer.name
                 return (time: time, name: name)
             }
+            timerLists.reverse()
             reloadTableView()
         } catch {
             print("타이머를 가져오는데 실패했습니다: \(error)")
