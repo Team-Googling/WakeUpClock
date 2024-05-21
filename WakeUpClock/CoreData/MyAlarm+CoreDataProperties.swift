@@ -2,7 +2,7 @@
 //  MyAlarm+CoreDataProperties.swift
 //  WakeUpClock
 //
-//  Created by imhs on 5/17/24.
+//  Created by 정유진 on 5/20/24.
 //
 //
 
