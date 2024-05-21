@@ -15,7 +15,7 @@ class ClockCell: UICollectionViewCell {
     let timeZoneLabel: UILabel = UIFactory.makeLabel(text: "Seoul", color: UIColor(named: "textColor") ?? .black, fontSize: 20, weight: .medium)
     let timeOffsetLabel: UILabel = UIFactory.makeLabel(text: "+0시간", color: UIColor(named: "textColor") ?? .black, fontSize: 14, weight: .regular)
     let timeLabel: UILabel = UIFactory.makeLabel(text: "13:55", color: UIColor(named: "textColor") ?? .black, fontSize: 40, weight: .semibold)
-    
+    let timePeriodLabel: UILabel = UIFactory.makeLabel(text: "AM", color: UIColor(named: "textColor") ?? .black, fontSize: 14, weight: .regular)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -33,7 +33,7 @@ class ClockCell: UICollectionViewCell {
     }
     
     private func setupConstraints() {
-        [timeZoneLabel, timeOffsetLabel, timeLabel].forEach {
+        [timeZoneLabel, timeOffsetLabel, timePeriodLabel, timeLabel].forEach {
             contentView.addSubview($0)
         }
         
@@ -43,17 +43,19 @@ class ClockCell: UICollectionViewCell {
         }
         
         timeOffsetLabel.snp.makeConstraints {
-            $0.top.equalTo(timeZoneLabel.snp.bottom).offset(5)
+            $0.top.equalTo(timeZoneLabel.snp.bottom).offset(4)
             $0.trailing.equalToSuperview().inset(20)
         }
         
+        timePeriodLabel.snp.makeConstraints {
+            $0.bottom.equalTo(timeLabel.snp.bottom).inset(8)
+            $0.trailing.equalTo(timeLabel.snp.leading ).inset(-6)
+        }
+        
         timeLabel.snp.makeConstraints {
-            $0.top.equalTo(timeOffsetLabel.snp.bottom).offset(6)
-            $0.centerX.equalToSuperview()
+            $0.top.equalTo(timeOffsetLabel.snp.bottom).offset(14)
+            $0.trailing.equalToSuperview().inset(16)
         }
         
     }
-    
-    
-    
 }
