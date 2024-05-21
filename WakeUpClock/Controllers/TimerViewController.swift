@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 import DurationPicker
 import CoreData
+import UserNotifications
 
 enum TimerState {
     case started
@@ -29,7 +30,7 @@ class TimerViewController: UIViewController {
     var persistentContainer: NSPersistentContainer? {
        (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer
    }
-    
+    let userNotificationCenter = UNUserNotificationCenter.current()
     private let scrollView = UIScrollView()
     private let contentView = UIView()
     private let backgroundCircleView: UIView = {
@@ -270,6 +271,7 @@ class TimerViewController: UIViewController {
 //            print("remainSeconds: \(remainSeconds)")
             self?.setTime = remainSeconds
             self?.remainTime.text = self?.convertSecondsToTime(timeInSeconds: remainSeconds)
+            self?.sendNotification(seconds: Double(countDownSeconds))
         })
     }
     
@@ -355,15 +357,6 @@ class TimerViewController: UIViewController {
     }
     
     func addRecentTimer() {
-//        let timerName = nameInputTextField.text
-//        
-//        if let timerName = timerName {
-//            timerLists.insert((time: setTime, name: timerName), at: 0)
-//        }
-//        else {
-//            timerLists.insert((time: setTime, name: nil), at: 0)
-//        }
-//        nameInputTextField.text = ""
         let timerName = nameInputTextField.text ?? ""
         let timerTime = setTime
 
@@ -426,6 +419,25 @@ class TimerViewController: UIViewController {
             print("타이머가 성공적으로 삭제되었습니다.")
         } catch {
             print("타이머 삭제에 실패했습니다: \(error)")
+        }
+    }
+
+    // MARK: - UserNotification
+    func sendNotification(seconds: Double) {
+        let notificationContent = UNMutableNotificationContent()
+        
+        notificationContent.title = "WakeUpClock"
+        notificationContent.body = "타이머 종료"
+        notificationContent.sound = UNNotificationSound(named: UNNotificationSoundName(rawValue: "Stargaze.mp3"))
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: seconds, repeats: false)
+        let request = UNNotificationRequest(identifier: "testNotification",
+                                            content: notificationContent,
+                                            trigger: trigger)
+        
+        userNotificationCenter.add(request) { error in
+            if let error = error {
+                print("Notification Error: ", error)
+            }
         }
     }
 
