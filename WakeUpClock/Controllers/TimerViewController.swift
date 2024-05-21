@@ -77,16 +77,9 @@ class TimerViewController: UIViewController {
     func setupConstraints() {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
-        contentView.addSubview(backgroundCircleView)
-        contentView.addSubview(timerDurationPicker)
-        contentView.addSubview(remainTime)
-        contentView.addSubview(cancelButton)
-        contentView.addSubview(startButton)
-        contentView.addSubview(nameView)
-        contentView.addSubview(nameLabel)
-        contentView.addSubview(nameInputTextField)
-        contentView.addSubview(recentlyUsedLabel)
-        contentView.addSubview(recentlyUsedTabelView)
+        [backgroundCircleView, timerDurationPicker, remainTime, cancelButton, startButton, nameView, nameLabel, nameInputTextField, recentlyUsedLabel, recentlyUsedTabelView].forEach {
+            contentView.addSubview($0)
+        }
         
         scrollView.snp.makeConstraints {
             $0.top.leading.trailing.bottom.equalToSuperview()
@@ -164,7 +157,6 @@ class TimerViewController: UIViewController {
         contentView.backgroundColor = .clear
         
         backgroundCircleView.backgroundColor = .glassEffect
-//        backgroundCircleView.alpha = 0.5
         backgroundCircleView.layer.cornerRadius = 165
         backgroundCircleView.clipsToBounds = true
         
@@ -268,7 +260,6 @@ class TimerViewController: UIViewController {
                 
                 return
             }
-//            print("remainSeconds: \(remainSeconds)")
             self?.setTime = remainSeconds
             self?.remainTime.text = self?.convertSecondsToTime(timeInSeconds: remainSeconds)
             self?.sendNotification(seconds: Double(countDownSeconds))
