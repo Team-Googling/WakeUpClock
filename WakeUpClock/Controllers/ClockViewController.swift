@@ -10,6 +10,14 @@ import SnapKit
 
 class ClockViewController: UIViewController {
 
+    var timeList = [
+        TimeZone(identifier: "Asia/Seoul")!,
+        TimeZone(identifier: "Europe/Paris")!,
+        TimeZone(identifier: "America/New_York")!,
+        TimeZone(identifier: "Asia/Tehran")!,
+        TimeZone(identifier: "Asia/Vladivostok")!
+    ]
+    
     let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -22,7 +30,6 @@ class ClockViewController: UIViewController {
         super.viewDidLoad()
         configureUI()
         setupConstraints()
-
     }
     
     func configureUI() {
@@ -47,12 +54,17 @@ class ClockViewController: UIViewController {
 }
 extension ClockViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 6
+        return timeList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ClockCell.identifier, for: indexPath) as? ClockCell else { return UICollectionViewCell() }
         
+        let target = timeList[indexPath.item]
+        cell.timeLabel.text = target.currentTime
+        cell.timePeriodLabel.text = target.timePeriod
+        cell.timeZoneLabel.text = target.city
+        cell.timeOffsetLabel.text = target.timeOffset
         return cell
     }
     
@@ -74,7 +86,4 @@ extension ClockViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
     }
-}
-#Preview{
-    ClockViewController()
 }
