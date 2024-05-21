@@ -16,9 +16,9 @@ extension StopwatchLap {
         return NSFetchRequest<StopwatchLap>(entityName: "StopwatchLap")
     }
 
+    @NSManaged public var diffTime: String?
     @NSManaged public var lapNumber: Int64
     @NSManaged public var recordTime: String?
-    @NSManaged public var diffTime: String?
 
 }
 
