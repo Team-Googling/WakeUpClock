@@ -4,8 +4,10 @@
 //
 //  Created by wxxd-fxrest on 5/13/24.
 //
+//
 
 import UIKit
+import CoreData
 
 class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     // MARK: - Properties
@@ -13,8 +15,8 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
     var loadingView: UIView!
     
     let formatter = DateFormatter()
-    var originalAlarms = [Alarm]()
-    var temporaryAlarms = [Alarm]()
+    var alarms: [Alarm] = [] // Core Data에서 가져온 알람 데이터
+    
     
     // MARK: - Life Cycle
     override func viewDidLoad() {
@@ -22,31 +24,15 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
         
         formatter.dateFormat = "HH:mm"
         
-        // MARK: - Alarm Data Initialization
-        originalAlarms = [
-            Alarm(id: UUID(), time: formatter.date(from: "09:00") ?? Date(), repeatDays: ["M", "T", "W", "Th", "F", "St", "S"], title: "약 먹기", isEnabled: false, sound: ""),
-            Alarm(id: UUID(), time: formatter.date(from: "10:00") ?? Date(), repeatDays: ["M", "T", "W", "Th", "F"], title: "밥 먹기", isEnabled: true, sound: ""),
-            Alarm(id: UUID(), time: formatter.date(from: "11:00") ?? Date(), repeatDays: ["M", "T", "W", "Th"], title: "밥 먹기", isEnabled: false, sound: ""),
-            Alarm(id: UUID(), time: formatter.date(from: "12:00") ?? Date(), repeatDays: ["M", "T", "W", "Th", "F", "St", "S"], title: "밥 먹기", isEnabled: false, sound: ""),
-            Alarm(id: UUID(), time: formatter.date(from: "13:00") ?? Date(), repeatDays: ["M"], title: "밥 먹기", isEnabled: true, sound: ""),
-            Alarm(id: UUID(), time: formatter.date(from: "14:00") ?? Date(), repeatDays: ["M", "T", "W", "Th", "F", "St", "S"], title: "밥 먹기", isEnabled: true, sound: ""),
-            Alarm(id: UUID(), time: formatter.date(from: "15:00") ?? Date(), repeatDays: ["M", "T"],  title: "밥 먹기", isEnabled: false, sound: ""),
-            Alarm(id: UUID(), time: formatter.date(from: "16:00") ?? Date(), repeatDays: ["M", "T", "W", "Th", "F", "St", "S"], title: "밥 먹기", isEnabled: true, sound: ""),
-            Alarm(id: UUID(), time: formatter.date(from: "17:00") ?? Date(), repeatDays: ["M", "T", "W", "Th", "F", "St", "S"], title: "밥 먹기", isEnabled: true, sound: ""),
-            Alarm(id: UUID(), time: formatter.date(from: "18:00") ?? Date(), repeatDays: ["M", "T", "W", "Th", "F", "St", "S"], title: "밥 먹기", isEnabled: false, sound: ""),
-            Alarm(id: UUID(), time: formatter.date(from: "19:00") ?? Date(), repeatDays: ["M", "T", "W", "Th", "F", "St", "S"], title: "밥 먹기", isEnabled: true, sound: ""),
-            Alarm(id: UUID(), time: formatter.date(from: "20:00") ?? Date(), repeatDays: ["M", "T", "W", "Th", "F", "St", "S"], title: "밥 먹기", isEnabled: true, sound: ""),
-        ]
-        
-        temporaryAlarms = originalAlarms
-        
         // MARK: - UI Setup
         setupLoadingView()
         setupTableView()
         
         tableView.layoutIfNeeded()
+        
+        fetchAlarmsFromCoreData()
     }
-    
+
     // MARK: - Setup Methods
     private func setupTableView() {
         // MARK: - Table View Setup
@@ -110,39 +96,73 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
         }
     }
     
+    private func fetchAlarmsFromCoreData() {
+        // Fetch data from Core Data
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            print("Error: Unable to access AppDelegate.")
+            return
+        }
+        
+        let context = appDelegate.persistentContainer.viewContext
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "MyAlarm")
+        
+        do {
+            let result = try context.fetch(fetchRequest)
+            for data in result as! [NSManagedObject] {
+                guard let id = data.value(forKey: "id") as? UUID,
+                      let time = data.value(forKey: "time") as? Date,
+                      let repeatDays = data.value(forKey: "repeatDays") as? [Int], // 수정된 부분
+                      let isEnabled = data.value(forKey: "isEnabled") as? Bool else {
+                    print("Error: Failed to fetch alarm data. Some attributes are nil.")
+                    print("Data: \(data)")
+                    continue
+                }
+                
+                print("timetime \(time)")
+                
+                var title = data.value(forKey: "title") as? String
+                if title == nil || title?.isEmpty == true {
+                    title = "Alarm"
+                }
+                
+                print("Fetched alarm data:")
+                print("ID: \(id)")
+                print("Time: \(time)")
+                print("Repeat Days: \(repeatDays)")
+                print("Is Enabled: \(isEnabled)")
+                print("Title: \(title ?? "N/A")")
+                
+                let alarm = Alarm(id: id, time: time, repeatDays: repeatDays.map { String($0) }, title: title ?? "Alarm", isEnabled: isEnabled, sound: "")
+                alarms.append(alarm)
+                print("alarmsalarms: \(alarm)")
+                print("alarms count: \(alarms.count)")
+            }
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        } catch {
+            print("Failed to fetch data from Core Data: \(error.localizedDescription)")
+        }
+    }
+
+
+    
     // MARK: - UITableViewDataSource
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return originalAlarms.count
+        return alarms.count
     }
     
-    // MARK: - Cell Delete
-    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let deleteAction = UIContextualAction(style: .destructive, title: "") { (action, view, completion) in
-
-            self.originalAlarms.remove(at: indexPath.row)
-            
-            tableView.deleteRows(at: [indexPath], with: .fade)
-            
-            completion(true)
-        }
-        
-        deleteAction.backgroundColor = UIColor(named: "backGroudColor")
-        let trashImage = UIImage(systemName: "trash")?.withTintColor(UIColor(named: "textColor") ?? .gray, renderingMode: .alwaysOriginal)
-         deleteAction.image = trashImage
-        
-        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
-        return configuration
-    }
-
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "AlarmCell", for: indexPath) as! AlarmCell
         cell.backgroundColor = UIColor(named: "backGroudColor")
         
-        let alarm = originalAlarms[indexPath.row]
+        let alarm = alarms[indexPath.row]
         cell.titleLabel.text = alarm.title
         cell.updateTimeLabelText(alarm.time)
         cell.configure(with: alarm)
@@ -152,6 +172,48 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
     // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 120
+    }
+    
+    // MARK: - Cell Delete
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: "") { (action, view, completion) in
+            self.deleteAlarmFromCoreData(at: indexPath.row)
+            
+            self.alarms.remove(at: indexPath.row)
+            
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            
+            completion(true)
+        }
+        
+        deleteAction.backgroundColor = UIColor(named: "backGroudColor")
+        let trashImage = UIImage(systemName: "trash")?.withTintColor(UIColor(named: "textColor") ?? .gray, renderingMode: .alwaysOriginal)
+        deleteAction.image = trashImage
+        
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        return configuration
+    }
+    
+    // MARK: - Delete Alarm from Core Data
+    private func deleteAlarmFromCoreData(at index: Int) {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let context = appDelegate.persistentContainer.viewContext
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "MyAlarm")
+        
+        do {
+            let result = try context.fetch(fetchRequest)
+            if result.count > index {
+                let objectToDelete = result[index] as! NSManagedObject
+                context.delete(objectToDelete)
+                
+                try context.save()
+            } else {
+                print("Index out of bounds while deleting alarm from Core Data")
+            }
+        } catch {
+            print("Failed to delete alarm from Core Data: \(error.localizedDescription)")
+        }
     }
 }
 
@@ -292,19 +354,25 @@ class AlarmCell: UITableViewCell {
             arrangedSubview.removeFromSuperview()
         }
         
-        for day in repeatDays {
-            let dayLabel = UILabel()
-            dayLabel.text = day
-            dayLabel.textAlignment = .center
-            dayLabel.textColor = UIColor(named: "textColor")
-            dayLabel.font = UIFont.systemFont(ofSize: 14)
-            
-            dayLabel.translatesAutoresizingMaskIntoConstraints = false
-            dayLabel.widthAnchor.constraint(equalToConstant: 20).isActive = true
-            
-            daysStackView.addArrangedSubview(dayLabel)
-            dayLabels.append(dayLabel)
+        let repeatDaysArray = ["M", "T", "W", "Th", "F", "St", "S"]
+
+        for (index, isSelected) in repeatDays.enumerated() {
+            if isSelected == "1" {
+                let dayLabel = UILabel()
+                dayLabel.text = repeatDaysArray[index]
+                dayLabel.textAlignment = .center
+                dayLabel.textColor = UIColor(named: "textColor")
+                dayLabel.font = UIFont.systemFont(ofSize: 14)
+                
+                dayLabel.translatesAutoresizingMaskIntoConstraints = false
+                dayLabel.widthAnchor.constraint(equalToConstant: 20).isActive = true
+                
+                daysStackView.addArrangedSubview(dayLabel)
+                dayLabels.append(dayLabel)
+            }
         }
+
+        
         
         if daysStackView.superview == nil {
             customView.addSubview(daysStackView)
@@ -405,3 +473,4 @@ extension UIColor {
         self.init(red: red, green: green, blue: blue, alpha: 1.0)
     }
 }
+

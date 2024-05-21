@@ -338,7 +338,10 @@ class NewAlarmViewController: UIViewController {
         alarm.setValue(UUID(), forKey: "id")
         alarm.setValue(convertStringToDate(selectedHour, selectedMinute), forKey: "time")
         alarm.setValue(selectedDays, forKey: "repeatDays")
-        alarm.setValue(alarmNameTextField.text, forKey: "title")
+
+        let alarmName = alarmNameTextField.text ?? "알람"
+        alarm.setValue(alarmName, forKey: "title")
+        
         alarm.setValue(preferenceVibrationSwitch.isOn, forKey: "isVibration")
         alarm.setValue(preferenceSnoozeSwitch.isOn, forKey: "isSnooze")
         alarm.setValue(soundsArray[selectedSoundIndex], forKey: "sound")
