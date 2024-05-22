@@ -6,10 +6,11 @@
 //
 
 import UIKit
+import UserNotifications
 import SnapKit
 
 class ClockViewController: UIViewController {
-
+    let userNotificationCenter = UNUserNotificationCenter.current()
     var timeList = [
         TimeZone(identifier: "Asia/Seoul")!,
         TimeZone(identifier: "Europe/Paris")!,
@@ -25,11 +26,24 @@ class ClockViewController: UIViewController {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
         setupConstraints()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        requestNotificationAuthorization()
+    }
+
+    func requestNotificationAuthorization() {
+        let authOptions = UNAuthorizationOptions(arrayLiteral: .alert, .badge, .sound)
+        
+        userNotificationCenter.requestAuthorization(options: authOptions) { success, error in
+            if let error = error {
+                print("Error: \(error)")
+            }
+        }
     }
     
     func configureUI() {

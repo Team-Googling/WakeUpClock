@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		3C5117522BF2447700FB47B0 /* TimerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C5117512BF2447700FB47B0 /* TimerTableViewCell.swift */; };
 		3C5117582BF3A15500FB47B0 /* DurationPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 3C5117572BF3A15500FB47B0 /* DurationPicker */; };
+		3CB9B8822BFC8B340054D3E3 /* Stargaze.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3CB9B8812BFC8B340054D3E3 /* Stargaze.mp3 */; };
 		9C761FC12BF6D83C00DBDB54 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = F39FCE172BF1C69600F5431C /* SnapKit */; };
 		9CE566762BF6071A00E5568A /* WakeUpClock.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9CE566742BF6071A00E5568A /* WakeUpClock.xcdatamodeld */; };
 		F344D8B12BFB3559007408AB /* UIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = F344D8B02BFB3559007408AB /* UIFactory.swift */; };
@@ -40,6 +41,7 @@
 
 /* Begin PBXFileReference section */
 		3C5117512BF2447700FB47B0 /* TimerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerTableViewCell.swift; sourceTree = "<group>"; };
+		3CB9B8812BFC8B340054D3E3 /* Stargaze.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Stargaze.mp3; sourceTree = "<group>"; };
 		9CE566752BF6071A00E5568A /* WakeUpClock.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = WakeUpClock.xcdatamodel; sourceTree = "<group>"; };
 		F344D8B02BFB3559007408AB /* UIFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFactory.swift; sourceTree = "<group>"; };
 		F39FCDEF2BF1C48B00F5431C /* WakeUpClock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WakeUpClock.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -83,6 +85,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3CB9B8832BFC98320054D3E3 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				3CB9B8812BFC8B340054D3E3 /* Stargaze.mp3 */,
+			);
+			path = Sounds;
+			sourceTree = "<group>";
+		};
 		F39FCDE62BF1C48B00F5431C = {
 			isa = PBXGroup;
 			children = (
@@ -109,6 +119,7 @@
 				F3BAAD262BFB8D4D003E3465 /* CoreData */,
 				F39FCE0B2BF1C50D00F5431C /* Controllers */,
 				F39FCE242BF332BF00F5431C /* Cells */,
+				3CB9B8832BFC98320054D3E3 /* Sounds */,
 				9CE566742BF6071A00E5568A /* WakeUpClock.xcdatamodeld */,
 				F39FCDF82BF1C48B00F5431C /* Main.storyboard */,
 				F39FCDFB2BF1C48D00F5431C /* Assets.xcassets */,
@@ -243,6 +254,7 @@
 				F39FCDFF2BF1C48D00F5431C /* LaunchScreen.storyboard in Resources */,
 				F39FCDFC2BF1C48D00F5431C /* Assets.xcassets in Resources */,
 				F39FCDFA2BF1C48B00F5431C /* Main.storyboard in Resources */,
+				3CB9B8822BFC8B340054D3E3 /* Stargaze.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
