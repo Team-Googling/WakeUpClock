@@ -40,6 +40,7 @@ class StopwatchViewController: UIViewController {
     
     private func configureUI() {
         lapResetButton.isEnabled = false
+        lapResetButton.alpha = 0.2
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(StopwatchCell.self, forCellReuseIdentifier: StopwatchCell.identifier)
@@ -143,6 +144,8 @@ class StopwatchViewController: UIViewController {
             resetLapTimer()
             lapResetButton.isEnabled = false
             changeButton(lapResetButton, title: "Lap", titleColor: UIColor.gray)
+            lapResetButton.alpha = 0.2
+            
             StopwatchCoreDataManager.shared.deleteAllTimes()
             StopwatchCoreDataManager.shared.deleteAllLaps()
         }
@@ -173,7 +176,9 @@ class StopwatchViewController: UIViewController {
     
     @objc private func startPauseButtonPressed() {
         lapResetButton.isEnabled = true
-        changeButton(lapResetButton, title: "Lap", titleColor: UIColor.mainText)
+        changeButton(lapResetButton, title: "Lap", titleColor: UIColor.mainInactiveText)
+        lapResetButton.alpha = 1
+       
         
         // 시간이 멈춰있을 때 -> 버튼 누르면 시간이 흘러야 함
         if !isPlay {
@@ -194,12 +199,14 @@ class StopwatchViewController: UIViewController {
             mainStopwatch.timer.invalidate()
             lapStopwatch.timer.invalidate()
             
-            isPlay = false
-            changeButton(startPauseButton, title: "Start", titleColor: UIColor.mainActive)
-            changeButton(lapResetButton, title: "Reset", titleColor: UIColor.mainText)
-            
             // TODO: saveMainTimer()
             saveCurrentTime()
+            
+            isPlay = false
+            changeButton(startPauseButton, title: "Start", titleColor: UIColor.mainActive)
+            changeButton(lapResetButton, title: "Reset", titleColor: UIColor.mainInactiveText)
+            lapResetButton.alpha = 1
+            
         }
     }
     // MARK: - CoreData
