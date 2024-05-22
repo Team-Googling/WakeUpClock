@@ -194,18 +194,29 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
         
         
         for (index, isSelected) in repeatDays.enumerated() {
-            if isSelected == "1" {
-                if alarm.isEnabled {
-                    let weekday = daysToSound[index]
-                    dateComponents.weekday = weekday
+            if alarm.isEnabled {
+                let weekday = daysToSound[index]
+                dateComponents.weekday = weekday
+                
+                let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+                
+                let request = UNNotificationRequest(identifier: alarm.id.uuidString + isSelected, content: content, trigger: trigger)
+                notificationCenter.add(request) { (error) in
+                    if let error = error {
+                        print(error.localizedDescription)
+
+//            if isSelected == "1" {
+//                if alarm.isEnabled {
+//                    let weekday = daysToSound[index]
+//                    dateComponents.weekday = weekday
                     
-                    let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+//                    let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
                     
-                    let request = UNNotificationRequest(identifier: alarm.id.uuidString + "\(weekday)", content: content, trigger: trigger)
-                    notificationCenter.add(request) { (error) in
-                        if let error = error {
-                            print(error.localizedDescription)
-                        }
+//                    let request = UNNotificationRequest(identifier: alarm.id.uuidString + "\(weekday)", content: content, trigger: trigger)
+//                     notificationCenter.add(request) { (error) in
+//                         if let error = error {
+//                             print(error.localizedDescription)
+//                         }
                     }
                 }
             }
@@ -403,9 +414,9 @@ class AlarmCell: UITableViewCell {
         alarm.isEnabled = sender.isOn
         updateUI(with: alarm)
 
-        viewController.updateAlarmEnabledState(alarmID: alarm.id, isEnabled: alarm.isEnabled)
+        viewController.updateAlarmEnabledState(alarm: alarm, isEnabled: alarm.isEnabled)
         if !alarm.isEnabled {
-            viewController.cancelNotification(for: alarm.id)
+            viewController.cancelNotification(for: alarm)
         }
     }
 
@@ -569,7 +580,7 @@ extension UIColor {
 
 // MARK: - AlarmViewController
 extension AlarmViewController {
-    func updateAlarmEnabledState(alarmID: UUID, isEnabled: Bool) {
+    func updateAlarmEnabledState(alarm: Alarm, isEnabled: Bool) {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             print("Error")
             return
@@ -577,7 +588,7 @@ extension AlarmViewController {
         
         let context = appDelegate.persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "MyAlarm")
-        fetchRequest.predicate = NSPredicate(format: "id = %@", alarmID as CVarArg)
+        fetchRequest.predicate = NSPredicate(format: "id = %@", alarm.id as CVarArg)
         
         do {
             let result = try context.fetch(fetchRequest)
@@ -590,8 +601,8 @@ extension AlarmViewController {
                 
                 // 알람이 isEnabled가 false일 때 알림 취소
                 if !isEnabled {
-                    cancelNotification(for: alarmID)
-                    print("Canceled for alarm with ID: \(alarmID)")
+                    cancelNotification(for: alarm)
+
                 }
             }
         } catch {
@@ -600,10 +611,14 @@ extension AlarmViewController {
     }
 
     
-    func cancelNotification(for alarmID: UUID) {
+    func cancelNotification(for alarm: Alarm) {
+        var array = [String]()
+        for days in alarm.repeatDays {
+            array.append(alarm.id.uuidString + days)
+        }
         let notificationCenter = UNUserNotificationCenter.current()
-        notificationCenter.removePendingNotificationRequests(withIdentifiers: [alarmID.uuidString])
-        print("Canceling for alarm with ID: \(alarmID)")
+        notificationCenter.removePendingNotificationRequests(withIdentifiers: array)
+//        print("Canceling for alarm with ID: \(alarmID)")
     }
 }
 
