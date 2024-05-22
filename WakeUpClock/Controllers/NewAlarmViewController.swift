@@ -10,14 +10,20 @@ import SnapKit
 import CoreData
 
 class NewAlarmViewController: UIViewController {
-    private let daysArray: [String] = [" M", " T", " W", " Th", " F", " St", " S"]
+    private let daysArray: [String] = [" Monday", " Tuesday", " Wednesday", " Thursday", " Friday", " Saturday", " Sunday"]
     private var hourArray: [Int] = Array(0...23)
     private var minuteArray: [Int] = Array(0...59)
-    private var soundsArray: [String] = ["TestSound1", "TestSound2", "TestSound3"]
     private var selectedHour: Int = 0
     private var selectedMinute: Int = 0
     private var selectedSoundIndex: Int = 0
     private var selectedDays: [Bool] = [false, false, false, false, false, false, false]
+    private lazy var mondayButton: UIButton = makeButton(title: daysArray[0])
+    private lazy var tuesdayButton: UIButton = makeButton(title: daysArray[1])
+    private lazy var wednesdayButton: UIButton = makeButton(title: daysArray[2])
+    private lazy var thursdayButton: UIButton = makeButton(title: daysArray[3])
+    private lazy var fridayButton: UIButton = makeButton(title: daysArray[4])
+    private lazy var saturdayButton: UIButton = makeButton(title: daysArray[5])
+    private lazy var sundayButton: UIButton = makeButton(title: daysArray[6])
     
     // MARK: - 스크롤 뷰
     private var scrollView: UIScrollView = {
@@ -46,8 +52,8 @@ class NewAlarmViewController: UIViewController {
     
     private var hourView: UIView = {
         let view = UIView()
-        view.layer.borderColor = UIColor(named: "textColor")?.cgColor
-        view.layer.borderWidth = 1
+//        view.layer.borderColor = UIColor(named: "frameColor")?.cgColor
+//        view.layer.borderWidth = 1
         view.layer.cornerRadius = 10
         view.clipsToBounds = true
         return view
@@ -62,8 +68,8 @@ class NewAlarmViewController: UIViewController {
     }()
     private var minuteView: UIView = {
         let view = UIView()
-        view.layer.borderColor = UIColor(named: "textColor")?.cgColor
-        view.layer.borderWidth = 1
+//        view.layer.borderColor = UIColor(named: "textColor")?.cgColor
+//        view.layer.borderWidth = 1
         view.layer.cornerRadius = 10
         view.clipsToBounds = true
         return view
@@ -72,6 +78,7 @@ class NewAlarmViewController: UIViewController {
     // MARK: - 시간 선택
     private var hourPickerView: UIPickerView = {
         let pickerView = UIPickerView()
+        //pickerView.backgroundColor = UIColor(named: "frameColor")
         return pickerView
     }()
     
@@ -93,10 +100,6 @@ class NewAlarmViewController: UIViewController {
     // MARK: - 날짜 관련 뷰
     private var daysView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(named: "glassEffectColor")
-        view.layer.borderWidth = 1
-        view.layer.cornerRadius = 10
-        view.clipsToBounds = true
         return view
     }()
     
@@ -109,15 +112,16 @@ class NewAlarmViewController: UIViewController {
         return label
     }()
     
-    // MARK: - 날짜를 담을 스택 뷰
-    private var daysStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.spacing = 1
-        stackView.distribution = .fillEqually
-        return stackView
-    }()
-    
+//    // MARK: - 날짜를 담을 스택 뷰
+//    private var daysStackView: UIStackView = {
+//        let stackView = UIStackView()
+//        stackView.axis = .horizontal
+//        stackView.spacing = 1
+//        stackView.distribution = .fillEqually
+//        stackView.backgroundColor = .purple
+//        return stackView
+//    }()
+       
     // MARK: - 알람 이름 관련 뷰
     private var alarmNameView: UIView = {
         let view = UIView()
@@ -146,104 +150,13 @@ class NewAlarmViewController: UIViewController {
         textField.layer.borderWidth = 1
         return textField
     }()
-    
-    // MARK: - 옵션 설정 관련 뷰
-    private var preferencesView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(named: "glassEffectColor")
-        view.layer.borderWidth = 1
-        view.layer.cornerRadius = 10
-        view.clipsToBounds = true
-        return view
-    }()
-    
-    // MARK: - 프레퍼런스 타이틀
-    private var preferencesTitleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Preferences"
-        label.textColor = UIColor(named: "textColor")
-        label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
-        return label
-    }()
-    
-    // MARK: - 진동 관련 스택뷰
-    private var preferenceVibrationStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.spacing = 1
-        stackView.distribution = .fillEqually
-        return stackView
-    }()
-    
-    // MARK: - 진동 레이블
-    private var preferenceVibrationLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Vibration"
-        label.textColor = UIColor(named: "textColor")
-        label.font = UIFont.systemFont(ofSize: 15, weight: .bold)
-        return label
-    }()
-    
-    // MARK: - 진동 유무 설정할 스위치
-    private var preferenceVibrationSwitch: UISwitch = {
-        let uiSwitch = UISwitch()
-        return uiSwitch
-    }()
-    
-    // MARK: - 스누즈 관련 스택뷰
-    private var preferenceSnoozeStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.spacing = 1
-        stackView.distribution = .fillEqually
-        return stackView
-    }()
-    
-    // MARK: - 스누즈 레이블
-    private var preferenceSnoozeLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Snooze"
-        label.textColor = UIColor(named: "textColor")
-        label.font = UIFont.systemFont(ofSize: 15, weight: .bold)
-        return label
-    }()
-    
-    // MARK: - 스누즈 버튼
-    private var preferenceSnoozeSwitch: UISwitch = {
-        let uiSwitch = UISwitch()
-        return uiSwitch
-    }()
-    
-    // MARK: - 사운드 관련 스택뷰
-    private var preferenceSoundStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.spacing = 1
-        stackView.distribution = .fillEqually
-        return stackView
-    }()
-    
-    // MARK: - 사운드 레이블
-    private var preferenceSoundLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Sound"
-        label.textColor = UIColor(named: "textColor")
-        label.font = UIFont.systemFont(ofSize: 15, weight: .bold)
-        return label
-    }()
-    
-    // MARK: - 사운드 선택 피커뷰
-    private var preferenceSoundPickerView: UIPickerView = {
-        let pickerView = UIPickerView()
-        return pickerView
-    }()
-    
+                
     // MARK: - 버튼을 담을 스택 뷰
     private var buttonStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
-        stackView.spacing = 20
+        stackView.spacing = 50
         return stackView
     }()
     
@@ -255,7 +168,7 @@ class NewAlarmViewController: UIViewController {
         button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         button.layer.borderColor = UIColor(named: "textColor")?.cgColor
         button.layer.borderWidth = 1
-        button.layer.cornerRadius = 10
+        button.layer.cornerRadius = 20
         button.clipsToBounds = true
         button.addTarget(self, action: #selector(cancelButtonTapped(_:)), for: .touchUpInside)
         return button
@@ -269,7 +182,7 @@ class NewAlarmViewController: UIViewController {
         button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         button.layer.borderColor = UIColor(named: "mainActiveColor")?.cgColor
         button.layer.borderWidth = 1
-        button.layer.cornerRadius = 10
+        button.layer.cornerRadius = 20
         button.clipsToBounds = true
         button.addTarget(self, action: #selector(doneButtonTapped(_:)), for: .touchUpInside)
         return button
@@ -283,29 +196,17 @@ class NewAlarmViewController: UIViewController {
         hourPickerView.delegate = self
         minutePickerView.dataSource = self
         minutePickerView.delegate = self
-        preferenceSoundPickerView.dataSource = self
-        preferenceSoundPickerView.delegate = self
         
         setupAddView()
         setupAutoLayout()
-    }
         
-    // MARK: - 다크모드 변경 확인
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
-            updateDayButtonImages()
+        if self.traitCollection.userInterfaceStyle == .dark {
+            overrideUserInterfaceStyle = .dark
+        } else {
+            overrideUserInterfaceStyle = .light
         }
     }
-    
-    private func updateDayButtonImages() {
-        for view in daysStackView.arrangedSubviews {
-            if let button = view as? UIButton {
-                updateDayButtonImage(button: button)
-            }
-        }
-    }
-    
+            
     private func updateDayButtonImage(button: UIButton) {
         let imageName: String
         if button.tag == 0 {
@@ -338,13 +239,8 @@ class NewAlarmViewController: UIViewController {
         alarm.setValue(UUID(), forKey: "id")
         alarm.setValue(convertStringToDate(selectedHour, selectedMinute), forKey: "time")
         alarm.setValue(selectedDays, forKey: "repeatDays")
-
         let alarmName = alarmNameTextField.text ?? "알람"
         alarm.setValue(alarmName, forKey: "title")
-        
-        alarm.setValue(preferenceVibrationSwitch.isOn, forKey: "isVibration")
-        alarm.setValue(preferenceSnoozeSwitch.isOn, forKey: "isSnooze")
-        alarm.setValue(soundsArray[selectedSoundIndex], forKey: "sound")
         alarm.setValue(true, forKey: "isEnabled")
         try? context.save()
     }
@@ -370,9 +266,6 @@ class NewAlarmViewController: UIViewController {
 //                    print(date.repeatDays)
 //                }
 //                print(date.title)
-//                print(date.isVibration)
-//                print(date.isSnooze)
-//                print(date.sound)
 //                print(date.isEnabled)
 //            }
 //        } catch {
@@ -386,8 +279,7 @@ class NewAlarmViewController: UIViewController {
         print("선택 시간: \(selectedHour), 선택 분: \(selectedMinute)")
         print("선택 요일: \(selectedDays)")
         print("알람 이름: \(alarmNameTextField.text ?? "")")
-        print("진동유무: \(preferenceVibrationSwitch.isOn), 스누즈유무: \(preferenceSnoozeSwitch.isOn), 선택Sound: \(soundsArray[selectedSoundIndex])")
-        
+   
         let dateString: String = "\(selectedHour):\(selectedMinute)"
         let myFormatter = DateFormatter()
         myFormatter.dateFormat = "HH:mm"
@@ -432,6 +324,21 @@ class NewAlarmViewController: UIViewController {
         }
     }
     
+    private func makeButton(title: String) -> UIButton {
+        let button = UIButton()
+        if traitCollection.userInterfaceStyle == .dark {
+            button.setImage(UIImage(named: "dark-box"), for: .normal)
+        } else {
+            button.setImage(UIImage(named: "box"), for: .normal)
+        }
+        button.setTitle(title, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+        button.setTitleColor(UIColor(named: "textColor"), for: .normal)
+        button.tag = 0
+        button.addTarget(self, action: #selector(dayButtonTapped(_:)), for: .touchUpInside)
+        return button
+    }
+    
     // MARK: - addView
     private func setupAddView() {
         view.addSubview(scrollView)
@@ -447,42 +354,38 @@ class NewAlarmViewController: UIViewController {
         minuteView.addSubview(minutePickerView)
         
         //Days
-        scrollView.addSubview(daysView)
+        //scrollView.addSubview(daysView)
+        timeSelectView.addSubview(daysView)
         daysView.addSubview(daysTitleLabel)
-        daysView.addSubview(daysStackView)
-        for day in daysArray {
-            let button = UIButton()
-            if traitCollection.userInterfaceStyle == .dark {
-                button.setImage(UIImage(named: "dark-box"), for: .normal)
-            } else {
-                button.setImage(UIImage(named: "box"), for: .normal)
-            }
-            button.setTitle(day, for: .normal)
-            button.titleLabel?.font = UIFont.systemFont(ofSize: 13)
-            button.setTitleColor(UIColor(named: "textColor"), for: .normal)
-            button.tag = 0
-            button.addTarget(self, action: #selector(dayButtonTapped(_:)), for: .touchUpInside)
-            daysStackView.addArrangedSubview(button)
-        }
+        //daysView.addSubview(daysStackView)
+        daysView.addSubview(mondayButton)
+        daysView.addSubview(tuesdayButton)
+        daysView.addSubview(wednesdayButton)
+        daysView.addSubview(thursdayButton)
+        daysView.addSubview(fridayButton)
+        daysView.addSubview(saturdayButton)
+        daysView.addSubview(sundayButton)
+        
+//        for day in daysArray {
+//            let button = UIButton()
+//            if traitCollection.userInterfaceStyle == .dark {
+//                button.setImage(UIImage(named: "dark-box"), for: .normal)
+//            } else {
+//                button.setImage(UIImage(named: "box"), for: .normal)
+//            }
+//            button.setTitle(day, for: .normal)
+//            button.titleLabel?.font = UIFont.systemFont(ofSize: 13)
+//            button.setTitleColor(UIColor(named: "textColor"), for: .normal)
+//            button.tag = 0
+//            button.addTarget(self, action: #selector(dayButtonTapped(_:)), for: .touchUpInside)
+//            daysStackView.addArrangedSubview(button)
+//        }
         
         //Name
         scrollView.addSubview(alarmNameView)
         alarmNameView.addSubview(alarmTitleLabel)
         alarmNameView.addSubview(alarmNameTextField)
-        
-        //preferences
-        scrollView.addSubview(preferencesView)
-        preferencesView.addSubview(preferencesTitleLabel)
-        preferencesView.addSubview(preferenceVibrationStackView)
-        preferenceVibrationStackView.addArrangedSubview(preferenceVibrationLabel)
-        preferenceVibrationStackView.addArrangedSubview(preferenceVibrationSwitch)
-        preferencesView.addSubview(preferenceSnoozeStackView)
-        preferenceSnoozeStackView.addArrangedSubview(preferenceSnoozeLabel)
-        preferenceSnoozeStackView.addArrangedSubview(preferenceSnoozeSwitch)
-        preferencesView.addSubview(preferenceSoundStackView)
-        preferenceSoundStackView.addArrangedSubview(preferenceSoundLabel)
-        preferenceSoundStackView.addArrangedSubview(preferenceSoundPickerView)
-        
+                
         //button
         scrollView.addSubview(buttonStackView)
         buttonStackView.addArrangedSubview(cancelButton)
@@ -503,7 +406,7 @@ class NewAlarmViewController: UIViewController {
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
             make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(10)
             make.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing).offset(-10)
-            make.height.equalToSuperview().multipliedBy(0.2)
+            make.height.equalToSuperview().multipliedBy(0.4)
         }
         timeTitleLabel.snp.makeConstraints { make in
             make.top.equalTo(timeSelectView.snp.top).offset(10)
@@ -517,15 +420,15 @@ class NewAlarmViewController: UIViewController {
         }
         
         hourView.snp.makeConstraints { make in
-            make.width.equalTo(timeStackView.snp.width).multipliedBy(0.45)
-            make.height.equalTo(100)
+            make.width.equalTo(timeStackView.snp.width).multipliedBy(0.5)
+            make.height.equalTo(80)
         }
         colonLabel.snp.makeConstraints { make in
             make.width.equalTo(timeStackView.snp.width).multipliedBy(0.1)
         }
         minuteView.snp.makeConstraints { make in
-            make.width.equalTo(timeStackView.snp.width).multipliedBy(0.45)
-            make.height.equalTo(100)
+            make.width.equalTo(timeStackView.snp.width).multipliedBy(0.5)
+            make.height.equalTo(80)
         }
         
         hourPickerView.snp.makeConstraints { make in
@@ -539,22 +442,55 @@ class NewAlarmViewController: UIViewController {
         
         //days
         daysView.snp.makeConstraints { make in
-            make.top.equalTo(timeSelectView.snp.bottom).offset(10)
+            make.top.equalTo(minuteView.snp.bottom).offset(10)
             make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(10)
             make.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing).offset(-10)
-            make.height.equalToSuperview().multipliedBy(0.1)
+            make.height.equalToSuperview().multipliedBy(0.5)
         }
         daysTitleLabel.snp.makeConstraints { make in
             make.top.equalTo(daysView.snp.top).offset(10)
             make.leading.equalTo(daysView.snp.leading).offset(10)
+            make.height.equalTo(20)
         }
-        daysStackView.snp.makeConstraints { make in
+//        daysStackView.snp.makeConstraints { make in
+//            make.top.equalTo(daysTitleLabel.snp.bottom).offset(10)
+//            make.leading.equalTo(daysView.snp.leading).offset(5)
+//            make.trailing.equalTo(daysView.snp.trailing).offset(-5)
+//            make.bottom.equalTo(daysView.snp.bottom).offset(-5)
+//        }
+        mondayButton.snp.makeConstraints { make in
             make.top.equalTo(daysTitleLabel.snp.bottom).offset(10)
-            make.leading.equalTo(daysView.snp.leading).offset(5)
-            make.trailing.equalTo(daysView.snp.trailing).offset(-5)
+            make.leading.equalTo(daysView.snp.leading).offset(50)
         }
+        tuesdayButton.snp.makeConstraints { make in
+            make.top.equalTo(mondayButton.snp.bottom).offset(10)
+            make.leading.equalTo(mondayButton.snp.leading)
+        }
+        wednesdayButton.snp.makeConstraints { make in
+            make.top.equalTo(tuesdayButton.snp.bottom).offset(10)
+            make.leading.equalTo(mondayButton.snp.leading)
+        }
+        thursdayButton.snp.makeConstraints { make in
+            make.top.equalTo(wednesdayButton.snp.bottom).offset(10)
+            make.leading.equalTo(mondayButton.snp.leading)
+        }
+        fridayButton.snp.makeConstraints { make in
+            make.top.equalTo(daysTitleLabel.snp.bottom).offset(10)
+            make.leading.equalTo(daysView.snp.leading).offset(200)
+        }
+        saturdayButton.snp.makeConstraints { make in
+            make.top.equalTo(fridayButton.snp.bottom).offset(10)
+            make.leading.equalTo(fridayButton.snp.leading)
+        }
+        sundayButton.snp.makeConstraints { make in
+            make.top.equalTo(saturdayButton.snp.bottom).offset(10)
+            make.leading.equalTo(fridayButton.snp.leading)
+        }
+
+        
+        //name
         alarmNameView.snp.makeConstraints { make in
-            make.top.equalTo(daysView.snp.bottom).offset(10)
+            make.top.equalTo(timeSelectView.snp.bottom).offset(10)
             make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(10)
             make.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing).offset(-10)
             make.height.equalToSuperview().multipliedBy(0.1)
@@ -570,47 +506,15 @@ class NewAlarmViewController: UIViewController {
             make.trailing.equalTo(alarmNameView.snp.trailing).offset(-10)
             make.bottom.equalTo(alarmNameView.snp.bottom).offset(-10)
         }
-        
-        //preference
-        preferencesView.snp.makeConstraints { make in
-            make.top.equalTo(alarmNameView.snp.bottom).offset(10)
-            make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(10)
-            make.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing).offset(-10)
-            make.height.equalToSuperview().multipliedBy(0.25)
-        }
-        preferencesTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(preferencesView.snp.top).offset(10)
-            make.leading.equalTo(preferencesView.snp.leading).offset(10)
-            make.trailing.equalTo(preferencesView.snp.trailing).offset(-10)
-        }
-        preferenceVibrationStackView.snp.makeConstraints { make in
-            make.top.equalTo(preferencesTitleLabel.snp.bottom).offset(10)
-            make.leading.equalTo(preferencesView.snp.leading).offset(10)
-            make.trailing.equalTo(preferencesView.snp.trailing).offset(-10)
-        }
-        preferenceSnoozeStackView.snp.makeConstraints { make in
-            make.top.equalTo(preferenceVibrationStackView.snp.bottom).offset(20)
-            make.leading.equalTo(preferencesView.snp.leading).offset(10)
-            make.trailing.equalTo(preferencesView.snp.trailing).offset(-10)
-        }
-        preferenceSoundStackView.snp.makeConstraints { make in
-            make.top.equalTo(preferenceSnoozeStackView.snp.bottom).offset(10)
-            make.leading.equalTo(preferencesView.snp.leading).offset(10)
-            make.trailing.equalTo(preferencesView.snp.trailing).offset(-10)
-            //make.height.equalTo(preferenceSnoozeStackView.snp.height)
-            make.bottom.equalTo(preferencesView.snp.bottom).offset(-10)
-        }
-        
         //button
         buttonStackView.snp.makeConstraints { make in
-            make.top.equalTo(preferencesView.snp.bottom).offset(10)
+            make.top.equalTo(alarmNameView.snp.bottom).offset(10)
             make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(30)
             make.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing).offset(-30)
             make.height.equalToSuperview().multipliedBy(0.05)
         }
     }
 }
-
 
 extension NewAlarmViewController: UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -623,34 +527,64 @@ extension NewAlarmViewController: UIPickerViewDataSource {
             cnt = hourArray.count
         } else if pickerView == minutePickerView {
             cnt = minuteArray.count
-        } else if pickerView == preferenceSoundPickerView {
-            cnt = soundsArray.count
         }
         return cnt
     }
 }
 
 extension NewAlarmViewController: UIPickerViewDelegate {
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        var string = ""
-        
-        if pickerView == hourPickerView {
-            string = "\(hourArray[row])"
-        } else if pickerView == minutePickerView {
-            string = "\(minuteArray[row])"
-        } else if pickerView == preferenceSoundPickerView {
-            string = "\(soundsArray[row])"
-        }
-        return string
-    }
+//    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+//        var string = ""
+//        
+//        if pickerView == hourPickerView {
+//            string = "\(hourArray[row])"
+//        } else if pickerView == minutePickerView {
+//            string = "\(minuteArray[row])"
+//        }
+//        return string
+//    }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if pickerView == hourPickerView {
             selectedHour = pickerView.selectedRow(inComponent: 0)
         } else if pickerView == minutePickerView {
             selectedMinute = pickerView.selectedRow(inComponent: 0)
-        } else if pickerView == preferenceSoundPickerView {
-            selectedSoundIndex = pickerView.selectedRow(inComponent: 0)
         }
+    }
+    
+    // UIPickerViewDelegate method to change text color
+    func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+        var string = ""
+        var attributes: [NSAttributedString.Key: Any] = [:]
+        
+        if pickerView == hourPickerView {
+            string = "\(hourArray[row])"
+            if traitCollection.userInterfaceStyle == .dark {
+                attributes = [
+                    .foregroundColor: UIColor.white,
+                    .font: UIFont.systemFont(ofSize: 30, weight: .bold)
+                ]
+            } else {
+                attributes = [
+                    .foregroundColor: UIColor.black,
+                    .font: UIFont.systemFont(ofSize: 30, weight: .bold)
+                ]
+            }
+        } else if pickerView == minutePickerView {
+            string = "\(minuteArray[row])"
+            if traitCollection.userInterfaceStyle == .dark {
+                attributes = [
+                    .foregroundColor: UIColor.white,
+                    .font: UIFont.systemFont(ofSize: 30, weight: .bold)
+                ]
+            } else {
+                attributes = [
+                    .foregroundColor: UIColor.black,
+                    .font: UIFont.systemFont(ofSize: 30, weight: .bold)
+                ]
+            }
+        }
+        
+        return NSAttributedString(string: string, attributes: attributes)
     }
 }
