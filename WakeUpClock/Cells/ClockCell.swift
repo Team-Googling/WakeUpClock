@@ -12,6 +12,15 @@ class ClockCell: UICollectionViewCell {
     
     static let identifier = "ClockCell"
     
+    let clockBackgroundImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "clockBackground")
+        imageView.contentMode = .scaleAspectFill
+        imageView.layer.cornerRadius = 20
+        imageView.clipsToBounds = true
+        return imageView
+    }()
+
     let timeZoneLabel: UILabel = UIFactory.makeLabel(text: "Seoul", color: UIColor(named: "textColor") ?? .black, fontSize: 20, weight: .medium)
     let timeOffsetLabel: UILabel = UIFactory.makeLabel(text: "+0시간", color: UIColor(named: "textColor") ?? .black, fontSize: 14, weight: .regular)
     let timeLabel: UILabel = UIFactory.makeLabel(text: "13:55", color: UIColor(named: "textColor") ?? .black, fontSize: 40, weight: .semibold)
@@ -28,34 +37,43 @@ class ClockCell: UICollectionViewCell {
     }
     
     private func configureUI() {
-        backgroundColor = UIColor.glassEffect
-        layer.cornerRadius = 20
+        // 이미지뷰를 셀의 백그라운드로 추가
+        contentView.addSubview(clockBackgroundImageView)
+        contentView.layer.cornerRadius = 20
+        contentView.clipsToBounds = true
+        contentView.backgroundColor = .clear
+        
+        // 라벨들을 이미지뷰 위에 추가
+        [timeZoneLabel, timeOffsetLabel, timePeriodLabel, timeLabel].forEach {
+            clockBackgroundImageView.addSubview($0)
+        }
     }
     
     private func setupConstraints() {
-        [timeZoneLabel, timeOffsetLabel, timePeriodLabel, timeLabel].forEach {
-            contentView.addSubview($0)
+        // 이미지뷰의 제약 조건 설정
+        clockBackgroundImageView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
         
-        timeZoneLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(20)
-            $0.leading.equalToSuperview().inset(20)
+        // 라벨들의 제약 조건 설정
+        timeZoneLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(20)
+            make.leading.equalToSuperview().inset(20)
         }
         
-        timeOffsetLabel.snp.makeConstraints {
-            $0.top.equalTo(timeZoneLabel.snp.bottom).offset(8)
-            $0.trailing.equalToSuperview().inset(20)
+        timeOffsetLabel.snp.makeConstraints { make in
+            make.top.equalTo(timeZoneLabel.snp.bottom).offset(8)
+            make.trailing.equalToSuperview().inset(20)
         }
         
-        timePeriodLabel.snp.makeConstraints {
-            $0.bottom.equalTo(timeLabel.snp.bottom).inset(8)
-            $0.trailing.equalTo(timeLabel.snp.leading).inset(-4)
+        timePeriodLabel.snp.makeConstraints { make in
+            make.bottom.equalTo(timeLabel.snp.bottom).inset(8)
+            make.trailing.equalTo(timeLabel.snp.leading).inset(-4)
         }
         
-        timeLabel.snp.makeConstraints {
-            $0.top.equalTo(timeOffsetLabel.snp.bottom).offset(4)
-            $0.trailing.equalToSuperview().inset(18)
+        timeLabel.snp.makeConstraints { make in
+            make.top.equalTo(timeOffsetLabel.snp.bottom).offset(4)
+            make.trailing.equalToSuperview().inset(18)
         }
-        
     }
 }
