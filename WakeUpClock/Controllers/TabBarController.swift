@@ -7,8 +7,10 @@
 
 import UIKit
 import SnapKit
+import CoreData
 
 class TabBarViewController: UITabBarController {
+    
     let setInterfaceStyle = "interfaceStyle"
     var interfaceStyle = ""
     
@@ -151,7 +153,7 @@ class TabBarViewController: UITabBarController {
             }
         }
     }
-    
+
     @objc private func didTapMoreButton() {
         print("More button tapped")
         

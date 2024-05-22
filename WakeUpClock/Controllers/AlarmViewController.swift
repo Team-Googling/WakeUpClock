@@ -17,7 +17,6 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
     let formatter = DateFormatter()
     var alarms: [Alarm] = [] // Core Data에서 가져온 알람 데이터
     
-    
     // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,9 +27,27 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
         setupLoadingView()
         setupTableView()
         
+        NotificationCenter.default.addObserver(self, selector: #selector(modalDidDismiss), name: NSNotification.Name("ModalDidDismiss"), object: nil)
+        
         tableView.layoutIfNeeded()
         
         fetchAlarmsFromCoreData()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc func modalDidDismiss() {
+        // 모달이 닫힐 때 수행할 작업
+        fetchAlarmsFromCoreData() // 모달이 닫힐 때마다 데이터를 다시 가져옴
+        print("Modal was closed")
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchAlarmsFromCoreData() // 모달이 닫힐 때마다 데이터를 다시 가져옴
     }
 
     // MARK: - Setup Methods
@@ -96,8 +113,7 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
         }
     }
     
-    private func fetchAlarmsFromCoreData() {
-        // Fetch data from Core Data
+    func fetchAlarmsFromCoreData() {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             print("Error: Unable to access AppDelegate.")
             return
@@ -109,35 +125,29 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
         
         do {
             let result = try context.fetch(fetchRequest)
+            
+            alarms.removeAll()
+            
             for data in result as! [NSManagedObject] {
                 guard let id = data.value(forKey: "id") as? UUID,
                       let time = data.value(forKey: "time") as? Date,
-                      let repeatDays = data.value(forKey: "repeatDays") as? [Int], // 수정된 부분
+                      let repeatDays = data.value(forKey: "repeatDays") as? [Int],
                       let isEnabled = data.value(forKey: "isEnabled") as? Bool else {
                     print("Error: Failed to fetch alarm data. Some attributes are nil.")
                     print("Data: \(data)")
                     continue
                 }
                 
-                print("timetime \(time)")
-                
                 var title = data.value(forKey: "title") as? String
                 if title == nil || title?.isEmpty == true {
                     title = "Alarm"
                 }
                 
-                print("Fetched alarm data:")
-                print("ID: \(id)")
-                print("Time: \(time)")
-                print("Repeat Days: \(repeatDays)")
-                print("Is Enabled: \(isEnabled)")
-                print("Title: \(title ?? "N/A")")
-                
                 let alarm = Alarm(id: id, time: time, repeatDays: repeatDays.map { String($0) }, title: title ?? "Alarm", isEnabled: isEnabled, sound: "")
                 alarms.append(alarm)
-                print("alarmsalarms: \(alarm)")
-                print("alarms count: \(alarms.count)")
             }
+            
+            alarms.sort { $0.time < $1.time }
             
             DispatchQueue.main.async {
                 self.tableView.reloadData()
@@ -146,7 +156,6 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
             print("Failed to fetch data from Core Data: \(error.localizedDescription)")
         }
     }
-
 
     
     // MARK: - UITableViewDataSource
@@ -209,10 +218,10 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
                 
                 try context.save()
             } else {
-                print("Index out of bounds while deleting alarm from Core Data")
+                print("삭제~")
             }
         } catch {
-            print("Failed to delete alarm from Core Data: \(error.localizedDescription)")
+            print("Core Data에러: \(error.localizedDescription)")
         }
     }
 }
@@ -225,7 +234,7 @@ class AlarmCell: UITableViewCell {
     let checkBox = UISwitch()
     var dayLabels = [UILabel]()
     let daysStackView = UIStackView()
-    
+
     var alarm: Alarm? {
         didSet {
             guard let alarm = alarm else { return }
@@ -247,6 +256,7 @@ class AlarmCell: UITableViewCell {
     
     // MARK: - Configuration
     func configure(with alarm: Alarm) {
+        self.alarm = alarm
         titleLabel.text = alarm.title
         updateTimeLabelText(alarm.time)
         clearDayLabels()
@@ -319,14 +329,44 @@ class AlarmCell: UITableViewCell {
         clearDayLabels()
         setupDayLabels(for: alarm.repeatDays)
         checkBox.isOn = alarm.isEnabled
-        checkBox.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
     }
     
     @objc private func switchChanged(_ sender: UISwitch) {
-        guard var alarm = alarm else { return }
+        print("Switch changed")
+        
+        guard var alarm = alarm else {
+            print("Error: Alarm is nil")
+            return
+        }
+        
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            print("Error: Unable to access AppDelegate.")
+            return
+        }
+        
+        print("Function is executing")
+        
         alarm.isEnabled = sender.isOn
-        self.alarm = alarm
+        updateUI(with: alarm)
+        
+        let context = appDelegate.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "MyAlarm")
+        fetchRequest.predicate = NSPredicate(format: "id = %@", alarm.id as CVarArg)
+        
+        do {
+            let result = try context.fetch(fetchRequest)
+            print("Fetched objects: \(result)")
+            
+            if let objectToUpdate = result.first as? NSManagedObject {
+                objectToUpdate.setValue(alarm.isEnabled, forKey: "isEnabled")
+                try context.save()
+                print("Save successful")
+            }
+        } catch {
+            print("Error fetching or saving: \(error.localizedDescription)")
+        }
     }
+
     
     private func updateSwitchTintColor() {
         if #available(iOS 13.0, *) {
@@ -338,6 +378,7 @@ class AlarmCell: UITableViewCell {
     internal func updateTimeLabelText(_ date: Date) {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
+        formatter.timeZone =  NSTimeZone(name: "UTC") as TimeZone?
         timeLabel.text = formatter.string(from: date)
     }
     
@@ -371,8 +412,6 @@ class AlarmCell: UITableViewCell {
                 dayLabels.append(dayLabel)
             }
         }
-
-        
         
         if daysStackView.superview == nil {
             customView.addSubview(daysStackView)
@@ -473,4 +512,3 @@ extension UIColor {
         self.init(red: red, green: green, blue: blue, alpha: 1.0)
     }
 }
-
