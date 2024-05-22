@@ -26,11 +26,11 @@ class UIFactory {
         return label
     }
     
-    static func makeButton(title: String = "", backgroundColor: UIColor = .clear, tintColor: UIColor, borderColor: CGColor = UIColor.gray.cgColor) -> UIButton {
+    static func makeButton(title: String = "", backgroundColor: UIColor = .clear, tintColor: UIColor, borderColor: CGColor = UIColor.mainText.cgColor) -> UIButton {
         let button = UIButton()
         button.setTitle(title, for: .normal)
         button.setTitleColor(tintColor, for: .normal)
-        button.backgroundColor = backgroundColor
+        button.backgroundColor = .clear
         button.layer.cornerRadius = 24
         button.layer.borderWidth = 1
         button.layer.borderColor = borderColor

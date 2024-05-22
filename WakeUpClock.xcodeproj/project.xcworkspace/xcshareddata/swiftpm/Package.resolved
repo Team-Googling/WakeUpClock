@@ -1,5 +1,4 @@
 {
-  "originHash" : "5976e6dd8ff1b171f775f661f5acdbfbc6e18a308807a2a846f5cdadddd9e934",
   "pins" : [
     {
       "identity" : "durationpicker",
@@ -20,5 +19,5 @@
       }
     }
   ],
-  "version" : 3
+  "version" : 2
 }
