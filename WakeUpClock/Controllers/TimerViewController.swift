@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 import DurationPicker
 import CoreData
+import UserNotifications
 
 enum TimerState {
     case started
@@ -29,7 +30,7 @@ class TimerViewController: UIViewController {
     var persistentContainer: NSPersistentContainer? {
        (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer
    }
-    
+    let userNotificationCenter = UNUserNotificationCenter.current()
     private let scrollView = UIScrollView()
     private let contentView = UIView()
     private let backgroundCircleView: UIView = {
@@ -76,16 +77,9 @@ class TimerViewController: UIViewController {
     func setupConstraints() {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
-        contentView.addSubview(backgroundCircleView)
-        contentView.addSubview(timerDurationPicker)
-        contentView.addSubview(remainTime)
-        contentView.addSubview(cancelButton)
-        contentView.addSubview(startButton)
-        contentView.addSubview(nameView)
-        contentView.addSubview(nameLabel)
-        contentView.addSubview(nameInputTextField)
-        contentView.addSubview(recentlyUsedLabel)
-        contentView.addSubview(recentlyUsedTabelView)
+        [backgroundCircleView, timerDurationPicker, remainTime, cancelButton, startButton, nameView, nameLabel, nameInputTextField, recentlyUsedLabel, recentlyUsedTabelView].forEach {
+            contentView.addSubview($0)
+        }
         
         scrollView.snp.makeConstraints {
             $0.top.leading.trailing.bottom.equalToSuperview()
@@ -163,7 +157,6 @@ class TimerViewController: UIViewController {
         contentView.backgroundColor = .clear
         
         backgroundCircleView.backgroundColor = .glassEffect
-//        backgroundCircleView.alpha = 0.5
         backgroundCircleView.layer.cornerRadius = 165
         backgroundCircleView.clipsToBounds = true
         
@@ -267,9 +260,9 @@ class TimerViewController: UIViewController {
                 
                 return
             }
-//            print("remainSeconds: \(remainSeconds)")
             self?.setTime = remainSeconds
             self?.remainTime.text = self?.convertSecondsToTime(timeInSeconds: remainSeconds)
+            self?.sendNotification(seconds: Double(countDownSeconds))
         })
     }
     
@@ -355,15 +348,6 @@ class TimerViewController: UIViewController {
     }
     
     func addRecentTimer() {
-//        let timerName = nameInputTextField.text
-//        
-//        if let timerName = timerName {
-//            timerLists.insert((time: setTime, name: timerName), at: 0)
-//        }
-//        else {
-//            timerLists.insert((time: setTime, name: nil), at: 0)
-//        }
-//        nameInputTextField.text = ""
         let timerName = nameInputTextField.text ?? ""
         let timerTime = setTime
 
@@ -404,6 +388,7 @@ class TimerViewController: UIViewController {
                 let name = timer.name
                 return (time: time, name: name)
             }
+            timerLists.reverse()
             reloadTableView()
         } catch {
             print("타이머를 가져오는데 실패했습니다: \(error)")
@@ -425,6 +410,25 @@ class TimerViewController: UIViewController {
             print("타이머가 성공적으로 삭제되었습니다.")
         } catch {
             print("타이머 삭제에 실패했습니다: \(error)")
+        }
+    }
+
+    // MARK: - UserNotification
+    func sendNotification(seconds: Double) {
+        let notificationContent = UNMutableNotificationContent()
+        
+        notificationContent.title = "WakeUpClock"
+        notificationContent.body = "타이머 종료"
+        notificationContent.sound = UNNotificationSound(named: UNNotificationSoundName(rawValue: "Stargaze.mp3"))
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: seconds, repeats: false)
+        let request = UNNotificationRequest(identifier: "testNotification",
+                                            content: notificationContent,
+                                            trigger: trigger)
+        
+        userNotificationCenter.add(request) { error in
+            if let error = error {
+                print("Notification Error: ", error)
+            }
         }
     }
 
