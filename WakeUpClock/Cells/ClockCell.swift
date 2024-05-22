@@ -59,6 +59,3 @@ class ClockCell: UICollectionViewCell {
         
     }
 }
-#Preview{
-    ClockViewController()
-}
