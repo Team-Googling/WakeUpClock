@@ -194,7 +194,6 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
         
         
         for (index, isSelected) in repeatDays.enumerated() {
-        
             if alarm.isEnabled {
                 let weekday = daysToSound[index]
                 dateComponents.weekday = weekday
@@ -205,6 +204,19 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
                 notificationCenter.add(request) { (error) in
                     if let error = error {
                         print(error.localizedDescription)
+
+//            if isSelected == "1" {
+//                if alarm.isEnabled {
+//                    let weekday = daysToSound[index]
+//                    dateComponents.weekday = weekday
+                    
+//                    let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+                    
+//                    let request = UNNotificationRequest(identifier: alarm.id.uuidString + "\(weekday)", content: content, trigger: trigger)
+//                     notificationCenter.add(request) { (error) in
+//                         if let error = error {
+//                             print(error.localizedDescription)
+//                         }
                     }
                 }
             }
@@ -590,6 +602,7 @@ extension AlarmViewController {
                 // 알람이 isEnabled가 false일 때 알림 취소
                 if !isEnabled {
                     cancelNotification(for: alarm)
+
                 }
             }
         } catch {
