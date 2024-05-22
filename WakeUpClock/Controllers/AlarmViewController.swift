@@ -17,6 +17,8 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
     let formatter = DateFormatter()
     var alarms: [Alarm] = [] // Core Data에서 가져온 알람 데이터
     
+    let notificationCenter = UNUserNotificationCenter.current()
+    
     // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,10 +28,8 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
         // MARK: - UI Setup
         setupLoadingView()
         setupTableView()
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(modalDidDismiss), name: NSNotification.Name("ModalDidDismiss"), object: nil)
-        
-        tableView.layoutIfNeeded()
         
         fetchAlarmsFromCoreData()
     }
@@ -39,15 +39,8 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
     }
     
     @objc func modalDidDismiss() {
-        // 모달이 닫힐 때 수행할 작업
         fetchAlarmsFromCoreData() // 모달이 닫힐 때마다 데이터를 다시 가져옴
         print("Modal was closed")
-        
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        fetchAlarmsFromCoreData() // 모달이 닫힐 때마다 데이터를 다시 가져옴
     }
 
     // MARK: - Setup Methods
@@ -58,6 +51,7 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
         tableView.showsVerticalScrollIndicator = false
         tableView.backgroundColor = UIColor(named: "backGroudColor")
         tableView.register(AlarmCell.self, forCellReuseIdentifier: "AlarmCell")
+        tableView.allowsSelection = false
         
         view.addSubview(tableView)
         
@@ -113,6 +107,7 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
         }
     }
     
+    // MARK: - fetchAlarmsFromCoreData
     func fetchAlarmsFromCoreData() {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             print("Error: Unable to access AppDelegate.")
@@ -145,6 +140,10 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
                 
                 let alarm = Alarm(id: id, time: time, repeatDays: repeatDays.map { String($0) }, title: title ?? "Alarm", isEnabled: isEnabled, sound: "")
                 alarms.append(alarm)
+                
+                // UNUserNotificationCenter를 사용하여 알람 설정
+                scheduleNotification(for: alarm)
+                print("alarm", alarm)
             }
             
             alarms.sort { $0.time < $1.time }
@@ -153,10 +152,65 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
                 self.tableView.reloadData()
             }
         } catch {
-            print("Failed to fetch data from Core Data: \(error.localizedDescription)")
+            print(error.localizedDescription)
         }
     }
+    
+    // MARK: - UNUserNotificationCenter
+    func scheduleNotification(for alarm: Alarm) {
+        guard alarm.isEnabled else { return } // isEnabled가 false이면 알람 스케줄링하지 않음
 
+        let timeZone = TimeZone(identifier: "UTC")
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        formatter.timeZone = timeZone
+        
+        let localTime = formatter.string(from: alarm.time)
+        
+        let content = UNMutableNotificationContent()
+        content.title = "WakeUpClock"
+        content.body = "\(alarm.title): \(localTime)"
+        //         content.sound = UNNotificationSound(named: UNNotificationSoundName(rawValue: "Stargaze.mp3"))
+        content.sound = UNNotificationSound.default
+        
+     
+        
+        let components = localTime.components(separatedBy: ":")
+        guard let hour = Int(components[0]), let minute = Int(components[1]) else {
+            return
+        }
+        
+        let calendar = Calendar.current
+        var dateComponents = DateComponents()
+        dateComponents.hour = hour
+        dateComponents.minute = minute
+        
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+        
+        let repeatDays = alarm.repeatDays
+        let daysToSound = [2, 3, 4, 5, 6, 7, 1]
+        
+        
+        
+        for (index, isSelected) in repeatDays.enumerated() {
+            if isSelected == "1" {
+                if alarm.isEnabled {
+                    let weekday = daysToSound[index]
+                    dateComponents.weekday = weekday
+                    
+                    let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+                    
+                    let request = UNNotificationRequest(identifier: alarm.id.uuidString + "\(weekday)", content: content, trigger: trigger)
+                    notificationCenter.add(request) { (error) in
+                        if let error = error {
+                            print(error.localizedDescription)
+                        }
+                    }
+                }
+            }
+        }
+    }
     
     // MARK: - UITableViewDataSource
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -333,39 +387,28 @@ class AlarmCell: UITableViewCell {
     
     @objc private func switchChanged(_ sender: UISwitch) {
         print("Switch changed")
-        
+
         guard var alarm = alarm else {
             print("Error: Alarm is nil")
             return
         }
-        
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            print("Error: Unable to access AppDelegate.")
+
+        guard let viewController = findViewController() as? AlarmViewController else {
+            print("Error: Unable to access AlarmViewController.")
             return
         }
-        
+
         print("Function is executing")
-        
+
         alarm.isEnabled = sender.isOn
         updateUI(with: alarm)
-        
-        let context = appDelegate.persistentContainer.viewContext
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "MyAlarm")
-        fetchRequest.predicate = NSPredicate(format: "id = %@", alarm.id as CVarArg)
-        
-        do {
-            let result = try context.fetch(fetchRequest)
-            print("Fetched objects: \(result)")
-            
-            if let objectToUpdate = result.first as? NSManagedObject {
-                objectToUpdate.setValue(alarm.isEnabled, forKey: "isEnabled")
-                try context.save()
-                print("Save successful")
-            }
-        } catch {
-            print("Error fetching or saving: \(error.localizedDescription)")
+
+        viewController.updateAlarmEnabledState(alarmID: alarm.id, isEnabled: alarm.isEnabled)
+        if !alarm.isEnabled {
+            viewController.cancelNotification(for: alarm.id)
         }
     }
+
 
     
     private func updateSwitchTintColor() {
@@ -486,10 +529,21 @@ class AlarmCell: UITableViewCell {
         ])
     }
     
-    private func updateAppearance() {
+    func updateAppearance() {
         alarmUIView.backgroundColor = UIColor(named: "glassEffectColor")?.withAlphaComponent(0.3)
         shadowLayer.shadowColor = UIColor(named: "frameColor")?.cgColor
         setNeedsLayout()
+    }
+
+    private func findViewController() -> UIViewController? {
+        var responder: UIResponder? = self
+        while let nextResponder = responder?.next {
+            if let viewController = nextResponder as? UIViewController {
+                return viewController
+            }
+            responder = nextResponder
+        }
+        return nil
     }
 }
 
@@ -510,5 +564,58 @@ extension UIColor {
         let blue = CGFloat(rgb & 0x0000FF) / 255.0
         
         self.init(red: red, green: green, blue: blue, alpha: 1.0)
+    }
+}
+
+// MARK: - AlarmViewController
+extension AlarmViewController {
+    func updateAlarmEnabledState(alarmID: UUID, isEnabled: Bool) {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            print("Error")
+            return
+        }
+        
+        let context = appDelegate.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "MyAlarm")
+        fetchRequest.predicate = NSPredicate(format: "id = %@", alarmID as CVarArg)
+        
+        do {
+            let result = try context.fetch(fetchRequest)
+            print("\(result)")
+            
+            if let objectToUpdate = result.first as? NSManagedObject {
+                objectToUpdate.setValue(isEnabled, forKey: "isEnabled")
+                try context.save()
+                print("successful")
+                
+                // 알람이 isEnabled가 false일 때 알림 취소
+                if !isEnabled {
+                    cancelNotification(for: alarmID)
+                    print("Canceled for alarm with ID: \(alarmID)")
+                }
+            }
+        } catch {
+            print("Error \(error.localizedDescription)")
+        }
+    }
+
+    
+    func cancelNotification(for alarmID: UUID) {
+        let notificationCenter = UNUserNotificationCenter.current()
+        notificationCenter.removePendingNotificationRequests(withIdentifiers: [alarmID.uuidString])
+        print("Canceling for alarm with ID: \(alarmID)")
+    }
+}
+
+// MARK: - UNUserNotificationCenter Extension
+extension UNUserNotificationCenter {
+    func getPendingNotificationIDs() -> [String] {
+        var notificationIDs: [String] = []
+        getPendingNotificationRequests { requests in
+            for request in requests {
+                notificationIDs.append(request.identifier)
+            }
+        }
+        return notificationIDs
     }
 }
