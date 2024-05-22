@@ -33,24 +33,25 @@ class TimerViewController: UIViewController {
     let userNotificationCenter = UNUserNotificationCenter.current()
     private let scrollView = UIScrollView()
     private let contentView = UIView()
-    private let backgroundCircleView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .glassEffect
-        
-        let shadowLayer = CALayer()
-        shadowLayer.frame = CGRect(x: 0, y: 0, width: 330, height: 330)
-        shadowLayer.shadowColor = UIColor(named: "frameColor")?.cgColor
-        shadowLayer.shadowOpacity = 0.1
-        shadowLayer.shadowOffset = CGSize(width: 0, height: 0)
-        shadowLayer.shadowRadius = 5
-        
-        let shadowPath = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: 360, height: 360), cornerRadius: 180)
-        shadowLayer.shadowPath = shadowPath.cgPath
-        shadowLayer.position = view.center
-        view.layer.insertSublayer(shadowLayer, at: 0)
-        
-        return view
-    }()
+//    private let backgroundCircleView: UIView = {
+//        let view = UIView()
+//        view.backgroundColor = .glassEffect
+//        
+//        let shadowLayer = CALayer()
+//        shadowLayer.frame = CGRect(x: 0, y: 0, width: 330, height: 330)
+//        shadowLayer.shadowColor = UIColor(named: "frameColor")?.cgColor
+//        shadowLayer.shadowOpacity = 0.1
+//        shadowLayer.shadowOffset = CGSize(width: 0, height: 0)
+//        shadowLayer.shadowRadius = 5
+//        
+//        let shadowPath = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: 360, height: 360), cornerRadius: 180)
+//        shadowLayer.shadowPath = shadowPath.cgPath
+//        shadowLayer.position = view.center
+//        view.layer.insertSublayer(shadowLayer, at: 0)
+//        
+//        return view
+//    }()
+    private let backgroundCircleView = UIImageView()
     private let timerDurationPicker = DurationPicker()
     private let startButton = UIButton()
     private let cancelButton = UIButton()
@@ -159,6 +160,12 @@ class TimerViewController: UIViewController {
         backgroundCircleView.backgroundColor = .glassEffect
         backgroundCircleView.layer.cornerRadius = 165
         backgroundCircleView.clipsToBounds = true
+        
+        if traitCollection.userInterfaceStyle == .dark {
+            backgroundCircleView.image = UIImage(named: "darkCircle")
+        } else {
+            backgroundCircleView.image = UIImage(named: "lightCircle")
+        }
         
         timerDurationPicker.pickerMode = .hourMinuteSecond
         remainTime.isHidden = true
@@ -280,7 +287,7 @@ class TimerViewController: UIViewController {
             recentlyUsedTabelView.isHidden = true
         }
         else {
-            let rowHeight = 36
+            let rowHeight = 45
             recentlyUsedTabelView.isHidden = false
             recentlyUsedLabel.isHidden = false
             recentlyUsedTabelView.snp.remakeConstraints {
@@ -446,7 +453,7 @@ extension TimerViewController: UITextFieldDelegate {
 // MARK: - TableView Extenseion
 extension TimerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        36
+        45
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -454,19 +461,23 @@ extension TimerViewController: UITableViewDelegate {
         setTimer(with: Int(time.time))
     }
     
-    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        .delete
-    }
-    
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            let timerToDelete = timerLists[indexPath.row]
-            deleteTimer(timer: timerToDelete)
-            timerLists.remove(at: indexPath.row)
-            recentlyUsedTabelView.deleteRows(at: [indexPath], with: .fade)
-            reloadTableView()
-            print("timerLists\(timerLists)")
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: "") { (action, view, completion) in
+            let timerToDelete = self.timerLists[indexPath.row]
+            self.deleteTimer(timer: timerToDelete)
+            self.timerLists.remove(at: indexPath.row)
+            self.recentlyUsedTabelView.deleteRows(at: [indexPath], with: .fade)
+            self.reloadTableView()
+            
+            completion(true)
         }
+        
+        deleteAction.backgroundColor = UIColor(named: "backGroudColor")
+        let trashImage = UIImage(systemName: "trash")?.withTintColor(UIColor(named: "textColor") ?? .gray, renderingMode: .alwaysOriginal)
+        deleteAction.image = trashImage
+        
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        return configuration
     }
 }
 
