@@ -34,6 +34,8 @@
 		F3BAAD302BFB8DAF003E3465 /* StopwatchLap+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3BAAD2E2BFB8DAF003E3465 /* StopwatchLap+CoreDataProperties.swift */; };
 		F3BAAD332BFB8DC2003E3465 /* StopwatchTimer+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3BAAD312BFB8DC2003E3465 /* StopwatchTimer+CoreDataClass.swift */; };
 		F3BAAD342BFB8DC2003E3465 /* StopwatchTimer+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3BAAD322BFB8DC2003E3465 /* StopwatchTimer+CoreDataProperties.swift */; };
+		F3BAAD362BFC5FEB003E3465 /* ClockCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3BAAD352BFC5FEB003E3465 /* ClockCell.swift */; };
+		F3BAAD3A2BFC915E003E3465 /* TimeZone+.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3BAAD392BFC915E003E3465 /* TimeZone+.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,6 +66,8 @@
 		F3BAAD2E2BFB8DAF003E3465 /* StopwatchLap+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StopwatchLap+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		F3BAAD312BFB8DC2003E3465 /* StopwatchTimer+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StopwatchTimer+CoreDataClass.swift"; sourceTree = "<group>"; };
 		F3BAAD322BFB8DC2003E3465 /* StopwatchTimer+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StopwatchTimer+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		F3BAAD352BFC5FEB003E3465 /* ClockCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ClockCell.swift; path = WakeUpClock/Cells/ClockCell.swift; sourceTree = SOURCE_ROOT; };
+		F3BAAD392BFC915E003E3465 /* TimeZone+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeZone+.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,6 +144,7 @@
 			isa = PBXGroup;
 			children = (
 				F39FCE192BF1D9F900F5431C /* UIImage+.swift */,
+				F3BAAD392BFC915E003E3465 /* TimeZone+.swift */,
 				F344D8B02BFB3559007408AB /* UIFactory.swift */,
 			);
 			path = Helpers;
@@ -150,6 +155,7 @@
 			children = (
 				3C5117512BF2447700FB47B0 /* TimerTableViewCell.swift */,
 				F39FCE222BF332B500F5431C /* StopwatchCell.swift */,
+				F3BAAD352BFC5FEB003E3465 /* ClockCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -253,7 +259,9 @@
 				F3BAAD342BFB8DC2003E3465 /* StopwatchTimer+CoreDataProperties.swift in Sources */,
 				F3BAAD2F2BFB8DAF003E3465 /* StopwatchLap+CoreDataClass.swift in Sources */,
 				F39FCE152BF1C5ED00F5431C /* StopwatchViewController.swift in Sources */,
+				F3BAAD362BFC5FEB003E3465 /* ClockCell.swift in Sources */,
 				F3BAAD282BFB8D65003E3465 /* StopwatchCoreDataManager.swift in Sources */,
+				F3BAAD3A2BFC915E003E3465 /* TimeZone+.swift in Sources */,
 				F3BAAD2B2BFB8D91003E3465 /* MyAlarm+CoreDataClass.swift in Sources */,
 				3C5117522BF2447700FB47B0 /* TimerTableViewCell.swift in Sources */,
 				F39FCE0F2BF1C5BB00F5431C /* AlarmViewController.swift in Sources */,
