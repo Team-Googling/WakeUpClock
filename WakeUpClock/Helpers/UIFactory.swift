@@ -67,7 +67,6 @@ class UIFactory {
     static func makeTimeView(backgroundColor: UIColor) -> UIView {
         let view = UIView()
         view.backgroundColor = backgroundColor
-        view.layer.borderWidth = 1
         view.layer.cornerRadius = 8
         view.clipsToBounds = true
         return view
