@@ -97,30 +97,27 @@ class NewAlarmViewController: UIViewController {
         setupAddView()
         setupConstraints()
         setupButtons()
-        setupKeyboard()
+        setupKeyboardNotifications()
     }
     
     // MARK: - 키보드 이벤트
-    private func setupKeyboard() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-    
-    @objc func keyboardWillShow(notification: NSNotification) {
-        if let userInfo = notification.userInfo,
-           let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-            let keyboardRectangle = keyboardFrame.cgRectValue
-            let keyboardHeight = keyboardRectangle.height
-            
-            // 여기서 원하는 뷰의 위치를 조정합니다.
-            self.view.frame.origin.y = -keyboardHeight
+      private func setupKeyboardNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+      }
+      @objc private func keyboardWillShow(notification: Notification) {
+        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
+          let keyboardHeight = keyboardFrame.height
+          let bottomSpace = view.frame.height - (doneButton.frame.origin.y + doneButton.frame.height)
+          if bottomSpace < keyboardHeight {
+            view.frame.origin.y = 0 - (keyboardHeight - bottomSpace)
+          }
         }
-    }
+      }
+      @objc private func keyboardWillHide(notification: Notification) {
+        view.frame.origin.y = 0
+      }
 
-    @objc func keyboardWillHide(notification: NSNotification) {
-        // 키보드가 사라질 때 뷰 위치를 원래대로 돌립니다.
-        self.view.frame.origin.y = 0
-    }
     
     // MARK: - 버튼 이벤트 처리
     private func setupButtons() {

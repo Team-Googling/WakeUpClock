@@ -33,24 +33,6 @@ class TimerViewController: UIViewController {
     let userNotificationCenter = UNUserNotificationCenter.current()
     private let scrollView = UIScrollView()
     private let contentView = UIView()
-//    private let backgroundCircleView: UIView = {
-//        let view = UIView()
-//        view.backgroundColor = .glassEffect
-//        
-//        let shadowLayer = CALayer()
-//        shadowLayer.frame = CGRect(x: 0, y: 0, width: 330, height: 330)
-//        shadowLayer.shadowColor = UIColor(named: "frameColor")?.cgColor
-//        shadowLayer.shadowOpacity = 0.1
-//        shadowLayer.shadowOffset = CGSize(width: 0, height: 0)
-//        shadowLayer.shadowRadius = 5
-//        
-//        let shadowPath = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: 360, height: 360), cornerRadius: 180)
-//        shadowLayer.shadowPath = shadowPath.cgPath
-//        shadowLayer.position = view.center
-//        view.layer.insertSublayer(shadowLayer, at: 0)
-//        
-//        return view
-//    }()
     private let backgroundCircleView = UIImageView()
     private let timerDurationPicker = DurationPicker()
     private let startButton = UIButton()
@@ -494,8 +476,3 @@ extension TimerViewController: UITableViewDataSource {
         return cell
     }
 }
-
-//#Preview {
-//    TimerViewController()  // 해당 컨트롤러
-//  // 화면 업데이트: command+option+p
-//}

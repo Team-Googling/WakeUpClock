@@ -171,7 +171,7 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
         let content = UNMutableNotificationContent()
         content.title = "WakeUpClock"
         content.body = "\(alarm.title): \(localTime)"
-        content.sound = UNNotificationSound.default
+        content.sound = UNNotificationSound(named: UNNotificationSoundName(rawValue: "Radar.mp3"))
         
         let components = localTime.components(separatedBy: ":")
         guard let hour = Int(components[0]), let minute = Int(components[1]) else {
