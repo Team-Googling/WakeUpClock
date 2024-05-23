@@ -42,4 +42,34 @@ class UIFactory {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }
+    
+    // MARK: - NewAlarmViewController 날짜 버튼
+    static func makeDayButton(title: String) -> UIButton {
+        let button = UIButton()
+        button.setTitle(title, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 18)
+        button.setTitleColor(UIColor(named: "textColor"), for: .normal)
+        button.tag = 0
+        button.contentHorizontalAlignment = .left
+        return button
+    }
+    
+    // MARK: - NewAlarmViewController 타이틀 Lable
+    static func makeTitleLabel(title: String) -> UILabel {
+        let label = UILabel()
+        label.text = title
+        label.textColor = UIColor(named: "textColor")
+        label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        return label
+    }
+    
+    // MARK: - NewAlarmViewController 피커뷰를 담을 뷰
+    static func makeTimeView(backgroundColor: UIColor) -> UIView {
+        let view = UIView()
+        view.backgroundColor = backgroundColor
+        view.layer.borderWidth = 1
+        view.layer.cornerRadius = 8
+        view.clipsToBounds = true
+        return view
+    }
 }
