@@ -111,14 +111,14 @@ class TimerViewController: UIViewController {
             $0.top.equalTo(backgroundCircleView.snp.bottom).offset(40)
             $0.leading.equalToSuperview().offset(32)
             $0.width.equalTo(120)
-            $0.height.equalTo(44)
+            $0.height.equalTo(46)
         }
         
         startButton.snp.makeConstraints {
             $0.top.equalTo(backgroundCircleView.snp.bottom).offset(40)
             $0.trailing.equalToSuperview().offset(-32)
             $0.width.equalTo(120)
-            $0.height.equalTo(44)
+            $0.height.equalTo(46)
         }
         
         nameView.snp.makeConstraints {

@@ -62,7 +62,7 @@ class NewAlarmViewController: UIViewController {
     // MARK: - 가로선
     private var horizontalLine: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .mainText
         return view
     }()
     
@@ -71,7 +71,6 @@ class NewAlarmViewController: UIViewController {
         let button = UIButton()
         button.setTitle("Cancel", for: .normal)
         button.setTitleColor(UIColor(named: "textColor"), for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         button.layer.borderColor = UIColor(named: "textColor")?.cgColor
         button.layer.borderWidth = 1
         button.layer.cornerRadius = 24
@@ -84,7 +83,6 @@ class NewAlarmViewController: UIViewController {
         let button = UIButton()
         button.setTitle("Done", for: .normal)
         button.setTitleColor(UIColor(named: "mainActiveColor"), for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         button.layer.borderColor = UIColor(named: "mainActiveColor")?.cgColor
         button.layer.borderWidth = 1
         button.layer.cornerRadius = 24
@@ -334,25 +332,25 @@ class NewAlarmViewController: UIViewController {
         alarmNameTextField.snp.makeConstraints { make in
             make.top.equalTo(alarmTitleLabel.snp.bottom).offset(8)
             make.leading.equalTo(alarmTitleLabel.snp.leading)
-            make.width.equalTo(70)
+            make.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing).offset(-20)
             make.height.equalTo(36)
         }
         horizontalLine.snp.makeConstraints { make in
             make.top.equalTo(alarmNameTextField.snp.bottom)
             make.leading.equalTo(alarmTitleLabel.snp.leading)
-            make.width.equalTo(alarmNameTextField.snp.height)
+            make.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing).offset(-20)
             make.height.equalTo(1)
         }
         
         //button
         cancelButton.snp.makeConstraints { make in
-            make.top.equalTo(alarmNameTextField.snp.bottom).offset(60)
+            make.top.equalTo(alarmNameTextField.snp.bottom).offset(160)
             make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(40)
             make.width.equalTo(120)
-            make.height.equalTo(44)
+            make.height.equalTo(46)
         }
         doneButton.snp.makeConstraints { make in
-            make.top.equalTo(alarmNameTextField.snp.bottom).offset(60)
+            make.top.equalTo(alarmNameTextField.snp.bottom).offset(160)
             make.leading.equalTo(cancelButton.snp.trailing).offset(70)
             make.width.equalTo(cancelButton.snp.width)
             make.height.equalTo(cancelButton.snp.height)
