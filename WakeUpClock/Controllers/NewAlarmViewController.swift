@@ -97,6 +97,29 @@ class NewAlarmViewController: UIViewController {
         setupAddView()
         setupConstraints()
         setupButtons()
+        setupKeyboard()
+    }
+    
+    // MARK: - 키보드 이벤트
+    private func setupKeyboard() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    @objc func keyboardWillShow(notification: NSNotification) {
+        if let userInfo = notification.userInfo,
+           let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+            let keyboardRectangle = keyboardFrame.cgRectValue
+            let keyboardHeight = keyboardRectangle.height
+            
+            // 여기서 원하는 뷰의 위치를 조정합니다.
+            self.view.frame.origin.y = -keyboardHeight
+        }
+    }
+
+    @objc func keyboardWillHide(notification: NSNotification) {
+        // 키보드가 사라질 때 뷰 위치를 원래대로 돌립니다.
+        self.view.frame.origin.y = 0
     }
     
     // MARK: - 버튼 이벤트 처리
