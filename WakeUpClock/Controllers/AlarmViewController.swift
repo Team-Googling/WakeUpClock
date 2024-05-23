@@ -28,7 +28,7 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
         // MARK: - UI Setup
         setupLoadingView()
         setupTableView()
-
+        
         NotificationCenter.default.addObserver(self, selector: #selector(modalDidDismiss), name: NSNotification.Name("ModalDidDismiss"), object: nil)
         
         fetchAlarmsFromCoreData()
@@ -42,7 +42,7 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
         fetchAlarmsFromCoreData() // 모달이 닫힐 때마다 데이터를 다시 가져옴
         print("Modal was closed")
     }
-
+    
     // MARK: - Setup Methods
     private func setupTableView() {
         // MARK: - Table View Setup
@@ -159,7 +159,7 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
     // MARK: - UNUserNotificationCenter
     func scheduleNotification(for alarm: Alarm) {
         guard alarm.isEnabled else { return } // isEnabled가 false이면 알람 스케줄링하지 않음
-
+        
         let timeZone = TimeZone(identifier: "UTC")
         
         let formatter = DateFormatter()
@@ -171,27 +171,20 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
         let content = UNMutableNotificationContent()
         content.title = "WakeUpClock"
         content.body = "\(alarm.title): \(localTime)"
-        //         content.sound = UNNotificationSound(named: UNNotificationSoundName(rawValue: "Stargaze.mp3"))
         content.sound = UNNotificationSound.default
-        
-     
         
         let components = localTime.components(separatedBy: ":")
         guard let hour = Int(components[0]), let minute = Int(components[1]) else {
             return
         }
         
-        let calendar = Calendar.current
+        _ = Calendar.current
         var dateComponents = DateComponents()
         dateComponents.hour = hour
         dateComponents.minute = minute
         
-        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
-        
         let repeatDays = alarm.repeatDays
         let daysToSound = [2, 3, 4, 5, 6, 7, 1]
-        
-        
         
         for (index, isSelected) in repeatDays.enumerated() {
             if alarm.isEnabled {
@@ -204,19 +197,6 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
                 notificationCenter.add(request) { (error) in
                     if let error = error {
                         print(error.localizedDescription)
-
-//            if isSelected == "1" {
-//                if alarm.isEnabled {
-//                    let weekday = daysToSound[index]
-//                    dateComponents.weekday = weekday
-                    
-//                    let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
-                    
-//                    let request = UNNotificationRequest(identifier: alarm.id.uuidString + "\(weekday)", content: content, trigger: trigger)
-//                     notificationCenter.add(request) { (error) in
-//                         if let error = error {
-//                             print(error.localizedDescription)
-//                         }
                     }
                 }
             }
@@ -251,8 +231,8 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
     // MARK: - Cell Delete
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: "") { (action, view, completion) in
-            self.deleteAlarmFromCoreData(at: indexPath.row)
-            
+            let alarmToDelete = self.alarms[indexPath.row]
+            self.deleteAlarmFromCoreData(alarm: alarmToDelete)
             self.alarms.remove(at: indexPath.row)
             
             tableView.deleteRows(at: [indexPath], with: .fade)
@@ -269,24 +249,23 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
     }
     
     // MARK: - Delete Alarm from Core Data
-    private func deleteAlarmFromCoreData(at index: Int) {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let context = appDelegate.persistentContainer.viewContext
+    private func deleteAlarmFromCoreData(alarm: Alarm) {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
         
+        let context = appDelegate.persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "MyAlarm")
+        fetchRequest.predicate = NSPredicate(format: "id == %@", alarm.id as CVarArg)
         
         do {
             let result = try context.fetch(fetchRequest)
-            if result.count > index {
-                let objectToDelete = result[index] as! NSManagedObject
+            if let objectToDelete = result.first as? NSManagedObject {
                 context.delete(objectToDelete)
-                
                 try context.save()
-            } else {
-                print("삭제~")
             }
         } catch {
-            print("Core Data에러: \(error.localizedDescription)")
+            print(error.localizedDescription)
         }
     }
 }
@@ -299,7 +278,7 @@ class AlarmCell: UITableViewCell {
     let checkBox = UISwitch()
     var dayLabels = [UILabel]()
     let daysStackView = UIStackView()
-
+    
     var alarm: Alarm? {
         didSet {
             guard let alarm = alarm else { return }
@@ -398,29 +377,27 @@ class AlarmCell: UITableViewCell {
     
     @objc private func switchChanged(_ sender: UISwitch) {
         print("Switch changed")
-
+        
         guard var alarm = alarm else {
             print("Error: Alarm is nil")
             return
         }
-
+        
         guard let viewController = findViewController() as? AlarmViewController else {
             print("Error: Unable to access AlarmViewController.")
             return
         }
-
+        
         print("Function is executing")
-
+        
         alarm.isEnabled = sender.isOn
         updateUI(with: alarm)
-
+        
         viewController.updateAlarmEnabledState(alarm: alarm, isEnabled: alarm.isEnabled)
         if !alarm.isEnabled {
             viewController.cancelNotification(for: alarm)
         }
     }
-
-
     
     private func updateSwitchTintColor() {
         if #available(iOS 13.0, *) {
@@ -450,7 +427,7 @@ class AlarmCell: UITableViewCell {
         }
         
         let repeatDaysArray = ["M", "T", "W", "Th", "F", "St", "S"]
-
+        
         for (index, isSelected) in repeatDays.enumerated() {
             if isSelected == "1" {
                 let dayLabel = UILabel()
@@ -545,7 +522,7 @@ class AlarmCell: UITableViewCell {
         shadowLayer.shadowColor = UIColor(named: "frameColor")?.cgColor
         setNeedsLayout()
     }
-
+    
     private func findViewController() -> UIViewController? {
         var responder: UIResponder? = self
         while let nextResponder = responder?.next {
@@ -602,14 +579,13 @@ extension AlarmViewController {
                 // 알람이 isEnabled가 false일 때 알림 취소
                 if !isEnabled {
                     cancelNotification(for: alarm)
-
                 }
             }
         } catch {
             print("Error \(error.localizedDescription)")
         }
     }
-
+    
     
     func cancelNotification(for alarm: Alarm) {
         var array = [String]()
@@ -618,7 +594,7 @@ extension AlarmViewController {
         }
         let notificationCenter = UNUserNotificationCenter.current()
         notificationCenter.removePendingNotificationRequests(withIdentifiers: array)
-//        print("Canceling for alarm with ID: \(alarmID)")
+        print("Canceling for alarm with ID: \(array)")
     }
 }
 
