@@ -11,8 +11,8 @@
 
 ## Table of Contents
 1. [Description](#-description)
-2. [Stacks](#-stacks)
-3. [WireFrames](#-wireFrames)
+2. [Stacks](#%EF%B8%8F-stacks)
+3. [WireFrames](#-wireframes)
 4. [Main Feature](#-main-feature)
 5. [Project Structure](#%EF%B8%8F-project-structure)
 6. [Developer](#-developer)
@@ -76,6 +76,10 @@
 </br>
 
 ### 2) AlarmList Page
+<img width="200" alt="image" src="https://github.com/Team-Googling/WakeUpClock/assets/129912074/75e37da1-72a9-4ee6-ba49-ec2182baee6b">
+<img width="200" alt="image" src="https://github.com/Team-Googling/WakeUpClock/assets/129912074/b3807ce2-d7a4-4863-98ac-5be99ed2a046">
+<img width="200" alt="image" src="https://github.com/Team-Googling/WakeUpClock/assets/129912074/450adda8-47c2-484d-b8f3-4838002d0842">
+<br><br>
 
 - 설정한 알람 목록 확인
 - 스위치를 통한 알람 설정
@@ -85,6 +89,9 @@
 </br>
 
 ### 3) New Alarm Page
+<img width="200" alt="image" src="https://github.com/Team-Googling/WakeUpClock/assets/129912074/4cd866f7-884b-4631-a413-d1645094fa0f">
+<img width="200" alt="image" src="https://github.com/Team-Googling/WakeUpClock/assets/129912074/c3eb95a6-d991-4b43-845b-5db41ceaad8f">
+<br><br>
 
 - UIPickerView로 시간 설정
 - 원하는 요일에 체크박스와 이름 설정 가능
@@ -93,6 +100,11 @@
 </br>
 
 ### 4) Timer Page
+<img width="200" alt="image" src="https://github.com/Team-Googling/WakeUpClock/assets/129912074/d905779f-f866-4eb6-a6db-0f53744f46ab">
+<img width="200" alt="image" src="https://github.com/Team-Googling/WakeUpClock/assets/129912074/40d9f57e-b3e3-47f8-9697-eb0aa1d808b0">
+<img width="200" alt="image" src="https://github.com/Team-Googling/WakeUpClock/assets/129912074/bccc3573-7cca-46fc-95f6-09b0d7385df4">
+
+<br><br>
 
 - Duration Picker를 사용한 시간 설정
 - 타이머 실행 시 코어데이터에 저장
@@ -101,6 +113,9 @@
 </br>
 
 ### 5) Stopwatch Page
+<img width="200" alt="image" src="https://github.com/Team-Googling/WakeUpClock/assets/129912074/d905779f-f866-4eb6-a6db-0f53744f46ab">
+<img width="200" alt="image" src="https://github.com/Team-Googling/WakeUpClock/assets/129912074/60bba4e2-e30f-4b51-ac39-5cdd19d22eeb">
+<br><br>
 
 - 실행하면 분, 초, 밀리세컨드 단위로 시간 흐름
 - 랩타임 기능 -> 이전 기록과의 시간 차이 & 측정 시간 기록
