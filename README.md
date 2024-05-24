@@ -77,24 +77,34 @@
 
 ### 2) AlarmList Page
 
-- 
-- 
+- 설정한 알람 목록 확인
+- 스위치를 통한 알람 설정
+- 설정한 시간에 Push 알림과 사운드 재생
+- CoreData 삭제
 
 </br>
 
 ### 3) New Alarm Page
 
 - UIPickerView로 시간 설정
-
+- 원하는 요일에 체크박스와 이름 설정 가능
+- 코어 데이터에 알람 정보 저장
 
 </br>
 
 ### 4) Timer Page
 
+- Duration Picker를 사용한 시간 설정
+- 타이머 실행 시 코어데이터에 저장
+- 최근 타이머 목록에서 확인 & 실행 가능
+
 </br>
 
 ### 5) Stopwatch Page
 
+- 실행하면 분, 초, 밀리세컨드 단위로 시간 흐름
+- 랩타임 기능 -> 이전 기록과의 시간 차이 & 측정 시간 기록
+- 버튼 상태 변화
 
 <br>
 
@@ -137,10 +147,10 @@ WakeUpClock
 <table>
   <tbody>
     <tr>
-      <td align="center"><a href="https://github.com/wxxd-fxrest"><img src="https://github.com/Team-Googling/WakeUpClock/assets/129912074/15889cb5-7b5b-4cff-b4f2-fba278a22b14" width="100px;"><br /><sub><b>윤소연</b></sub></a><br /></a></td>
-      <td align="center"><a href="https://github.com/Imhnjng"><img src="https://github.com/Team-Googling/WakeUpClock/assets/129912074/15889cb5-7b5b-4cff-b4f2-fba278a22b14" width="100px;"><br /><sub><b>임현정</b></sub></a><br /></a></td>
-      <td align="center"><a href="https://github.com/limlogging"><img src="https://github.com/Team-Googling/WakeUpClock/assets/129912074/15889cb5-7b5b-4cff-b4f2-fba278a22b14" width="100px;"><br /><sub><b>임형섭</b></sub></a><br /></a></td>
-      <td align="center"><a href="https://github.com/yyujnn"><img src="https://github.com/Team-Googling/WakeUpClock/assets/129912074/15889cb5-7b5b-4cff-b4f2-fba278a22b14" width="100px;"><br /><sub><b>정유진</b></sub></a><br /></a></td>
+      <td align="center"><a href="https://github.com/wxxd-fxrest"><img src="https://github.com/Team-Googling/WakeUpClock/assets/129912074/c85dfb5d-a4c3-4be6-84d0-d508eabc2746" width="108px;"><br /><sub><b>윤소연</b></sub></a><br /></a></td>
+      <td align="center"><a href="https://github.com/Imhnjng"><img src="https://github.com/Team-Googling/WakeUpClock/assets/129912074/edfe6dbd-cd14-4c94-ab7a-6785ff309ceb" width="100px;"><br /><sub><b>임현정</b></sub></a><br /></a></td>
+      <td align="center"><a href="https://github.com/limlogging"><img src="https://github.com/Team-Googling/WakeUpClock/assets/129912074/a5087034-7b39-406f-8ee7-0c2d4bffa55b" width="100px;"><br /><sub><b>임형섭</b></sub></a><br /></a></td>
+      <td align="center"><a href="https://github.com/yyujnn"><img src="https://github.com/Team-Googling/WakeUpClock/assets/129912074/e86c3581-6fea-4523-b775-032125f88992" width="100px;"><br /><sub><b>정유진</b></sub></a><br /></a></td>
      <tr/>
   </tbody>
 </table>
