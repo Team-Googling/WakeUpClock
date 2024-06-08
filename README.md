@@ -100,10 +100,9 @@
 </br>
 
 ### 4) Timer Page
-<img width="200" alt="image" src="https://github.com/Team-Googling/WakeUpClock/assets/129912074/d905779f-f866-4eb6-a6db-0f53744f46ab">
+<img width="200" alt="image" src="https://github.com/Team-Googling/WakeUpClock/assets/161270615/5228394d-a3fe-4578-b76f-c40f3a70fcf3">
 <img width="200" alt="image" src="https://github.com/Team-Googling/WakeUpClock/assets/129912074/40d9f57e-b3e3-47f8-9697-eb0aa1d808b0">
 <img width="200" alt="image" src="https://github.com/Team-Googling/WakeUpClock/assets/129912074/bccc3573-7cca-46fc-95f6-09b0d7385df4">
-
 <br><br>
 
 - Duration Picker를 사용한 시간 설정
